@@ -8,6 +8,9 @@ import FAQPage from './pages/FAQPage';
 import BookingPage from './pages/BookingPage';
 import LoginPage from './pages/LoginPage';
 import CarDetailsPage from './pages/CarDetailsPage';
+import TermsPage from './pages/TermsPage';
+import ServicesPage from './pages/ServicesPage';
+import PricingPage from './pages/PricingPage';
 import './index.css';
 
 function App() {
@@ -23,7 +26,9 @@ function App() {
           <Route path="/faq" element={<FAQPage />} />
           <Route path="/booking" element={<BookingPage />} />
           <Route path="/login" element={<LoginPage />} />
-          <Route path="/terms" element={<div className="min-h-screen flex items-center justify-center"><h1 className="text-2xl">Terms & Conditions</h1></div>} />
+          <Route path="/terms" element={<TermsPage />} />
+          <Route path="/services" element={<ServicesPage />} />
+          <Route path="/pricing" element={<PricingPage />} />
           <Route path="/privacy" element={<div className="min-h-screen flex items-center justify-center"><h1 className="text-2xl">Privacy Policy</h1></div>} />
         </Routes>
       </DefaultLayout>

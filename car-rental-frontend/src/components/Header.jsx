@@ -7,11 +7,14 @@ const Header = () => {
   const location = useLocation();
 
   const navigation = [
-    { name: 'Domov', href: '/' },
-    { name: 'Vozidlá', href: '/fleet' },
+    { name: 'Úvod', href: '/' },
+    { name: 'Ponuka vozidiel', href: '/fleet' },
     { name: 'O nás', href: '/about' },
     { name: 'Kontakt', href: '/contact' },
     { name: 'FAQ', href: '/faq' },
+    { name: 'Podmienky', href: '/terms' },
+    { name: 'Doplnkové služby', href: '/services' },
+    { name: 'Cenník', href: '/pricing' },
   ];
 
   const isActive = (path) => {
