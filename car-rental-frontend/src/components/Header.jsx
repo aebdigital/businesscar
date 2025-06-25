@@ -6,15 +6,18 @@ const Header = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const location = useLocation();
 
-  const navigation = [
+  const leftNavigation = [
     { name: 'Úvod', href: '/' },
     { name: 'Ponuka vozidiel', href: '/fleet' },
+    { name: 'Cenník', href: '/pricing' },
+    { name: 'Doplnkové služby', href: '/services' },
+  ];
+
+  const rightNavigation = [
+    { name: 'Podmienky', href: '/terms' },
     { name: 'O nás', href: '/about' },
     { name: 'Kontakt', href: '/contact' },
-    { name: 'FAQ', href: '/faq' },
-    { name: 'Podmienky', href: '/terms' },
-    { name: 'Doplnkové služby', href: '/services' },
-    { name: 'Cenník', href: '/pricing' },
+    { name: 'Otázky a odpovede', href: '/faq' },
   ];
 
   const isActive = (path) => {
@@ -27,52 +30,55 @@ const Header = () => {
     <header className="bg-white shadow-lg sticky top-0 z-50">
       <nav className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8" aria-label="Top">
         <div className="flex h-16 items-center justify-between">
-          <div className="flex items-center">
-            <Link to="/" className="flex items-center">
-              <span className="text-2xl font-bold text-primary">AutoPožičovňa</span>
-            </Link>
-          </div>
           
-          {/* Desktop Navigation */}
-          <div className="hidden md:block">
-            <div className="ml-10 flex items-center space-x-8">
-              {navigation.map((item) => (
-                <Link
-                  key={item.name}
-                  to={item.href}
-                  className={`px-3 py-2 text-sm font-medium transition-colors duration-200 ${
-                    isActive(item.href)
-                      ? 'text-accent border-b-2 border-accent'
-                      : 'text-gray-700 hover:text-accent'
-                  }`}
-                >
-                  {item.name}
-                </Link>
-              ))}
-            </div>
+          {/* Left Navigation - Desktop */}
+          <div className="hidden lg:flex items-center space-x-6">
+            {leftNavigation.map((item) => (
+              <Link
+                key={item.name}
+                to={item.href}
+                className={`px-3 py-2 text-sm font-medium transition-colors duration-200 ${
+                  isActive(item.href)
+                    ? 'text-green-600 border-b-2 border-green-600'
+                    : 'text-gray-700 hover:text-green-600'
+                }`}
+              >
+                {item.name}
+              </Link>
+            ))}
           </div>
 
-          {/* Auth Buttons */}
-          <div className="hidden md:flex items-center space-x-4">
-            <Link
-              to="/login"
-              className="text-gray-700 hover:text-accent px-3 py-2 text-sm font-medium transition-colors duration-200"
-            >
-              Prihlásenie
+          {/* Logo Box - Center */}
+          <div className="flex items-center">
+            <Link to="/" className="flex items-center">
+              <div className="bg-gray-100 border-2 border-gray-300 px-8 py-3 rounded-lg">
+                <span className="text-xl font-bold text-gray-800">LOGO</span>
+              </div>
             </Link>
-            <Link
-              to="/fleet"
-              className="bg-accent hover:bg-yellow-600 text-black px-6 py-2 rounded-lg text-sm font-medium transition-colors duration-200"
-            >
-              Rezervovať
-            </Link>
+          </div>
+
+          {/* Right Navigation - Desktop */}
+          <div className="hidden lg:flex items-center space-x-6">
+            {rightNavigation.map((item) => (
+              <Link
+                key={item.name}
+                to={item.href}
+                className={`px-3 py-2 text-sm font-medium transition-colors duration-200 ${
+                  isActive(item.href)
+                    ? 'text-green-600 border-b-2 border-green-600'
+                    : 'text-gray-700 hover:text-green-600'
+                }`}
+              >
+                {item.name}
+              </Link>
+            ))}
           </div>
 
           {/* Mobile menu button */}
-          <div className="md:hidden">
+          <div className="lg:hidden">
             <button
               type="button"
-              className="text-gray-700 hover:text-accent p-2"
+              className="text-gray-700 hover:text-green-600 p-2"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             >
               <span className="sr-only">Otvoriť hlavné menu</span>
@@ -87,38 +93,22 @@ const Header = () => {
 
         {/* Mobile Navigation */}
         {mobileMenuOpen && (
-          <div className="md:hidden">
+          <div className="lg:hidden">
             <div className="space-y-1 pb-3 pt-2">
-              {navigation.map((item) => (
+              {[...leftNavigation, ...rightNavigation].map((item) => (
                 <Link
                   key={item.name}
                   to={item.href}
                   className={`block px-3 py-2 text-base font-medium transition-colors duration-200 ${
                     isActive(item.href)
-                      ? 'text-accent bg-yellow-50'
-                      : 'text-gray-700 hover:text-accent hover:bg-gray-50'
+                      ? 'text-green-600 bg-green-50'
+                      : 'text-gray-700 hover:text-green-600 hover:bg-gray-50'
                   }`}
                   onClick={() => setMobileMenuOpen(false)}
                 >
                   {item.name}
                 </Link>
               ))}
-              <div className="border-t border-gray-200 pt-4 space-y-1">
-                <Link
-                  to="/login"
-                  className="block px-3 py-2 text-base font-medium text-gray-700 hover:text-accent hover:bg-gray-50 transition-colors duration-200"
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  Prihlásenie
-                </Link>
-                <Link
-                  to="/fleet"
-                  className="block px-3 py-2 text-base font-medium bg-accent hover:bg-yellow-600 text-black rounded-lg mx-3 text-center transition-colors duration-200"
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  Rezervovať
-                </Link>
-              </div>
             </div>
           </div>
         )}
