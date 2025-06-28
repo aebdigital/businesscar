@@ -178,24 +178,24 @@ const HomePage = () => {
       <section className="relative">
         <div className="absolute -top-6 left-0 right-0 z-10">
           <div className="mx-auto px-4 sm:px-6 lg:px-8" style={{ maxWidth: '90rem' }}>
-            <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
-              {[
-                'EKONOMICKÁ TRIEDA',
-                'ÚŽITKOVÉ',
-                'STREDNÁ TRIEDA',
-                'VYŠŠIA TRIEDA',
-                'VIACMIESTNE'
-              ].map((category, index) => (
+          <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+            {[
+              'EKONOMICKÁ TRIEDA',
+              'ÚŽITKOVÉ',
+              'STREDNÁ TRIEDA',
+              'VYŠŠIA TRIEDA',
+              'VIACMIESTNE'
+            ].map((category, index) => (
                 <div 
                   key={index} 
                   className="bg-gray-100 shadow-md p-6 rounded-lg text-center hover:bg-green-50 hover:shadow-lg transition-all duration-200 cursor-pointer hover:scale-105"
                   onClick={() => handleCategoryClick(category.replace('TRIEDA', '').trim())}
                 >
-                  <h3 className="text-sm font-bold text-gray-800">{category}</h3>
-                </div>
-              ))}
-            </div>
+                <h3 className="text-sm font-bold text-gray-800">{category}</h3>
+              </div>
+            ))}
           </div>
+        </div>
         </div>
         <div className="h-12"></div>
       </section>
@@ -307,8 +307,8 @@ const HomePage = () => {
                   Naša flotila je vybavená kvalitnými značkovými pneumatikami, ktoré pravidelne meníme v súlade s ročnými obdobiami, aby bola zaistená vaša bezpečnosť na cestách.
                 </p>
               </div>
-            </div>
-
+          </div>
+          
             {/* PRAVIDELNÝ SERVIS */}
             <div className="w-[50vw] shadow-md flex mt-[15px]">
               <div 
@@ -424,7 +424,7 @@ const HomePage = () => {
               <span className="text-gray-500 ml-2">(47 recenzií)</span>
             </div>
           </div>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             <div className="bg-white shadow-md rounded-lg p-6">
               <div className="flex items-center mb-4">
@@ -460,7 +460,7 @@ const HomePage = () => {
                 "Rýchle vybavenie, čisté vozidlá a férové ceny. Už niekoľkokrát som si tu požičala auto a vždy som bola spokojná."
               </p>
               <p className="text-xs text-gray-400 mt-2">pred 1 mesiacom</p>
-            </div>
+          </div>
 
             <div className="bg-white shadow-md rounded-lg p-6">
               <div className="flex items-center mb-4">
@@ -480,7 +480,7 @@ const HomePage = () => {
               </p>
               <p className="text-xs text-gray-400 mt-2">pred 3 týždňami</p>
             </div>
-
+            
             <div className="bg-white shadow-md rounded-lg p-6">
               <div className="flex items-center mb-4">
                 <div className="w-10 h-10 bg-red-500 rounded-full flex items-center justify-center text-white font-bold">
@@ -498,7 +498,7 @@ const HomePage = () => {
               </p>
               <p className="text-xs text-gray-400 mt-2">pred 5 dňami</p>
             </div>
-
+            
             <div className="bg-white shadow-md rounded-lg p-6">
               <div className="flex items-center mb-4">
                 <div className="w-10 h-10 bg-orange-500 rounded-full flex items-center justify-center text-white font-bold">
@@ -534,7 +534,7 @@ const HomePage = () => {
                 "Veľmi spokojný s kvalitou služieb. Odporúčam pre biznis aj súkromné účely."
               </p>
               <p className="text-xs text-gray-400 mt-2">pred 2 mesiacmi</p>
-            </div>
+          </div>
 
             <div className="bg-white shadow-md rounded-lg p-6">
               <div className="flex items-center mb-4">
@@ -553,7 +553,7 @@ const HomePage = () => {
               </p>
               <p className="text-xs text-gray-400 mt-2">pred 4 dňami</p>
             </div>
-
+            
             <div className="bg-white shadow-md rounded-lg p-6">
               <div className="flex items-center mb-4">
                 <div className="w-10 h-10 bg-pink-500 rounded-full flex items-center justify-center text-white font-bold">

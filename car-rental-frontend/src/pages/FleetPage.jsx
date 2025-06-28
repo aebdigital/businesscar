@@ -288,8 +288,8 @@ const FleetPage = () => {
     const updatedDetails = {
       ...rentalDetails,
       [field]: value
-    };
-
+      };
+      
     // Auto-enable out-of-hours services
     if (field === 'pickupDate' || field === 'pickupTime') {
       const outOfHours = isOutOfHours(updatedDetails.pickupDate, updatedDetails.pickupTime);
@@ -403,18 +403,18 @@ const FleetPage = () => {
             {/* Pickup */}
             <div className="space-y-4">
               <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Dátum prevzatia
-                  </label>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Dátum prevzatia
+              </label>
                   <input
                     type="date"
                     value={rentalDetails.pickupDate ? rentalDetails.pickupDate.toISOString().split('T')[0] : ''}
                     onChange={(e) => handleRentalDetailChange('pickupDate', e.target.value ? new Date(e.target.value) : null)}
                     min={new Date().toISOString().split('T')[0]}
                     className="w-full border border-gray-300 rounded-md px-3 py-2 h-10 focus:outline-none focus:ring-2 focus:ring-green-500"
-                  />
-                </div>
+              />
+            </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     Čas prevzatia
@@ -442,10 +442,10 @@ const FleetPage = () => {
             {/* Return */}
             <div className="space-y-4">
               <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Dátum vrátenia
-                  </label>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Dátum vrátenia
+              </label>
                   <input
                     type="date"
                     value={rentalDetails.returnDate ? rentalDetails.returnDate.toISOString().split('T')[0] : ''}
@@ -478,7 +478,7 @@ const FleetPage = () => {
               )}
             </div>
           </div>
-
+          
 
         </div>
 
@@ -486,8 +486,8 @@ const FleetPage = () => {
         {fallbackMessage && (
           <div className="bg-orange-50 border border-orange-200 rounded-md p-4 mb-6">
             <p className="text-orange-800">{fallbackMessage}</p>
-          </div>
-        )}
+            </div>
+          )}
 
         <div className="flex flex-col lg:flex-row gap-8">
           {/* Enhanced Filters Sidebar */}
@@ -701,8 +701,8 @@ const FleetPage = () => {
               </div>
               <div className="text-sm text-gray-500">
                 {filteredCars.length} {filteredCars.length === 1 ? 'vozidlo' : filteredCars.length < 5 ? 'vozidlá' : 'vozidiel'} nájdených
-              </div>
             </div>
+          </div>
 
             {filteredCars.length === 0 ? (
               <div className="text-center py-12">
