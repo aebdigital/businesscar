@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { PhoneIcon, EnvelopeIcon, MapPinIcon, ClockIcon } from '@heroicons/react/24/outline';
 import Button from '../components/Button';
+import Image5 from '../assets/5.jpeg';
 
 const ContactPage = () => {
   const [formData, setFormData] = useState({
@@ -28,13 +29,17 @@ const ContactPage = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <div className="bg-white shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <h1 className="text-3xl font-bold text-gray-900">Kontakt</h1>
-          <p className="text-gray-600 mt-2">
-            Kontaktujte náš tím pri akýchkoľvek otázkach alebo požiadavkách o pomoc
-          </p>
+      {/* Mini Hero Section */}
+      <div 
+        className="relative h-[20vh] bg-cover bg-center flex items-center"
+        style={{
+          backgroundImage: `linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url(${Image5})`
+        }}
+      >
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
+          <h1 className="text-3xl font-bold text-white">
+            Kontakt
+          </h1>
         </div>
       </div>
 
@@ -199,41 +204,7 @@ const ContactPage = () => {
           </div>
         </div>
 
-        {/* Additional Contact Options */}
-        <div className="mt-16 grid grid-cols-1 md:grid-cols-3 gap-8">
-          <div className="text-center p-6 bg-white rounded-lg shadow-sm">
-            <PhoneIcon className="h-12 w-12 text-accent mx-auto mb-4" />
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">Zavolajte nám</h3>
-            <p className="text-gray-600 mb-4">
-              Pre okamžitú pomoc a podporu
-            </p>
-            <a href="tel:+421123456789" className="btn-accent">
-              +421 123 456 789
-            </a>
-          </div>
-
-          <div className="text-center p-6 bg-white rounded-lg shadow-sm">
-            <EnvelopeIcon className="h-12 w-12 text-accent mx-auto mb-4" />
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">Napíšte email</h3>
-            <p className="text-gray-600 mb-4">
-              Odpovedáme do 24 hodín
-            </p>
-            <a href="mailto:info@autopozicovna.sk" className="btn-accent">
-              Poslať email
-            </a>
-          </div>
-
-          <div className="text-center p-6 bg-white rounded-lg shadow-sm">
-            <MapPinIcon className="h-12 w-12 text-accent mx-auto mb-4" />
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">Navštívte nás</h3>
-            <p className="text-gray-600 mb-4">
-              Hlavná 123, Bratislava
-            </p>
-            <a href="/about" className="btn-accent">
-              Smer k nám
-            </a>
-          </div>
-        </div>
+        
       </div>
     </div>
   );

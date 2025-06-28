@@ -1,11 +1,25 @@
+import Image3 from '../assets/3.jpg';
+
 const TermsPage = () => {
   return (
-    <div className="min-h-screen bg-gray-50 py-12">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="bg-white rounded-lg shadow-lg p-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-8 text-center">
+    <div className="min-h-screen bg-gray-50">
+      {/* Mini Hero Section */}
+      <div 
+        className="relative h-[20vh] bg-cover bg-center flex items-center"
+        style={{
+          backgroundImage: `linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url(${Image3})`
+        }}
+      >
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
+          <h1 className="text-3xl font-bold text-white">
             Podmienky
           </h1>
+        </div>
+      </div>
+
+      <div className="py-12">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="bg-white rounded-lg shadow-lg p-8">
           
           <div className="prose prose-gray max-w-none text-center space-y-6">
             <p className="text-lg leading-relaxed">
@@ -27,6 +41,7 @@ const TermsPage = () => {
             <p className="text-lg leading-relaxed">
               At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident, similique sunt in culpa qui officia deserunt mollitia animi, id est laborum et dolorum fuga.
             </p>
+            </div>
           </div>
         </div>
       </div>

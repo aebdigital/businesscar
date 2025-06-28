@@ -1,57 +1,90 @@
 import { useState } from 'react';
 import { ChevronDownIcon, ChevronUpIcon } from '@heroicons/react/24/outline';
+import Image1 from '../assets/1.jpg';
 
 const FAQPage = () => {
   const [openFAQ, setOpenFAQ] = useState(null);
 
   const faqs = [
     {
-      question: "Aké dokumenty potrebujem na prenájom vozidla?",
-      answer: "Potrebujete platný vodičský preukaz (vydaný minimálne pred 1 rokom), kreditnú kartu na meno hlavného vodiča a pas alebo občiansky preukaz. Zahraniční návštevníci môžu potrebovať medzinárodný vodičský preukaz."
+      question: "Aké doklady sú potrebné k uzatvoreniu zmluvy o prenájme?",
+      answer: "Občiansky alebo cestovný pas + vodičský preukaz."
     },
     {
-      question: "Aký je minimálny vek na prenájom vozidla?",
-      answer: "Minimálny vek je 21 rokov. Vodiči mladší ako 25 rokov môžu podliehať poplatkovi za mladého vodiča a majú obmedzenia na určité kategórie vozidiel."
+      question: "Aké doklady dostávam k vozidlu?",
+      answer: "Zmluva o prenájme, technický preukaz, doklad o poistení, kontakt na podporu."
     },
     {
-      question: "Je poistenie zahrnuté v cene prenájmu?",
-      answer: "Áno, základné poistenie (Collision Damage Waiver a Theft Protection) je zahrnuté vo všetkých našich cenách prenájmu. Dodatočné možnosti krytia są dostupné pre väčší pokoj."
+      question: "V akom stave je vozidlo pri prevzatí?",
+      answer: "Čisté, s plnou nádržou. V rovnakom stave ho treba vrátiť."
     },
     {
-      question: "Môžem zmeniť alebo zrušiť svoju rezerváciu?",
-      answer: "Áno, môžete zmeniť alebo zrušiť svoju rezerváciu až do 24 hodín pred časom prevzatia bez penále. Zmeny vykonané do 24 hodín môžu podliehať poplatkom."
+      question: "Sú vozidlá na webe vždy voľné?",
+      answer: "Zobrazené sú všetky vozidlá vo vozovom parku. Aktuálnu dostupnosť odporúčame overiť telefonicky alebo e-mailom."
     },
     {
-      question: "Čo sa stane, ak vrátim auto neskoro?",
-      answer: "Poskytuje sa doba odkladu 29 minút. Po tomto čase vám bude účtovaný ďalší deň. Ak viete, že budete meškať, kontaktujte nás prosím pre dohodnutie predĺženia."
+      question: "Sú obmedzenia na typ ciest?",
+      answer: "Áno. Vozidlá smú jazdiť len po oficiálnych cestných komunikáciách. Poľné a vedľajšie cesty sú zakázané."
     },
     {
-      question: "Sú tam nejaké skryté poplatky?",
-      answer: "Nie, veríme v transparentné ceny. Všetky povinné poplatky sú zahrnuté v uvedenej cene. Voliteľné doplnky (GPS, detské sedačky, dodatoční vodiči) sú jasne označené s ich nákladmi."
+      question: "Kedy je moja objednávka potvrdená?",
+      answer: "Po vyplnení formulára vás do 24 hodín kontaktujeme s potvrdením."
     },
     {
-      question: "Akú palivovú politiku používate?",
-      answer: "Používame politiku 'Plná nádrž na plnú nádrž'. Vozidlo dostanete s plnou nádržou a mali by ste ho vrátiť s plnou nádržou. Ak nebude vrátené plné, budú účtované poplatky za doplnenie paliva."
+      question: "Ako zruším rezerváciu?",
+      answer: "Jednoducho telefonicky na čísle: +421 907 633 517"
     },
     {
-      question: "Môžem pridať dodatočného vodiča?",
-      answer: "Áno, dodatoční vodiči môžu byť pridaní za denný poplatok. Musia spĺňať rovnaké požiadavky ako hlavný vodič a byť prítomní počas prevzatia so svojimi dokumentmi."
+      question: "Aké sú storno podmienky?",
+      answer: "1–7 dní pred prenájmom: 100 % z ceny\n8–14 dní: 50 % (min. 100 €)\n15+ dní: 10 % (min. 100 €)\nStorno sa dá využiť ako kredit na ďalší prenájom (platnosť 12 mesiacov)."
     },
     {
-      question: "Čo ak sa auto pokazí?",
-      answer: "Všetky naše vozidlá majú 24/7 asistenčnú službu na ceste. Zavolajte na číslo uvedené vo vašich dokumentoch k prenájmu a my vám okamžite pomôžeme. Náhradné vozidlá sú poskytované v prípade potreby."
+      question: "V akom predstihu si mám vozidlo rezervovať?",
+      answer: "Odporúčame čím skôr. Pri urgentných požiadavkách volajte pre dostupné modely."
     },
     {
-      question: "Ponúkate služby vyzdvihnutia a doručenia?",
-      answer: "Áno, ponúkame služby vyzdvihnutia a doručenia v Bratislave a okolí za dodatočný poplatok. Vyzdvihnutie/doručenie na letisko je tiež k dispozícii."
+      question: "Potrebujem predĺžiť prenájom – čo robiť?",
+      answer: "Kontaktujte nás čo najskôr, ideálne minimálne 24 hodín pred plánovaným vrátením. Overíme, či je predĺženie možné."
     },
     {
-      question: "Môžem vzať auto do iných krajín?",
-      answer: "Cestovanie cez hranice do krajín EÚ je všeobecne povolené s predchádzajúcim oznámením a dodatočnou dokumentáciou. Prosím informujte nás počas rezervácie, ak plánujete cestovať medzinárodne."
+      question: "Cena je za 1 deň?",
+      answer: "Áno. 1 deň = 24 hodín od času prevzatia (napr. od 8:00 do 8:00 nasledujúceho dňa)."
     },
     {
-      question: "Čo ak poškodím auto?",
-      answer: "Nahláste akékoľvek poškodenie okamžite. So základným poistením ste zodpovedný za sumu spoluúčasti. Zvážte naše možnosti plného krytia na zníženie alebo elimináciu vašej finančnej zodpovednosti."
+      question: "Cena je vrátane DPH?",
+      answer: "Ceny sú bez DPH. Pre fyzické osoby uvádzame konečné ceny. Pre platcov DPH sa pripočíta +23 % DPH."
+    },
+    {
+      question: "Ako môžem zaplatiť?",
+      answer: "V hotovosti, debetnou alebo kreditnou kartou."
+    },
+    {
+      question: "Do ktorých krajín môžem vycestovať?",
+      answer: "Do celej EÚ okrem Bulharska a Rumunska."
+    },
+    {
+      question: "Dostávam diaľničnú známku?",
+      answer: "Áno. Diaľničná známka pre SR je v cene prenájmu."
+    },
+    {
+      question: "Kde si môžem prevziať vozidlo?",
+      answer: "V mestách: Banská Bystrica, Zvolen, Brezno, Lučenec. Auto vieme pristaviť aj na adresu (za príplatok podľa vzdialenosti, termínu a vozidla)."
+    },
+    {
+      question: "Môžem vozidlo vrátiť večer alebo cez víkend?",
+      answer: "Áno. Túto službu však môže byť potrebné spoplatniť (15 – 30 €). Odporúčame dohodnúť vopred."
+    },
+    {
+      question: "Aké poistenie je v cene?",
+      answer: "Zákonné poistenie (PZP) + havarijné poistenie pre štáty EÚ. Spoluúčasť závisí od kategórie vozidla."
+    },
+    {
+      question: "Čo robiť pri poistnej udalosti?",
+      answer: "Ihneď volajte +421 907 633 517 a kontaktujte políciu SR."
+    },
+    {
+      question: "Aký je minimálny vek vodiča?",
+      answer: "Musíte mať vodičský preukaz minimálne 1 rok."
     }
   ];
 
@@ -61,13 +94,17 @@ const FAQPage = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <div className="bg-white shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <h1 className="text-3xl font-bold text-gray-900">Často kladené otázky</h1>
-          <p className="text-gray-600 mt-2">
-            Nájdite odpovede na bežné otázky o našich službách prenájmu vozidiel
-          </p>
+      {/* Mini Hero Section */}
+      <div 
+        className="relative h-[20vh] bg-cover bg-center flex items-center"
+        style={{
+          backgroundImage: `linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url(${Image1})`
+        }}
+      >
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
+          <h1 className="text-3xl font-bold text-white">
+            Často kladené otázky
+          </h1>
         </div>
       </div>
 
@@ -88,13 +125,17 @@ const FAQPage = () => {
                   <ChevronDownIcon className="h-5 w-5 text-gray-500 flex-shrink-0" />
                 )}
               </button>
-              {openFAQ === index && (
+              <div
+                className={`overflow-hidden transition-all duration-300 ease-in-out ${
+                  openFAQ === index ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'
+                }`}
+              >
                 <div className="px-6 pb-4">
                   <p className="text-gray-600 leading-relaxed">
                     {faq.answer}
                   </p>
                 </div>
-              )}
+              </div>
             </div>
           ))}
         </div>

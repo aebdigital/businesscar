@@ -1,5 +1,6 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import DefaultLayout from './layouts/DefaultLayout';
+import ScrollToTop from './components/ScrollToTop';
 import HomePage from './pages/HomePage';
 import FleetPage from './pages/FleetPage';
 import ContactPage from './pages/ContactPage';
@@ -11,11 +12,15 @@ import CarDetailsPage from './pages/CarDetailsPage';
 import TermsPage from './pages/TermsPage';
 import ServicesPage from './pages/ServicesPage';
 import PricingPage from './pages/PricingPage';
+import PrivacyPage from './pages/PrivacyPage';
+import ComplaintsPage from './pages/ComplaintsPage';
+import SanctionsPage from './pages/SanctionsPage';
 import './index.css';
 
 function App() {
   return (
     <Router>
+      <ScrollToTop />
       <DefaultLayout>
         <Routes>
           <Route path="/" element={<HomePage />} />
@@ -29,7 +34,9 @@ function App() {
           <Route path="/terms" element={<TermsPage />} />
           <Route path="/services" element={<ServicesPage />} />
           <Route path="/pricing" element={<PricingPage />} />
-          <Route path="/privacy" element={<div className="min-h-screen flex items-center justify-center"><h1 className="text-2xl">Privacy Policy</h1></div>} />
+          <Route path="/privacy" element={<PrivacyPage />} />
+          <Route path="/complaints" element={<ComplaintsPage />} />
+          <Route path="/sanctions" element={<SanctionsPage />} />
         </Routes>
       </DefaultLayout>
     </Router>

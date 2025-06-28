@@ -19,10 +19,26 @@ const BookingPage = () => {
   const [currentUser, setCurrentUser] = useState(null);
   const [unavailableDates, setUnavailableDates] = useState([]);
   
+  // Generate time slots in 30-minute intervals
+  const generateTimeSlots = () => {
+    const slots = [];
+    for (let hour = 0; hour < 24; hour++) {
+      for (let minute = 0; minute < 60; minute += 30) {
+        const time = `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`;
+        slots.push(time);
+      }
+    }
+    return slots;
+  };
+
+  const timeSlots = generateTimeSlots();
+  
   const [formData, setFormData] = useState({
     // Step 1: Rental Details
     pickupDate: null,
     returnDate: null,
+    pickupTime: '08:00',
+    returnTime: '08:00',
     pickupLocation: {
       name: '',
       address: '',
@@ -125,6 +141,8 @@ const BookingPage = () => {
         // Parse URL parameters for pre-filled data
         const pickupDateParam = searchParams.get('pickupDate');
         const returnDateParam = searchParams.get('returnDate');
+        const pickupTimeParam = searchParams.get('pickupTime');
+        const returnTimeParam = searchParams.get('returnTime');
         const pickupLocationParam = searchParams.get('pickupLocation');
         const returnLocationParam = searchParams.get('returnLocation');
         
@@ -147,11 +165,13 @@ const BookingPage = () => {
           }));
         }
         
-        // Pre-fill dates and locations from URL parameters
+        // Pre-fill dates, times and locations from URL parameters
         setFormData(prev => ({
           ...prev,
           pickupDate: pickupDateParam ? new Date(pickupDateParam) : prev.pickupDate,
           returnDate: returnDateParam ? new Date(returnDateParam) : prev.returnDate,
+          pickupTime: pickupTimeParam || prev.pickupTime,
+          returnTime: returnTimeParam || prev.returnTime,
           pickupLocation: pickupLocationParam ? 
             locations.find(loc => loc.name === pickupLocationParam) || { name: pickupLocationParam, address: '', city: 'Bratislava', state: 'Bratislavský kraj', postalCode: '', country: 'SK' } : 
             prev.pickupLocation,
@@ -244,6 +264,45 @@ const BookingPage = () => {
   const prevStep = () => {
     if (currentStep > 1) {
       setCurrentStep(currentStep - 1);
+    }
+  };
+
+  // Step validation functions
+  const isStep1Valid = () => {
+    return formData.pickupDate && 
+           formData.returnDate && 
+           formData.pickupLocation.name && 
+           formData.returnLocation.name;
+  };
+
+  const isStep2Valid = () => {
+    if (currentUser) return true; // If logged in, step 2 is always valid
+    
+    return formData.firstName?.trim() &&
+           formData.lastName?.trim() &&
+           formData.email?.trim() &&
+           formData.phone?.trim() &&
+           formData.licenseNumber?.trim() &&
+           formData.licenseExpiry?.trim() &&
+           formData.dateOfBirth?.trim() &&
+           formData.address.street?.trim() &&
+           formData.address.city?.trim() &&
+           formData.address.state?.trim() &&
+           formData.address.postalCode?.trim();
+  };
+
+  // Check if a step can be navigated to
+  const canNavigateToStep = (stepNumber) => {
+    if (stepNumber === 1) return true; // Can always go to step 1
+    if (stepNumber === 2) return isStep1Valid(); // Can go to step 2 if step 1 is valid
+    if (stepNumber === 3) return isStep1Valid() && isStep2Valid(); // Can go to step 3 if both previous steps are valid
+    return false;
+  };
+
+  // Navigate to a specific step
+  const goToStep = (stepNumber) => {
+    if (canNavigateToStep(stepNumber)) {
+      setCurrentStep(stepNumber);
     }
   };
 
@@ -565,10 +624,20 @@ const BookingPage = () => {
               <h3 className="text-lg font-semibold text-gray-900 mb-6">Priebeh rezervácie</h3>
               <div className="space-y-4">
                 {steps.map((step) => (
-                  <div key={step.number} className="flex items-center">
+                  <div 
+                    key={step.number} 
+                    className={`flex items-center ${
+                      canNavigateToStep(step.number) 
+                        ? 'cursor-pointer hover:bg-gray-50 p-2 rounded-lg transition-colors' 
+                        : 'cursor-not-allowed opacity-60'
+                    }`}
+                    onClick={() => goToStep(step.number)}
+                  >
                     <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${
                       currentStep >= step.number 
                         ? 'bg-accent text-black' 
+                        : canNavigateToStep(step.number)
+                        ? 'bg-gray-300 text-gray-700'
                         : 'bg-gray-200 text-gray-600'
                     }`}>
                       {currentStep > step.number ? (
@@ -578,7 +647,11 @@ const BookingPage = () => {
                       )}
                     </div>
                     <span className={`ml-3 ${
-                      currentStep >= step.number ? 'text-gray-900' : 'text-gray-500'
+                      currentStep >= step.number 
+                        ? 'text-gray-900 font-medium' 
+                        : canNavigateToStep(step.number)
+                        ? 'text-gray-700'
+                        : 'text-gray-500'
                     }`}>
                       {step.title}
                     </span>
@@ -664,6 +737,34 @@ const BookingPage = () => {
                           unavailableDates={unavailableDates}
                           carId={selectedCarId}
                         />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                          Čas prevzatia *
+                        </label>
+                        <select
+                          value={formData.pickupTime}
+                          onChange={(e) => handleInputChange({ target: { name: 'pickupTime', value: e.target.value } })}
+                          className="w-full border border-gray-300 rounded-md px-3 py-2 h-10 focus:outline-none focus:ring-2 focus:ring-green-500"
+                        >
+                          {timeSlots.map(time => (
+                            <option key={time} value={time}>{time}</option>
+                          ))}
+                        </select>
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                          Čas vrátenia *
+                        </label>
+                        <select
+                          value={formData.returnTime}
+                          onChange={(e) => handleInputChange({ target: { name: 'returnTime', value: e.target.value } })}
+                          className="w-full border border-gray-300 rounded-md px-3 py-2 h-10 focus:outline-none focus:ring-2 focus:ring-green-500"
+                        >
+                          {timeSlots.map(time => (
+                            <option key={time} value={time}>{time}</option>
+                          ))}
+                        </select>
                       </div>
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-2">

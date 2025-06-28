@@ -8,7 +8,7 @@ import {
 } from '@heroicons/react/24/outline';
 import CarImage from './CarImage';
 
-const CarCard = ({ car, selectedDates, unavailableDates = [] }) => {
+const CarCard = ({ car, selectedDates, unavailableDates = [], isPromo = false }) => {
   // API data structure mapping
   const {
     _id: id,
@@ -23,7 +23,9 @@ const CarCard = ({ car, selectedDates, unavailableDates = [] }) => {
     fuelType,
     seats,
     description,
-    status
+    status,
+    power,
+    images
   } = car;
 
   // Combine brand and model for display name
@@ -59,148 +61,160 @@ const CarCard = ({ car, selectedDates, unavailableDates = [] }) => {
     return baseUrl;
   };
 
-  // Count unavailable dates in the next 30 days for display
-  const getUnavailableDaysCount = () => {
-    const today = new Date();
-    const next30Days = new Date();
-    next30Days.setDate(today.getDate() + 30);
+  // Build booking URL with prefilled data for direct reservation
+  const buildBookingUrl = () => {
+    const params = new URLSearchParams({
+      car: id
+    });
     
-    let count = 0;
-    const currentDate = new Date(today);
-    while (currentDate <= next30Days) {
-      const dateStr = currentDate.toISOString().split('T')[0];
-      if (unavailableDates.includes(dateStr)) {
-        count++;
-      }
-      currentDate.setDate(currentDate.getDate() + 1);
+    if (selectedDates?.pickupDate) {
+      params.append('pickupDate', selectedDates.pickupDate.toISOString().split('T')[0]);
     }
-    return count;
+    
+    if (selectedDates?.returnDate) {
+      params.append('returnDate', selectedDates.returnDate.toISOString().split('T')[0]);
+    }
+    
+    if (selectedDates?.pickupTime) {
+      params.append('pickupTime', selectedDates.pickupTime);
+    }
+    
+    if (selectedDates?.returnTime) {
+      params.append('returnTime', selectedDates.returnTime);
+    }
+    
+    return `/booking?${params.toString()}`;
   };
 
-  const unavailableDaysCount = getUnavailableDaysCount();
+  // Get fuel type display
+  const getFuelDisplay = () => {
+    switch(fuelType) {
+      case 'petrol': return 'BENZÍN';
+      case 'diesel': return 'DIESEL';
+      case 'electric': return 'ELEKTRICKÉ';
+      case 'hybrid': return 'HYBRID';
+      default: return fuelType?.toUpperCase() || 'DIESEL';
+    }
+  };
+
+  // Get transmission display
+  const getTransmissionDisplay = () => {
+    switch(transmission) {
+      case 'manual': return 'MANUÁL';
+      case 'automatic': return 'AUTOMAT';
+      default: return transmission?.toUpperCase() || 'AUTOMAT';
+    }
+  };
 
   return (
-    <Link to={buildCarUrl()} className="block no-underline">
-      <div className="card p-6 hover:shadow-xl transition-all duration-300 cursor-pointer hover:scale-105">
-        {/* Car Image */}
-        <div className="relative mb-4">
-          <CarImage
-            car={car}
-            size="medium"
-            className="w-full h-48 object-cover rounded-lg"
+    <div className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-200 relative">
+      {/* AKCIA Banner */}
+      {isPromo && (
+        <div className="absolute top-0 left-0 z-10">
+          <div className="bg-red-600 text-white px-4 py-2 text-sm font-bold transform -rotate-45 -translate-x-3 -translate-y-1 origin-top-left">
+            AKCIA
+          </div>
+        </div>
+      )}
+
+      {/* Category Badge */}
+      <div className="absolute top-4 right-4 z-10">
+        <span className="bg-green-600 text-white px-3 py-1 rounded text-sm font-medium">
+          {category?.includes('SUV') || category?.includes('4X4') ? '4X4' : 
+           category?.includes('Premium') ? 'PREMIUM' :
+           category?.includes('Úžitkové') ? 'VAN' : 
+           category?.includes('Ekonomická') ? 'ECO' : 'AUTO'}
+        </span>
+      </div>
+
+      {/* Car Image */}
+      <div className="relative h-48 bg-gray-100">
+        {images && images.length > 0 ? (
+          <img 
+            src={images[0].url || images[0]} 
+            alt={carName}
+            className="w-full h-full object-cover"
           />
-          <div className="absolute top-3 left-3">
-            <span className="bg-accent text-black px-3 py-1 rounded-full text-sm font-medium">
-              {category}
-            </span>
+        ) : (
+          <div className="w-full h-full flex items-center justify-center text-gray-400">
+            <svg className="w-20 h-20" fill="currentColor" viewBox="0 0 20 20">
+              <path fillRule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clipRule="evenodd" />
+            </svg>
           </div>
-          {!isAvailable && (
-            <div className="absolute top-3 right-3">
-              <span className="bg-red-500 text-white px-3 py-1 rounded-full text-sm font-medium">
-                Nedostupné
-              </span>
-            </div>
-          )}
-          {selectedDates?.pickupDate && selectedDates?.returnDate && !isAvailableForDates && (
-            <div className="absolute top-3 right-3">
-              <span className="bg-red-500 text-white px-3 py-1 rounded-full text-sm font-medium">
-                Rezervované
-              </span>
-            </div>
-          )}
-        </div>
+        )}
+      </div>
 
-        {/* Car Info */}
+      {/* Car Details */}
+      <div className="p-6">
+        {/* Brand and Model */}
         <div className="mb-4">
-          <h3 className="text-xl font-semibold text-gray-900 mb-2">{carName} ({year})</h3>
-          
-          {/* Availability Status for Selected Dates */}
-          {selectedDates?.pickupDate && selectedDates?.returnDate && (
-            <div className={`mb-3 p-2 rounded-md text-sm ${
-              isAvailableForDates 
-                ? 'bg-green-50 border border-green-200 text-green-800' 
-                : 'bg-red-50 border border-red-200 text-red-800'
-            }`}>
-              <div className="flex items-center space-x-1">
-                {isAvailableForDates ? (
-                  <>
-                    <CalendarIcon className="h-4 w-4" />
-                    <span>Dostupné pre vybrané dátumy</span>
-                  </>
-                ) : (
-                  <>
-                    <ExclamationTriangleIcon className="h-4 w-4" />
-                    <span>Nedostupné pre vybrané dátumy</span>
-                  </>
-                )}
-              </div>
-            </div>
-          )}
+          <h2 className="text-2xl font-bold text-gray-800 mb-1">
+            {brand?.toUpperCase()} <span className="font-normal">{model?.toUpperCase()}</span>
+          </h2>
+          <p className="text-lg text-green-600 font-semibold">
+            od <span className="text-2xl">{dailyRate}€</span>/deň
+          </p>
+        </div>
 
-          {/* General Availability Info */}
-          {!selectedDates?.pickupDate && unavailableDaysCount > 0 && (
-            <div className="mb-3 p-2 bg-yellow-50 border border-yellow-200 rounded-md text-sm text-yellow-800">
-              <div className="flex items-center space-x-1">
-                <ExclamationTriangleIcon className="h-4 w-4" />
-                <span>{unavailableDaysCount} dní rezervovaných v nasledujúcich 30 dňoch</span>
-              </div>
+        {/* Specifications Grid */}
+        <div className="grid grid-cols-4 gap-4 mb-6">
+          {/* Seats */}
+          <div className="text-center">
+            <div className="border-2 border-gray-300 rounded p-3 mb-2">
+              <UsersIcon className="h-6 w-6 mx-auto text-gray-600" />
             </div>
-          )}
-          
-          <div className="grid grid-cols-2 gap-4 text-sm text-gray-600">
-            {seats && (
-              <div className="flex items-center space-x-2">
-                <UsersIcon className="h-4 w-4" />
-                <span>{seats} miest</span>
-              </div>
-            )}
-            {transmission && (
-              <div className="flex items-center space-x-2">
-                <CogIcon className="h-4 w-4" />
-                <span>{transmission === 'manual' ? 'Manuálna' : transmission === 'automatic' ? 'Automatická' : transmission}</span>
-              </div>
-            )}
-            {fuelType && (
-              <div className="flex items-center space-x-2">
-                <GlobeAltIcon className="h-4 w-4" />
-                <span>{fuelType === 'petrol' ? 'Benzín' : fuelType === 'diesel' ? 'Diesel' : fuelType === 'electric' ? 'Elektrické' : fuelType === 'hybrid' ? 'Hybrid' : fuelType}</span>
-              </div>
-            )}
-            <div className="flex items-center space-x-2">
-              <CalendarIcon className="h-4 w-4" />
-              <span>{year}</span>
+            <span className="text-sm font-semibold text-gray-800">{seats || 5}</span>
+          </div>
+
+          {/* Transmission */}
+          <div className="text-center">
+            <div className="border-2 border-gray-300 rounded p-3 mb-2">
+              <CogIcon className="h-6 w-6 mx-auto text-gray-600" />
             </div>
+            <span className="text-sm font-semibold text-gray-800">{getTransmissionDisplay()}</span>
+          </div>
+
+          {/* Fuel Type */}
+          <div className="text-center">
+            <div className="border-2 border-gray-300 rounded p-3 mb-2">
+              <GlobeAltIcon className="h-6 w-6 mx-auto text-gray-600" />
+            </div>
+            <span className="text-sm font-semibold text-gray-800">{getFuelDisplay()}</span>
+          </div>
+
+          {/* Power */}
+          <div className="text-center">
+            <div className="border-2 border-gray-300 rounded p-3 mb-2">
+              <svg className="h-6 w-6 mx-auto text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+              </svg>
+            </div>
+            <span className="text-sm font-semibold text-gray-800">{power || '140kW'}</span>
           </div>
         </div>
 
-        {/* Price */}
-        <div className="flex items-center justify-between">
-          <div>
-            <div className="flex flex-col">
-              <div>
-                <span className="text-2xl font-bold text-primary">{dailyRate}€</span>
-                <span className="text-gray-500 text-sm">/deň</span>
-              </div>
-              {deposit && (
-                <span className="text-sm text-gray-600">
-                  Záloha: {deposit}€
-                </span>
-              )}
-            </div>
-          </div>
-          <div className="text-right">
-            <div className="text-accent font-medium text-sm">
-              Kliknite pre detail
-            </div>
-            {!isAvailable && (
-              <div className="text-red-500 text-xs mt-1">
-                Momentálne nedostupné
-              </div>
-            )}
-          </div>
+        {/* Action Buttons */}
+        <div className="grid grid-cols-2 gap-3">
+          <Link
+            to={buildBookingUrl()}
+            className="bg-green-600 text-white px-4 py-3 rounded text-center font-semibold hover:bg-green-700 transition-colors duration-200 flex items-center justify-center"
+          >
+            <CalendarIcon className="h-5 w-5 mr-2" />
+            REZERVOVAŤ
+          </Link>
+          <Link
+            to={buildCarUrl()}
+            className="border-2 border-green-600 text-green-600 px-4 py-3 rounded text-center font-semibold hover:bg-green-50 transition-colors duration-200 flex items-center justify-center"
+          >
+            <svg className="h-5 w-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+            </svg>
+            POZRIEŤ VIAC
+          </Link>
         </div>
       </div>
-    </Link>
+    </div>
   );
 };
 

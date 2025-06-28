@@ -5,11 +5,14 @@ import {
   MapPinIcon,
   ClockIcon 
 } from '@heroicons/react/24/outline';
+import FacebookIcon from '../assets/facebook.png';
+import InstagramIcon from '../assets/instagram.png';
+import GoogleIcon from '../assets/icons8-google-48.png';
 
 const Footer = () => {
   return (
     <footer className="bg-gray-900 text-white">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <div className="mx-auto px-4 sm:px-6 lg:px-8 py-12" style={{ maxWidth: '90rem' }}>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           
           {/* Company Contact Info */}
@@ -18,38 +21,49 @@ const Footer = () => {
             <ul className="space-y-3">
               <li className="flex items-center space-x-3">
                 <PhoneIcon className="h-5 w-5 text-green-500" />
-                <span className="text-gray-300">TELEFÓNNE ČÍSLO</span>
+                <span className="text-gray-300">+421 907 633 517</span>
               </li>
-              <li className="flex items-start space-x-3">
-                <MapPinIcon className="h-5 w-5 text-green-500 mt-1" />
-                <div className="text-gray-300">
-                  <div>ADRESA BB</div>
-                  <div>ADRESA ZV</div>
+              <li className="space-y-3">
+                <div className="flex items-start space-x-3">
+                  <MapPinIcon className="h-5 w-5 text-green-500 mt-1" />
+                  <div className="text-gray-300">
+                    <div>Zvolenská cesta 6465/8</div>
+                    <div>974 05 Banská Bystrica</div>
+                  </div>
+                </div>
+                <div className="flex items-start space-x-3">
+                  <MapPinIcon className="h-5 w-5 text-green-500 mt-1" />
+                  <div className="text-gray-300">
+                    <div>Obchodná 9520/4</div>
+                    <div>960 01 Zvolen</div>
+                  </div>
                 </div>
               </li>
               <li className="flex items-center space-x-3">
                 <ClockIcon className="h-5 w-5 text-green-500" />
-                <span className="text-gray-300">OTVÁRACIE HODINY</span>
+                <span className="text-gray-300">Pon - Pia 08:00 - 16:00</span>
               </li>
             </ul>
             
             {/* Social Media */}
             <div className="flex space-x-4 mt-6">
-              <a href="#" className="text-gray-400 hover:text-green-500 transition-colors">
+              <a href="https://www.facebook.com/pozicauto" target="_blank" rel="noopener noreferrer" className="hover:opacity-80 transition-opacity">
                 <span className="sr-only">Facebook</span>
-                <svg className="h-6 w-6" fill="currentColor" viewBox="0 0 24 24">
-                  <path fillRule="evenodd" d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.988C18.343 21.128 22 16.991 22 12z" clipRule="evenodd" />
-                </svg>
+                <img src={FacebookIcon} alt="Facebook" className="h-6 w-6" />
               </a>
-              <a href="#" className="text-gray-400 hover:text-green-500 transition-colors">
+              <a href="https://www.instagram.com/rival_autopozicovna/" target="_blank" rel="noopener noreferrer" className="hover:opacity-80 transition-opacity">
                 <span className="sr-only">Instagram</span>
-                <svg className="h-6 w-6" fill="currentColor" viewBox="0 0 24 24">
-                  <path fillRule="evenodd" d="M12.017 0C5.396 0 .029 5.367.029 11.987c0 6.62 5.367 11.987 11.988 11.987s11.987-5.367 11.987-11.987C24.014 5.367 18.647.001 12.017.001zM8.449 16.988c-1.297 0-2.448-.49-3.328-1.297C4.243 14.814 3.5 13.455 3.5 11.987c0-1.467.743-2.827 1.621-3.704.88-.807 2.031-1.297 3.328-1.297 1.297 0 2.448.49 3.328 1.297.878.877 1.621 2.237 1.621 3.704 0 1.468-.743 2.827-1.621 3.704-.88.807-2.031 1.297-3.328 1.297z" clipRule="evenodd" />
-                </svg>
+                <img src={InstagramIcon} alt="Instagram" className="h-6 w-6" />
               </a>
-              <div className="bg-gray-700 px-2 py-1 rounded text-xs">
-                GOOGLE RECENZIE
-              </div>
+              <a
+                href="https://maps.google.com/maps?cid=1405297772265219924"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center px-3 py-1 bg-white hover:bg-gray-50 rounded shadow-md text-xs font-medium text-gray-800 transition-colors duration-200 border border-gray-200"
+              >
+                <img src={GoogleIcon} alt="Google" className="h-4 w-4 mr-1" />
+                Recenzie
+              </a>
             </div>
           </div>
 
@@ -59,22 +73,22 @@ const Footer = () => {
             <ul className="space-y-2">
               <li>
                 <Link to="/terms" className="text-gray-300 hover:text-green-500 transition-colors">
-                  PODMIENKY PRENÁJMU AUTOMOBILOV
+                  Podmienky prenájmu automobilov
                 </Link>
               </li>
               <li>
                 <Link to="/privacy" className="text-gray-300 hover:text-green-500 transition-colors">
-                  OCHRANA OSOBNÝCH ÚDAJOV
+                  Ochrana osobných údajov
                 </Link>
               </li>
               <li>
                 <Link to="/complaints" className="text-gray-300 hover:text-green-500 transition-colors">
-                  REKLAMAČNÝ PORIADOK
+                  Reklamačný poriadok
                 </Link>
               </li>
               <li>
                 <Link to="/sanctions" className="text-gray-300 hover:text-green-500 transition-colors">
-                  SANKCIE A POKUTY
+                  Sankcie a pokuty
                 </Link>
               </li>
             </ul>
@@ -112,8 +126,24 @@ const Footer = () => {
             </ul>
           </div>
 
-          {/* Empty space for layout */}
-          <div className="hidden lg:block"></div>
+          {/* Newsletter */}
+          <div>
+            <h3 className="text-lg font-semibold mb-4">Odoberajte newsletter</h3>
+            <form className="space-y-3">
+              <input
+                type="email"
+                placeholder="email adresa"
+                className="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-md text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+              />
+              <button
+                type="submit"
+                className="w-full py-2 px-4 bg-green-600 hover:bg-green-700 text-white font-bold rounded-full transition-colors duration-200"
+                style={{ borderRadius: '50px' }}
+              >
+                Odoslať
+              </button>
+            </form>
+          </div>
         </div>
 
         <div className="border-t border-gray-800 mt-12 pt-8">
