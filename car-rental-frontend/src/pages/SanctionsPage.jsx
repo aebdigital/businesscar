@@ -23,7 +23,7 @@ const SanctionsPage = () => {
           
           <div className="prose prose-gray max-w-none space-y-6">
             <div className="text-center space-y-4">
-              
+            
               <p className="text-lg text-gray-700">
                 Často kladené otázky o poplatkoch a sankciách
               </p>

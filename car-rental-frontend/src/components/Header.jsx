@@ -36,7 +36,7 @@ const Header = () => {
       <div className="bg-gray-100 border-b border-gray-200">
         <div className="mx-auto px-4 sm:px-6 lg:px-8" style={{ maxWidth: '90rem' }}>
           <div className="flex h-12 items-center justify-between">
-            <div className="flex items-center space-x-4">
+            <div className="hidden md:flex items-center space-x-4">
               {/* Phone Button */}
               <a
                 href="tel:+421907633517"
@@ -55,6 +55,9 @@ const Header = () => {
                 NAPÍŠTE NÁM / FORMULÁR
               </Link>
             </div>
+            
+            {/* Mobile: Empty left side */}
+            <div className="md:hidden"></div>
             
             <div className="flex items-center space-x-4">
               {/* Social Icons */}
@@ -115,12 +118,12 @@ const Header = () => {
           </div>
 
           {/* Logo Box - Center */}
-          <div className="flex items-center relative z-10">
+          <div className="flex items-center relative z-10" style={{ marginLeft: '10px' }}>
             <Link to="/" className="flex items-center">
               <img 
                 src={RivalLogo} 
                 alt="Rival Logo" 
-                className="h-16 w-auto border-4 border-white shadow-2xl transform scale-150"
+                className="h-16 w-auto border-4 border-white shadow-2xl transform md:scale-150 scale-125"
                 style={{ 
                   filter: 'drop-shadow(0 8px 15px rgba(0, 0, 0, 0.3))',
                   marginTop: '-12px',
@@ -167,9 +170,23 @@ const Header = () => {
           </div>
         </div>
 
-        {/* Mobile Navigation */}
-        {mobileMenuOpen && (
-          <div className="lg:hidden">
+        {/* Mobile Navigation Overlay */}
+        <>
+          {/* Blur Overlay - covers main content when menu is open */}
+          <div 
+            className={`lg:hidden fixed inset-0 bg-white bg-opacity-60 backdrop-blur-md z-30 transition-opacity duration-300 ${
+              mobileMenuOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
+            }`}
+            onClick={() => setMobileMenuOpen(false)}
+            style={{ 
+              top: '115px' // Start below the header with 15px buffer to avoid overlap
+            }}
+          ></div>
+          
+          {/* Mobile Menu */}
+          <div className={`lg:hidden absolute top-full left-0 right-0 bg-white shadow-lg z-50 overflow-hidden transition-all duration-300 ease-in-out ${
+            mobileMenuOpen ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'
+          }`}>
             <div className="space-y-1 pb-3 pt-2">
               {[...leftNavigation, ...rightNavigation].map((item) => (
                 <Link
@@ -187,7 +204,7 @@ const Header = () => {
               ))}
             </div>
           </div>
-        )}
+        </>
       </nav>
     </header>
   );

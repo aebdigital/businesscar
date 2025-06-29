@@ -78,15 +78,15 @@ const AboutPage = () => {
       </section>
 
       {/* Statistics */}
-      <section className="py-16 bg-accent">
+      <section className="py-16" style={{ backgroundColor: '#1B9C37' }}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
             {stats.map((stat, index) => (
               <div key={index} className="text-center">
-                <div className="text-3xl md:text-4xl font-bold text-black mb-2">
+                <div className="text-3xl md:text-4xl font-bold text-white mb-2">
                   {stat.value}
                 </div>
-                <div className="text-sm md:text-base text-gray-800">
+                <div className="text-sm md:text-base text-white">
                   {stat.label}
                 </div>
               </div>
@@ -95,31 +95,7 @@ const AboutPage = () => {
         </div>
       </section>
 
-      {/* Mission & Vision */}
-      <section className="py-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
-            <div className="bg-white rounded-lg shadow-sm p-8">
-              <h3 className="text-2xl font-bold text-gray-900 mb-4">Naša misia</h3>
-              <p className="text-gray-600">
-                Poskytovať výnimočné služby prenájmu vozidiel, ktoré predčia očakávania zákazníkov 
-                pri dodržiavaní najvyšších štandardov bezpečnosti, spoľahlivosti a 
-                environmentálnej zodpovednosti. Snažíme sa, aby každá cesta bola nezabudnuteľná 
-                a bez stresu.
-              </p>
-            </div>
-            <div className="bg-white rounded-lg shadow-sm p-8">
-              <h3 className="text-2xl font-bold text-gray-900 mb-4">Naša vízia</h3>
-              <p className="text-gray-600">
-                Byť poprednou spoločnosťou na prenájom vozidiel v strednej Európe, uznávanou pre 
-                naše inovatívne riešenia, udržateľné praktiky a neochvejný záväzok k spokojnosti 
-                zákazníkov. Predstavujeme si budúcnosť, kde je mobilita dostupná, cenovo prijateľná 
-                a environmentálne zodpovedná.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
+    
   
     </div>
   );

@@ -18,7 +18,7 @@ const Carousel = ({ images, autoPlayInterval = 4000, height = "h-32" }) => {
   };
 
   return (
-    <div className={`relative w-full ${height} overflow-hidden rounded-lg shadow-md`}>
+    <div className={`relative w-full ${height} overflow-hidden shadow-md`}>
       {/* Images Container */}
       <div 
         className="flex transition-transform duration-500 ease-in-out h-full"

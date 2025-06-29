@@ -256,7 +256,7 @@ const HomePage = () => {
         <div className="w-full">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-0">
             {/* DIALNIČNÁ ZNÁMKA */}
-            <div className="w-[50vw] shadow-md flex">
+            <div className="w-full md:w-[50vw] shadow-md flex">
               <div 
                 className="w-[60%] bg-cover bg-center"
                 style={{
@@ -274,7 +274,7 @@ const HomePage = () => {
             </div>
 
             {/* VÝMENA VOZIDLA */}
-            <div className="w-[50vw] shadow-md flex">
+            <div className="w-full md:w-[50vw] shadow-md flex">
               <div 
                 className="w-[60%] bg-cover bg-center"
                 style={{
@@ -292,7 +292,7 @@ const HomePage = () => {
             </div>
 
             {/* SEZÓNNE PREZUTIE */}
-            <div className="w-[50vw] shadow-md flex mt-[15px]">
+            <div className="w-full md:w-[50vw] shadow-md flex mt-[15px]">
               <div 
                 className="w-[60%] bg-cover bg-center"
                 style={{
@@ -310,7 +310,7 @@ const HomePage = () => {
           </div>
           
             {/* PRAVIDELNÝ SERVIS */}
-            <div className="w-[50vw] shadow-md flex mt-[15px]">
+            <div className="w-full md:w-[50vw] shadow-md flex mt-[15px]">
               <div 
                 className="w-[60%] bg-cover bg-center"
                 style={{
@@ -357,7 +357,7 @@ const HomePage = () => {
             ].map((category, index) => (
               <div 
                 key={index} 
-                className="relative h-64 rounded-lg overflow-hidden shadow-md cursor-pointer hover:shadow-lg transition-all duration-200 hover:scale-105"
+                className="relative h-52 md:h-64 rounded-lg overflow-hidden shadow-md cursor-pointer hover:shadow-lg transition-all duration-200 hover:scale-105"
                 style={{
                   backgroundImage: `linear-gradient(to bottom, transparent 60%, rgba(0,0,0,0.7) 100%), url(${category.bg})`,
                   backgroundSize: 'cover',
@@ -379,7 +379,7 @@ const HomePage = () => {
       {/* Carousel Banner 2 */}
       <section className="bg-white">
         <div className="w-full">
-              v        <Carousel 
+                      <Carousel 
               images={carouselImages} 
               autoPlayInterval={5000} 
               height="h-[40vh]"
@@ -394,7 +394,7 @@ const HomePage = () => {
           
           </div>
           <div className="flex justify-center">
-            <div className="w-1/2 shadow-2xl" style={{ borderRadius: '20px', overflow: 'hidden' }}>
+            <div className="w-full md:w-1/2 shadow-2xl" style={{ borderRadius: '20px', overflow: 'hidden' }}>
               <iframe
                 src="https://www.instagram.com/rival_autopozicovna/embed"
                 width="100%"
@@ -596,7 +596,7 @@ const HomePage = () => {
             <iframe
               src="https://www.facebook.com/plugins/page.php?href=https%3A%2F%2Fwww.facebook.com%2Fpozicauto&tabs=&width=1120&height=300&small_header=false&adapt_container_width=true&hide_cover=false&show_facepile=true&appId"
               width="100%"
-              height="18v0px"
+              height="300px"
               style={{ 
                 border: 'none', 
                 overflow: 'hidden',
