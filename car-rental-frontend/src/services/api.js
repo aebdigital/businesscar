@@ -11,7 +11,7 @@ const API_CONFIG = {
   // Fallback to general endpoints if tenant-specific fail
   enableFallback: true,
   // Use mock data for development (set to false when API is ready)
-  useMockData: true
+  useMockData: false
 };
 
 // Mock data for development/fallback
