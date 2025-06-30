@@ -1,6 +1,7 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import DefaultLayout from './layouts/DefaultLayout';
 import ScrollToTop from './components/ScrollToTop';
+import ApiStatus from './components/ApiStatus';
 import HomePage from './pages/HomePage';
 import FleetPage from './pages/FleetPage';
 import ContactPage from './pages/ContactPage';
@@ -39,6 +40,7 @@ function App() {
           <Route path="/sanctions" element={<SanctionsPage />} />
         </Routes>
       </DefaultLayout>
+      <ApiStatus />
     </Router>
   );
 }
