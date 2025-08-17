@@ -119,14 +119,21 @@ export const carsAPI = {
     if (filters.sort) queryParams.append('sort', filters.sort);
 
     try {
-      const response = await fetch(`${API_BASE}/public/users/${encodeURIComponent(TENANT_EMAIL)}/cars?${queryParams}`, {
+      const url = `${API_BASE}/public/users/${encodeURIComponent(TENANT_EMAIL)}/cars?${queryParams}`;
+      console.log('🚗 Making API request to:', url);
+      
+      const response = await fetch(url, {
         method: 'GET',
         headers: { 'Content-Type': 'application/json' }
       });
       
-      return handleResponse(response);
+      console.log('📡 API Response status:', response.status);
+      const result = await handleResponse(response);
+      console.log('✅ API Response data:', result);
+      
+      return result;
     } catch (error) {
-      console.error('Cars API failed:', error);
+      console.error('❌ Cars API failed:', error);
       return {
         success: false,
         data: [],
@@ -164,19 +171,24 @@ export const carsAPI = {
     // Try tenant-specific endpoint first
     if (API_CONFIG.useTenantEndpoints) {
       try {
-        const response = await fetch(`${API_BASE}/public/users/${encodeURIComponent(TENANT_EMAIL)}/cars?${queryParams}`, {
+        const url = `${API_BASE}/public/users/${encodeURIComponent(TENANT_EMAIL)}/cars?${queryParams}`;
+        console.log('🚗 Legacy API request to:', url);
+        
+        const response = await fetch(url, {
           headers: {
             'Content-Type': 'application/json',
           }
         });
 
+        console.log('📡 Legacy API Response status:', response.status);
         if (response.ok) {
           const result = await handleResponse(response);
+          console.log('✅ Legacy API Response data:', result);
           console.log('Cars returned from tenant API:', result.data?.length || 0, 'cars');
           return result.data || [];
         }
       } catch (error) {
-        console.warn('Tenant-specific API failed, trying fallback:', error.message);
+        console.error('❌ Tenant-specific API failed, trying fallback:', error.message);
       }
     }
 

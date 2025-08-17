@@ -63,12 +63,17 @@ const HomePage = () => {
         setError(null);
         
         // Fetch cars from backend API
+        console.log('🏠 HomePage: Starting to load cars...');
         const result = await carsAPI.getCars({ limit: 20 });
+        console.log('🏠 HomePage: API result:', result);
+        
         if (result.success && result.data) {
+          console.log('🏠 HomePage: Setting cars:', result.data.length, 'cars');
           setCars(result.data);
           // Set first 3 cars as popular cars, or empty if no cars
           setPopularCars(result.data.slice(0, 3));
         } else {
+          console.log('🏠 HomePage: No cars or API failed');
           setCars([]);
           setPopularCars([]);
           if (result.error) {
