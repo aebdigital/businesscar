@@ -10,442 +10,10 @@ const API_CONFIG = {
   useTenantEndpoints: true,
   // Fallback to general endpoints if tenant-specific fail
   enableFallback: true,
-  // Use mock data for development (set to true to avoid backend calls)
-  useMockData: true
+  // Use mock data for development (set to false for production)
+  useMockData: false
 };
 
-// Mock data for development/fallback
-const mockCarsData = [
-  // Ekonomická trieda
-  {
-    _id: 'eco1',
-    brand: 'Škoda',
-    model: 'Citigo',
-    year: 2023,
-    category: 'ekonomicka',
-    fuelType: 'petrol',
-    transmission: 'automatic',
-    seats: 4,
-    doors: 4,
-    dailyRate: 32,
-    weeklyRate: 210,
-    monthlyRate: 820,
-    power: '60kW',
-    status: 'available',
-    deposit: 500,
-    description: 'Ekonomický mestský automobil s automatickou prevodovkou.',
-    features: ['air-conditioning', 'bluetooth', 'usb-ports'],
-    images: [
-      {
-        url: '/src/assets/skoda-city-gi.webp',
-        description: 'Škoda Citigo',
-        isPrimary: true
-      }
-    ],
-    location: {
-      name: 'Bratislava',
-      address: {
-        street: 'Záhradnícka 68',
-        city: 'Bratislava',
-        zipCode: '821 08',
-        country: 'Slovensko'
-      }
-    }
-  },
-  
-  // Stredná trieda
-  {
-    _id: 'mid1',
-    brand: 'Toyota',
-    model: 'AygoX',
-    year: 2023,
-    category: 'stredna',
-    fuelType: 'petrol',
-    transmission: 'manual',
-    seats: 4,
-    doors: 4,
-    dailyRate: 40,
-    weeklyRate: 250,
-    monthlyRate: 980,
-    power: '72kW',
-    status: 'available',
-    deposit: 600,
-    description: 'Moderný crossover s dynamickým dizajnom.',
-    features: ['air-conditioning', 'bluetooth', 'rear-camera'],
-    images: [
-      {
-        url: '/src/assets/toyota-aygo.jpg',
-        description: 'Toyota AygoX',
-        isPrimary: true
-      }
-    ],
-    location: {
-      name: 'Bratislava',
-      address: {
-        street: 'Záhradnícka 68',
-        city: 'Bratislava',
-        zipCode: '821 08',
-        country: 'Slovensko'
-      }
-    }
-  },
-  {
-    _id: 'mid2',
-    brand: 'Volkswagen',
-    model: 'Beetle',
-    year: 2023,
-    category: 'stredna',
-    fuelType: 'petrol',
-    transmission: 'automatic',
-    seats: 4,
-    doors: 2,
-    dailyRate: 45,
-    weeklyRate: 280,
-    monthlyRate: 1100,
-    power: '110kW',
-    status: 'available',
-    deposit: 700,
-    description: 'Ikonické auto s retro dizajnom a modernou technikou.',
-    features: ['air-conditioning', 'bluetooth', 'heated-seats'],
-    images: [
-      {
-        url: '/src/assets/beetle.avif',
-        description: 'VW Beetle',
-        isPrimary: true
-      }
-    ],
-    location: {
-      name: 'Bratislava',
-      address: {
-        street: 'Záhradnícka 68',
-        city: 'Bratislava',
-        zipCode: '821 08',
-        country: 'Slovensko'
-      }
-    }
-  },
-  {
-    _id: 'mid3',
-    brand: 'Hyundai',
-    model: 'Kona',
-    year: 2023,
-    category: 'stredna',
-    fuelType: 'hybrid',
-    transmission: 'automatic',
-    seats: 5,
-    doors: 4,
-    dailyRate: 48,
-    weeklyRate: 300,
-    monthlyRate: 1150,
-    power: '104kW',
-    status: 'available',
-    deposit: 800,
-    description: 'Kompaktné SUV s hybridným pohonom.',
-    features: ['air-conditioning', 'gps', 'bluetooth', 'heated-seats'],
-    images: [
-      {
-        url: '/src/assets/Hyundai-Kona.jpg',
-        description: 'Hyundai Kona',
-        isPrimary: true
-      }
-    ],
-    location: {
-      name: 'Bratislava',
-      address: {
-        street: 'Záhradnícka 68',
-        city: 'Bratislava',
-        zipCode: '821 08',
-        country: 'Slovensko'
-      }
-    }
-  },
-  {
-    _id: 'mid4',
-    brand: 'Škoda',
-    model: 'Octavia',
-    year: 2023,
-    category: 'stredna',
-    fuelType: 'diesel',
-    transmission: 'automatic',
-    seats: 5,
-    doors: 4,
-    dailyRate: 50,
-    weeklyRate: 320,
-    monthlyRate: 1250,
-    power: '110kW',
-    status: 'available',
-    deposit: 800,
-    description: 'Moderný a spoľahlivý sedan, ideálny pre dlhšie cesty.',
-    features: ['air-conditioning', 'gps', 'bluetooth', 'cruise-control'],
-    images: [
-      {
-        url: '/src/assets/Skoda-octavia.jpeg',
-        description: 'Škoda Octavia',
-        isPrimary: true
-      }
-    ],
-    location: {
-      name: 'Bratislava',
-      address: {
-        street: 'Záhradnícka 68',
-        city: 'Bratislava',
-        zipCode: '821 08',
-        country: 'Slovensko'
-      }
-    }
-  },
-  {
-    _id: 'mid5',
-    brand: 'Volkswagen',
-    model: 'Passat Variant',
-    year: 2023,
-    category: 'stredna',
-    fuelType: 'diesel',
-    transmission: 'automatic',
-    seats: 5,
-    doors: 4,
-    dailyRate: 55,
-    weeklyRate: 350,
-    monthlyRate: 1380,
-    power: '140kW',
-    status: 'available',
-    deposit: 900,
-    description: 'Priestranné kombi s veľkým batožinovým priestorom.',
-    features: ['air-conditioning', 'gps', 'bluetooth', 'cruise-control', 'extra-luggage'],
-    images: [
-      {
-        url: '/src/assets/volkswagen-passat.jpg',
-        description: 'VW Passat Variant',
-        isPrimary: true
-      }
-    ],
-    location: {
-      name: 'Bratislava',
-      address: {
-        street: 'Záhradnícka 68',
-        city: 'Bratislava',
-        zipCode: '821 08',
-        country: 'Slovensko'
-      }
-    }
-  },
-  
-  // Business trieda
-  {
-    _id: 'bus1',
-    brand: 'Mercedes',
-    model: 'CLA 220 CDI',
-    year: 2023,
-    category: 'business',
-    fuelType: 'diesel',
-    transmission: 'automatic',
-    seats: 5,
-    doors: 4,
-    dailyRate: 85,
-    weeklyRate: 550,
-    monthlyRate: 2200,
-    power: '140kW',
-    status: 'available',
-    deposit: 1200,
-    description: 'Elegantný business sedan s prémiovým vybavením.',
-    features: ['air-conditioning', 'gps', 'bluetooth', 'heated-seats', 'leather-seats', 'sunroof'],
-    images: [
-      {
-        url: '/src/assets/Mercedes-cla-220.jpg',
-        description: 'Mercedes CLA 220 CDI',
-        isPrimary: true
-      }
-    ],
-    location: {
-      name: 'Bratislava',
-      address: {
-        street: 'Záhradnícka 68',
-        city: 'Bratislava',
-        zipCode: '821 08',
-        country: 'Slovensko'
-      }
-    }
-  },
-  {
-    _id: 'bus2',
-    brand: 'Mercedes',
-    model: 'C Combi',
-    year: 2023,
-    category: 'business',
-    fuelType: 'diesel',
-    transmission: 'automatic',
-    seats: 5,
-    doors: 4,
-    dailyRate: 90,
-    weeklyRate: 580,
-    monthlyRate: 2350,
-    power: '150kW',
-    status: 'available',
-    deposit: 1300,
-    description: 'Luxusné kombi s najmodernejšími technológiami.',
-    features: ['air-conditioning', 'gps', 'bluetooth', 'heated-seats', 'leather-seats', 'massage-seats'],
-    images: [
-      {
-        url: '/src/assets/Mercedes-Combi.jpg',
-        description: 'Mercedes C Combi',
-        isPrimary: true
-      }
-    ],
-    location: {
-      name: 'Bratislava',
-      address: {
-        street: 'Záhradnícka 68',
-        city: 'Bratislava',
-        zipCode: '821 08',
-        country: 'Slovensko'
-      }
-    }
-  },
-  
-  // SUV
-  {
-    _id: 'suv1',
-    brand: 'Škoda',
-    model: 'Kodiaq',
-    year: 2023,
-    category: 'suv',
-    fuelType: 'diesel',
-    transmission: 'automatic',
-    seats: 7,
-    doors: 4,
-    dailyRate: 75,
-    weeklyRate: 480,
-    monthlyRate: 1900,
-    power: '140kW',
-    status: 'available',
-    deposit: 1000,
-    description: 'Veľké 7-miestne SUV pre celú rodinu.',
-    features: ['air-conditioning', 'gps', 'bluetooth', 'heated-seats', 'leather-seats', '4x4'],
-    images: [
-      {
-        url: '/src/assets/Skoda_Kodiaq_Facelift_IMG_6636.jpg',
-        description: 'Škoda Kodiaq',
-        isPrimary: true
-      }
-    ],
-    location: {
-      name: 'Bratislava',
-      address: {
-        street: 'Záhradnícka 68',
-        city: 'Bratislava',
-        zipCode: '821 08',
-        country: 'Slovensko'
-      }
-    }
-  },
-  {
-    _id: 'suv2',
-    brand: 'Peugeot',
-    model: '5008',
-    year: 2023,
-    category: 'suv',
-    fuelType: 'diesel',
-    transmission: 'automatic',
-    seats: 7,
-    doors: 4,
-    dailyRate: 80,
-    weeklyRate: 520,
-    monthlyRate: 2050,
-    power: '130kW',
-    status: 'available',
-    deposit: 1100,
-    description: 'Priestranné 7-miestne SUV s francúzskou eleganciou.',
-    features: ['air-conditioning', 'gps', 'bluetooth', 'heated-seats', 'panoramic-roof'],
-    images: [
-      {
-        url: '/src/assets/Peugeot-508.jpg',
-        description: 'Peugeot 5008',
-        isPrimary: true
-      }
-    ],
-    location: {
-      name: 'Bratislava',
-      address: {
-        street: 'Záhradnícka 68',
-        city: 'Bratislava',
-        zipCode: '821 08',
-        country: 'Slovensko'
-      }
-    }
-  },
-  {
-    _id: 'suv3',
-    brand: 'Mercedes',
-    model: 'GLC',
-    year: 2023,
-    category: 'suv',
-    fuelType: 'diesel',
-    transmission: 'automatic',
-    seats: 5,
-    doors: 4,
-    dailyRate: 95,
-    weeklyRate: 620,
-    monthlyRate: 2450,
-    power: '170kW',
-    status: 'available',
-    deposit: 1500,
-    description: 'Prémiové SUV s najvyššou kvalitou a komfortom.',
-    features: ['air-conditioning', 'gps', 'bluetooth', 'heated-seats', 'leather-seats', 'massage-seats'],
-    images: [
-      {
-        url: '/src/assets/mercedes-glc-.jpg',
-        description: 'Mercedes GLC',
-        isPrimary: true
-      }
-    ],
-    location: {
-      name: 'Bratislava',
-      address: {
-        street: 'Záhradnícka 68',
-        city: 'Bratislava',
-        zipCode: '821 08',
-        country: 'Slovensko'
-      }
-    }
-  },
-  
-  // VAN
-  {
-    _id: 'van1',
-    brand: 'Mercedes',
-    model: 'V Class',
-    year: 2023,
-    category: 'van',
-    fuelType: 'diesel',
-    transmission: 'automatic',
-    seats: 8,
-    doors: 4,
-    dailyRate: 120,
-    weeklyRate: 780,
-    monthlyRate: 3100,
-    power: '140kW',
-    status: 'available',
-    deposit: 1800,
-    description: 'Luxusný 8-miestny van pre VIP prepravu.',
-    features: ['air-conditioning', 'gps', 'bluetooth', 'leather-seats', 'captain-chairs', 'extra-luggage'],
-    images: [
-      {
-        url: '/src/assets/Mercedes V-class.jpeg',
-        description: 'Mercedes V Class',
-        isPrimary: true
-      }
-    ],
-    location: {
-      name: 'Bratislava',
-      address: {
-        street: 'Záhradnícka 68',
-        city: 'Bratislava',
-        zipCode: '821 08',
-        country: 'Slovensko'
-      }
-    }
-  }
-];
 
 // Helper function to get auth token
 const getToken = () => localStorage.getItem('authToken');
@@ -550,16 +118,6 @@ export const carsAPI = {
     if (filters.limit) queryParams.append('limit', filters.limit);
     if (filters.sort) queryParams.append('sort', filters.sort);
 
-    // Use mock data if configured
-    if (API_CONFIG.useMockData) {
-      console.log('Using mock data for cars');
-      return {
-        success: true,
-        data: mockCarsData,
-        count: mockCarsData.length
-      };
-    }
-
     try {
       const response = await fetch(`${API_BASE}/public/users/${encodeURIComponent(TENANT_EMAIL)}/cars?${queryParams}`, {
         method: 'GET',
@@ -568,26 +126,18 @@ export const carsAPI = {
       
       return handleResponse(response);
     } catch (error) {
-      console.warn('Cars API failed, using mock data:', error);
+      console.error('Cars API failed:', error);
       return {
-        success: true,
-        data: mockCarsData,
-        count: mockCarsData.length,
-        usingMockData: true
+        success: false,
+        data: [],
+        count: 0,
+        error: error.message
       };
     }
   },
 
   // Get single car by ID (README endpoint)
   getCarById: async (carId) => {
-    if (API_CONFIG.useMockData) {
-      const car = mockCarsData.find(car => car._id === carId);
-      return {
-        success: true,
-        data: car || mockCarsData[0]
-      };
-    }
-
     try {
       const response = await fetch(`${API_BASE}/public/users/${encodeURIComponent(TENANT_EMAIL)}/cars/${carId}`, {
         method: 'GET',
@@ -596,23 +146,17 @@ export const carsAPI = {
       
       return handleResponse(response);
     } catch (error) {
-      const car = mockCarsData.find(car => car._id === carId);
+      console.error('Car details API failed:', error);
       return {
-        success: true,
-        data: car || mockCarsData[0],
-        usingMockData: true
+        success: false,
+        data: null,
+        error: error.message
       };
     }
   },
 
   // Get all available cars for RIVAL tenant (legacy method)
   getAvailableCars: async (filters = {}) => {
-    // Use mock data if configured
-    if (API_CONFIG.useMockData) {
-      console.log('Using mock data for cars');
-      return mockCarsData;
-    }
-
     const queryParams = new URLSearchParams({
       ...filters
     });
@@ -636,7 +180,7 @@ export const carsAPI = {
       }
     }
 
-    // Fallback to general endpoint or mock data
+    // Fallback to general endpoint
     if (API_CONFIG.enableFallback) {
       try {
         const response = await fetch(`${API_BASE}/public/cars?${queryParams}`, {
@@ -649,9 +193,8 @@ export const carsAPI = {
         console.log('Cars returned from fallback API:', result.data?.length || 0, 'cars');
         return result.data || [];
       } catch (error) {
-        console.warn('Fallback API also failed, using mock data:', error.message);
-        // Return mock data for development
-        return mockCarsData;
+        console.error('All car API endpoints failed:', error.message);
+        return [];
       }
     }
 
@@ -660,12 +203,6 @@ export const carsAPI = {
 
   // Get single car details for RIVAL tenant
   getCarDetails: async (carId) => {
-    // Use mock data if configured
-    if (API_CONFIG.useMockData) {
-      console.log('Using mock data for car details');
-      return mockCarsData.find(car => car._id === carId) || mockCarsData[0];
-    }
-
     // Try tenant-specific endpoint first
     if (API_CONFIG.useTenantEndpoints) {
       try {
@@ -684,7 +221,7 @@ export const carsAPI = {
       }
     }
 
-    // Fallback to general endpoint or mock data
+    // Fallback to general endpoint
     if (API_CONFIG.enableFallback) {
       try {
         const response = await fetch(`${API_BASE}/public/cars/${carId}`, {
@@ -696,9 +233,8 @@ export const carsAPI = {
         const result = await handleResponse(response);
         return result.data;
       } catch (error) {
-        console.warn('Fallback car details also failed, using mock data:', error.message);
-        // Return mock data
-        return mockCarsData.find(car => car._id === carId) || mockCarsData[0];
+        console.error('All car details endpoints failed:', error.message);
+        return null;
       }
     }
 
@@ -707,12 +243,6 @@ export const carsAPI = {
 
   // Get car availability for date range for RIVAL tenant
   getCarAvailability: async (carId, startDate, endDate) => {
-    // Use mock data if configured
-    if (API_CONFIG.useMockData) {
-      console.log('Using mock data for car availability');
-      return { isAvailable: true, status: 'available' };
-    }
-
     const queryParams = new URLSearchParams({
       startDate: startDate.toISOString().split('T')[0],
       endDate: endDate.toISOString().split('T')[0]
@@ -729,14 +259,14 @@ export const carsAPI = {
 
         if (response.ok) {
           const result = await handleResponse(response);
-          return result.data || { isAvailable: true, status: 'available' };
+          return result.data || { isAvailable: false, status: 'unknown' };
         }
       } catch (error) {
         console.warn('Tenant-specific availability check failed, trying fallback:', error.message);
       }
     }
 
-    // Fallback to general endpoint or assume available
+    // Fallback to general endpoint
     if (API_CONFIG.enableFallback) {
       try {
         const response = await fetch(`${API_BASE}/public/cars/${carId}/availability?${queryParams}`, {
@@ -746,14 +276,14 @@ export const carsAPI = {
         });
 
         const result = await handleResponse(response);
-        return result.data || { isAvailable: true, status: 'available' };
+        return result.data || { isAvailable: false, status: 'unknown' };
       } catch (error) {
-        console.warn('Fallback availability check failed, assuming available:', error.message);
+        console.error('All availability check endpoints failed:', error.message);
       }
     }
 
-    // Default to available
-    return { isAvailable: true, status: 'available' };
+    // Return unavailable if API fails
+    return { isAvailable: false, status: 'unavailable' };
   },
 
   // Get cars by category for RIVAL tenant
@@ -789,7 +319,7 @@ export const carsAPI = {
       });
       return handleResponse(response);
     } catch (error) {
-      return { success: true, data: mockCarsData, usingMockData: true };
+      return { success: false, data: [], error: error.message };
     }
   },
 
@@ -813,15 +343,10 @@ export const carsAPI = {
       });
       return handleResponse(response);
     } catch (error) {
-      const car = mockCarsData.find(c => c._id === carId);
       return { 
-        success: true, 
-        data: car ? {
-          dailyRate: car.dailyRate,
-          weeklyRate: car.weeklyRate,
-          monthlyRate: car.monthlyRate
-        } : {},
-        usingMockData: true 
+        success: false, 
+        data: {},
+        error: error.message
       };
     }
   },
@@ -834,11 +359,10 @@ export const carsAPI = {
       });
       return handleResponse(response);
     } catch (error) {
-      const car = mockCarsData.find(c => c._id === carId);
       return { 
-        success: true, 
-        data: car ? car.features || [] : [],
-        usingMockData: true 
+        success: false, 
+        data: [],
+        error: error.message
       };
     }
   },
@@ -851,7 +375,7 @@ export const carsAPI = {
       });
       return handleResponse(response);
     } catch (error) {
-      return { success: true, data: [], usingMockData: true };
+      return { success: false, data: [], error: error.message };
     }
   },
 
@@ -867,11 +391,10 @@ export const carsAPI = {
       });
       return handleResponse(response);
     } catch (error) {
-      const car = mockCarsData.find(c => c._id === carId);
       return { 
-        success: true, 
-        data: car ? car.images || [] : [],
-        usingMockData: true 
+        success: false, 
+        data: [],
+        error: error.message
       };
     }
   },
@@ -884,8 +407,7 @@ export const carsAPI = {
       });
       return handleResponse(response);
     } catch (error) {
-      const brands = [...new Set(mockCarsData.map(car => car.brand))];
-      return { success: true, data: brands, usingMockData: true };
+      return { success: false, data: [], error: error.message };
     }
   },
 
@@ -897,8 +419,7 @@ export const carsAPI = {
       });
       return handleResponse(response);
     } catch (error) {
-      const cars = mockCarsData.filter(car => car.brand === brand);
-      return { success: true, data: cars, usingMockData: true };
+      return { success: false, data: [], error: error.message };
     }
   },
 
@@ -911,14 +432,14 @@ export const carsAPI = {
       return handleResponse(response);
     } catch (error) {
       return {
-        success: true,
+        success: false,
         data: {
-          categories: [...new Set(mockCarsData.map(car => car.category))],
-          fuelTypes: [...new Set(mockCarsData.map(car => car.fuelType))],
-          transmissions: [...new Set(mockCarsData.map(car => car.transmission))],
-          brands: [...new Set(mockCarsData.map(car => car.brand))]
+          categories: [],
+          fuelTypes: [],
+          transmissions: [],
+          brands: []
         },
-        usingMockData: true
+        error: error.message
       };
     }
   },
@@ -938,17 +459,7 @@ export const carsAPI = {
       });
       return handleResponse(response);
     } catch (error) {
-      // Simple mock search
-      let results = mockCarsData;
-      if (searchParams.query) {
-        const query = searchParams.query.toLowerCase();
-        results = results.filter(car => 
-          car.brand.toLowerCase().includes(query) ||
-          car.model.toLowerCase().includes(query) ||
-          car.category.toLowerCase().includes(query)
-        );
-      }
-      return { success: true, data: results, usingMockData: true };
+      return { success: false, data: [], error: error.message };
     }
   },
 
@@ -964,7 +475,7 @@ export const carsAPI = {
       });
       return handleResponse(response);
     } catch (error) {
-      return { success: true, data: [], usingMockData: true };
+      return { success: false, data: [], error: error.message };
     }
   }
 };
@@ -973,36 +484,7 @@ export const carsAPI = {
 export const reservationsAPI = {
   // Create a new reservation using RIVAL tenant-specific endpoint
   createPublicReservation: async (reservationData) => {
-    console.log('Sending reservation data to RIVAL backend:', reservationData);
-    
-    // Use mock data if configured
-    if (API_CONFIG.useMockData) {
-      console.log('Using mock data for reservation creation');
-      // Return mock successful reservation
-      return {
-        reservation: {
-          _id: 'mock-reservation-' + Date.now(),
-          ...reservationData,
-          status: 'confirmed',
-          createdAt: new Date().toISOString(),
-          totalAmount: 150
-        },
-        car: mockCarsData.find(car => car._id === reservationData.carId) || mockCarsData[0],
-        customer: {
-          _id: 'mock-customer-' + Date.now(),
-          firstName: reservationData.firstName,
-          lastName: reservationData.lastName,
-          email: reservationData.email,
-          phone: reservationData.phone
-        },
-        pricing: {
-          rentalCost: 150,
-          deposit: 0,
-          totalCost: 150,
-          days: Math.ceil((new Date(reservationData.endDate) - new Date(reservationData.startDate)) / (1000 * 60 * 60 * 24))
-        }
-      };
-    }
+    console.log('Sending reservation data to BusinessCar backend:', reservationData);
     
     // Try tenant-specific endpoint first
     if (API_CONFIG.useTenantEndpoints) {
@@ -1492,17 +974,9 @@ export const locationAPI = {
       return handleResponse(response);
     } catch (error) {
       return { 
-        success: true, 
-        data: [{
-          name: 'Bratislava',
-          address: {
-            street: 'Záhradnícka 68',
-            city: 'Bratislava',
-            zipCode: '821 08',
-            country: 'Slovensko'
-          }
-        }],
-        usingMockData: true 
+        success: false, 
+        data: [],
+        error: error.message
       };
     }
   }

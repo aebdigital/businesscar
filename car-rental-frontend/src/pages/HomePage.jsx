@@ -42,51 +42,9 @@ const HomePage = () => {
   const [endDate, setEndDate] = useState('');
   const [carType, setCarType] = useState('');
   const [cars, setCars] = useState([]);
+  const [popularCars, setPopularCars] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-
-  // Popular cars data (3 selected cars)
-  const popularCars = [
-    {
-      _id: 'pop1',
-      brand: 'Škoda',
-      model: 'Citigo',
-      image: '/src/assets/skoda-city-gi.webp',
-      price: 20, // Monthly rate divided by 30 (roughly) for lowest price
-      seats: 4,
-      transmission: 'automatic',
-      fuelType: 'benzín',
-      doors: 4,
-      power: '60kW',
-      fuel: '4.5L/100km'
-    },
-    {
-      _id: 'pop2',
-      brand: 'Toyota',
-      model: 'AygoX',
-      image: '/src/assets/toyota-aygo.jpg',
-      price: 25,
-      seats: 4,
-      transmission: 'manuál',
-      fuelType: 'benzín',
-      doors: 4,
-      power: '72kW',
-      fuel: '4.8L/100km'
-    },
-    {
-      _id: 'pop3',
-      brand: 'Hyundai',
-      model: 'Kona',
-      image: '/src/assets/Hyundai-Kona.jpg',
-      price: 28,
-      seats: 5,
-      transmission: 'automatic',
-      fuelType: 'hybrid',
-      doors: 4,
-      power: '104kW',
-      fuel: '4.2L/100km'
-    }
-  ];
 
   // Carousel images
   const carouselImages = [
@@ -105,12 +63,23 @@ const HomePage = () => {
         setError(null);
         
         // Fetch cars from backend API
-        const carsData = await carsAPI.getAvailableCars();
-        setCars(carsData);
+        const result = await carsAPI.getCars({ limit: 20 });
+        if (result.success && result.data) {
+          setCars(result.data);
+          // Set first 3 cars as popular cars, or empty if no cars
+          setPopularCars(result.data.slice(0, 3));
+        } else {
+          setCars([]);
+          setPopularCars([]);
+          if (result.error) {
+            setError(result.error);
+          }
+        }
       } catch (err) {
         console.error('Failed to load cars:', err);
         setError('Failed to load cars. Please try again later.');
         setCars([]);
+        setPopularCars([]);
       } finally {
         setLoading(false);
       }
@@ -295,17 +264,39 @@ const HomePage = () => {
         <div className="mx-auto px-4 sm:px-6 lg:px-8" style={{ maxWidth: '90rem' }}>
           <h2 className="text-3xl font-bold text-gray-900 mb-8">Obľúbené vozidlá</h2>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {popularCars.map((car) => (
+          {loading ? (
+            <div className="flex justify-center py-8">
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+            </div>
+          ) : error ? (
+            <div className="text-center py-8">
+              <p className="text-gray-500">Nie je možné načítať vozidlá. Skúste to neskôr.</p>
+            </div>
+          ) : popularCars.length === 0 ? (
+            <div className="text-center py-8">
+              <p className="text-gray-500">Momentálne nie sú k dispozícii žiadne vozidlá.</p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {popularCars.map((car) => (
               <Link key={car._id} to={`/car/${car._id}`} className="block">
                 <div className="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-200">
                   {/* Car Image */}
                   <div className="h-64 bg-gray-200">
-                    <img
-                      src={car.image}
-                      alt={`${car.brand} ${car.model}`}
-                      className="w-full h-full object-cover"
-                    />
+                    {car.images && car.images.length > 0 ? (
+                      <img
+                        src={car.images[0].url}
+                        alt={`${car.brand} ${car.model}`}
+                        className="w-full h-full object-cover"
+                        onError={(e) => {
+                          e.target.style.display = 'none';
+                        }}
+                      />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center text-gray-400">
+                        <span>Obrázok nie je dostupný</span>
+                      </div>
+                    )}
                   </div>
                   
                   {/* Car Details */}
@@ -323,54 +314,55 @@ const HomePage = () => {
                         <div className="w-6 h-6 bg-blue-100 rounded-full flex items-center justify-center">
                           <UsersIcon className="h-4 w-4 text-blue-600" />
                         </div>
-                        <span className="text-gray-700">{car.seats} sedadiel</span>
-                      </div>
-                      
-                      <div className="flex items-center space-x-2">
-                        <div className="w-6 h-6 bg-blue-100 rounded-full flex items-center justify-center">
-                          <FireIcon className="h-4 w-4 text-blue-600" />
-                        </div>
-                        <span className="text-gray-700">{car.fuel}</span>
-                      </div>
-                      
-                      <div className="flex items-center space-x-2">
-                        <div className="w-6 h-6 bg-blue-100 rounded-full flex items-center justify-center">
-                          <CogIcon className="h-4 w-4 text-blue-600" />
-                        </div>
-                        <span className="text-gray-700">{car.transmission}</span>
+                        <span className="text-gray-700">{car.seats || 'N/A'} sedadiel</span>
                       </div>
                       
                       <div className="flex items-center space-x-2">
                         <div className="w-6 h-6 bg-blue-100 rounded-full flex items-center justify-center">
                           <TruckIcon className="h-4 w-4 text-blue-600" />
                         </div>
-                        <span className="text-gray-700">{car.fuelType}</span>
+                        <span className="text-gray-700">{car.fuelType || 'N/A'}</span>
+                      </div>
+                      
+                      <div className="flex items-center space-x-2">
+                        <div className="w-6 h-6 bg-blue-100 rounded-full flex items-center justify-center">
+                          <CogIcon className="h-4 w-4 text-blue-600" />
+                        </div>
+                        <span className="text-gray-700">{car.transmission || 'N/A'}</span>
                       </div>
                       
                       <div className="flex items-center space-x-2">
                         <div className="w-6 h-6 bg-blue-100 rounded-full flex items-center justify-center">
                           <BuildingStorefrontIcon className="h-4 w-4 text-blue-600" />
                         </div>
-                        <span className="text-gray-700">{car.doors} dvere</span>
+                        <span className="text-gray-700">{car.doors || 'N/A'} dvere</span>
                       </div>
                       
                       <div className="flex items-center space-x-2">
                         <div className="w-6 h-6 bg-blue-100 rounded-full flex items-center justify-center">
                           <BoltIcon className="h-4 w-4 text-blue-600" />
                         </div>
-                        <span className="text-gray-700">{car.power}</span>
+                        <span className="text-gray-700">{car.power || 'N/A'}</span>
+                      </div>
+                      
+                      <div className="flex items-center space-x-2">
+                        <div className="w-6 h-6 bg-blue-100 rounded-full flex items-center justify-center">
+                          <FireIcon className="h-4 w-4 text-blue-600" />
+                        </div>
+                        <span className="text-gray-700">{car.year || 'N/A'}</span>
                       </div>
                     </div>
                     
                     {/* Price at Bottom */}
                     <div className="text-center">
-                      <p className="text-lg font-bold text-black">Od {car.price}€ na deň</p>
+                      <p className="text-lg font-bold text-black">Od {car.dailyRate || 'N/A'}€ na deň</p>
                     </div>
                   </div>
                 </div>
               </Link>
             ))}
-          </div>
+            </div>
+          )}
           
           {/* View All Cars Button */}
           <div className="text-center mt-8">
