@@ -1,8 +1,8 @@
 // Production API base URL
 const API_BASE = 'https://carflow-reservation-system.onrender.com/api';
 
-// Tenant email for RIVAL company
-const TENANT_EMAIL = 'rival@test.sk';
+// Tenant email for BusinessCar company
+const TENANT_EMAIL = 'info@businesscar.sk';
 
 // API Configuration
 const API_CONFIG = {
@@ -532,7 +532,80 @@ export const authAPI = {
 
 // Cars API (Using Tenant-Specific Public Endpoints)
 export const carsAPI = {
-  // Get all available cars for RIVAL tenant
+  // Get all cars with filtering (main endpoint from README)
+  getCars: async (filters = {}) => {
+    const queryParams = new URLSearchParams();
+    
+    // Add filters to query parameters as documented in README
+    if (filters.category) queryParams.append('category', filters.category);
+    if (filters.carClass) queryParams.append('carClass', filters.carClass);
+    if (filters.fuelType) queryParams.append('fuelType', filters.fuelType);
+    if (filters.transmission) queryParams.append('transmission', filters.transmission);
+    if (filters.seats) queryParams.append('seats', filters.seats);
+    if (filters.minPrice) queryParams.append('minPrice', filters.minPrice);
+    if (filters.maxPrice) queryParams.append('maxPrice', filters.maxPrice);
+    if (filters.startDate) queryParams.append('startDate', filters.startDate);
+    if (filters.endDate) queryParams.append('endDate', filters.endDate);
+    if (filters.page) queryParams.append('page', filters.page);
+    if (filters.limit) queryParams.append('limit', filters.limit);
+    if (filters.sort) queryParams.append('sort', filters.sort);
+
+    // Use mock data if configured
+    if (API_CONFIG.useMockData) {
+      console.log('Using mock data for cars');
+      return {
+        success: true,
+        data: mockCarsData,
+        count: mockCarsData.length
+      };
+    }
+
+    try {
+      const response = await fetch(`${API_BASE}/public/users/${encodeURIComponent(TENANT_EMAIL)}/cars?${queryParams}`, {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' }
+      });
+      
+      return handleResponse(response);
+    } catch (error) {
+      console.warn('Cars API failed, using mock data:', error);
+      return {
+        success: true,
+        data: mockCarsData,
+        count: mockCarsData.length,
+        usingMockData: true
+      };
+    }
+  },
+
+  // Get single car by ID (README endpoint)
+  getCarById: async (carId) => {
+    if (API_CONFIG.useMockData) {
+      const car = mockCarsData.find(car => car._id === carId);
+      return {
+        success: true,
+        data: car || mockCarsData[0]
+      };
+    }
+
+    try {
+      const response = await fetch(`${API_BASE}/public/users/${encodeURIComponent(TENANT_EMAIL)}/cars/${carId}`, {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' }
+      });
+      
+      return handleResponse(response);
+    } catch (error) {
+      const car = mockCarsData.find(car => car._id === carId);
+      return {
+        success: true,
+        data: car || mockCarsData[0],
+        usingMockData: true
+      };
+    }
+  },
+
+  // Get all available cars for RIVAL tenant (legacy method)
   getAvailableCars: async (filters = {}) => {
     // Use mock data if configured
     if (API_CONFIG.useMockData) {
@@ -705,6 +778,194 @@ export const carsAPI = {
 
     const result = await handleResponse(response);
     return result.data || [];
+  },
+
+  // Additional car-related endpoints from README
+  getAvailable: async () => {
+    try {
+      const response = await fetch(`${API_BASE}/public/users/${encodeURIComponent(TENANT_EMAIL)}/cars/available`, {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' }
+      });
+      return handleResponse(response);
+    } catch (error) {
+      return { success: true, data: mockCarsData, usingMockData: true };
+    }
+  },
+
+  getCarSpecifications: async (carId) => {
+    try {
+      const response = await fetch(`${API_BASE}/public/users/${encodeURIComponent(TENANT_EMAIL)}/cars/${carId}/specifications`, {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' }
+      });
+      return handleResponse(response);
+    } catch (error) {
+      return { success: true, data: {}, usingMockData: true };
+    }
+  },
+
+  getCarPricing: async (carId) => {
+    try {
+      const response = await fetch(`${API_BASE}/public/users/${encodeURIComponent(TENANT_EMAIL)}/cars/${carId}/pricing`, {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' }
+      });
+      return handleResponse(response);
+    } catch (error) {
+      const car = mockCarsData.find(c => c._id === carId);
+      return { 
+        success: true, 
+        data: car ? {
+          dailyRate: car.dailyRate,
+          weeklyRate: car.weeklyRate,
+          monthlyRate: car.monthlyRate
+        } : {},
+        usingMockData: true 
+      };
+    }
+  },
+
+  getCarEquipment: async (carId) => {
+    try {
+      const response = await fetch(`${API_BASE}/public/users/${encodeURIComponent(TENANT_EMAIL)}/cars/${carId}/equipment`, {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' }
+      });
+      return handleResponse(response);
+    } catch (error) {
+      const car = mockCarsData.find(c => c._id === carId);
+      return { 
+        success: true, 
+        data: car ? car.features || [] : [],
+        usingMockData: true 
+      };
+    }
+  },
+
+  getCarBadges: async (carId) => {
+    try {
+      const response = await fetch(`${API_BASE}/public/users/${encodeURIComponent(TENANT_EMAIL)}/cars/${carId}/badges`, {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' }
+      });
+      return handleResponse(response);
+    } catch (error) {
+      return { success: true, data: [], usingMockData: true };
+    }
+  },
+
+  getCarPhotos: async (carId, options = {}) => {
+    const queryParams = new URLSearchParams();
+    if (options.size) queryParams.append('size', options.size);
+    if (options.includeAll) queryParams.append('includeAll', options.includeAll);
+    
+    try {
+      const response = await fetch(`${API_BASE}/public/users/${encodeURIComponent(TENANT_EMAIL)}/cars/${carId}/photos?${queryParams}`, {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' }
+      });
+      return handleResponse(response);
+    } catch (error) {
+      const car = mockCarsData.find(c => c._id === carId);
+      return { 
+        success: true, 
+        data: car ? car.images || [] : [],
+        usingMockData: true 
+      };
+    }
+  },
+
+  getCarBrands: async () => {
+    try {
+      const response = await fetch(`${API_BASE}/public/users/${encodeURIComponent(TENANT_EMAIL)}/cars/brands`, {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' }
+      });
+      return handleResponse(response);
+    } catch (error) {
+      const brands = [...new Set(mockCarsData.map(car => car.brand))];
+      return { success: true, data: brands, usingMockData: true };
+    }
+  },
+
+  getCarsByBrand: async (brand) => {
+    try {
+      const response = await fetch(`${API_BASE}/public/users/${encodeURIComponent(TENANT_EMAIL)}/cars/by-brand/${brand}`, {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' }
+      });
+      return handleResponse(response);
+    } catch (error) {
+      const cars = mockCarsData.filter(car => car.brand === brand);
+      return { success: true, data: cars, usingMockData: true };
+    }
+  },
+
+  getFilterOptions: async () => {
+    try {
+      const response = await fetch(`${API_BASE}/public/users/${encodeURIComponent(TENANT_EMAIL)}/cars/filter-options`, {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' }
+      });
+      return handleResponse(response);
+    } catch (error) {
+      return {
+        success: true,
+        data: {
+          categories: [...new Set(mockCarsData.map(car => car.category))],
+          fuelTypes: [...new Set(mockCarsData.map(car => car.fuelType))],
+          transmissions: [...new Set(mockCarsData.map(car => car.transmission))],
+          brands: [...new Set(mockCarsData.map(car => car.brand))]
+        },
+        usingMockData: true
+      };
+    }
+  },
+
+  searchCars: async (searchParams) => {
+    const queryParams = new URLSearchParams();
+    if (searchParams.query) queryParams.append('query', searchParams.query);
+    if (searchParams.brand) queryParams.append('brand', searchParams.brand);
+    if (searchParams.model) queryParams.append('model', searchParams.model);
+    if (searchParams.minPrice) queryParams.append('minPrice', searchParams.minPrice);
+    if (searchParams.maxPrice) queryParams.append('maxPrice', searchParams.maxPrice);
+    
+    try {
+      const response = await fetch(`${API_BASE}/public/users/${encodeURIComponent(TENANT_EMAIL)}/cars/search?${queryParams}`, {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' }
+      });
+      return handleResponse(response);
+    } catch (error) {
+      // Simple mock search
+      let results = mockCarsData;
+      if (searchParams.query) {
+        const query = searchParams.query.toLowerCase();
+        results = results.filter(car => 
+          car.brand.toLowerCase().includes(query) ||
+          car.model.toLowerCase().includes(query) ||
+          car.category.toLowerCase().includes(query)
+        );
+      }
+      return { success: true, data: results, usingMockData: true };
+    }
+  },
+
+  getCarReservedDates: async (carId, dateRange = {}) => {
+    const queryParams = new URLSearchParams();
+    if (dateRange.startDate) queryParams.append('startDate', dateRange.startDate);
+    if (dateRange.endDate) queryParams.append('endDate', dateRange.endDate);
+    
+    try {
+      const response = await fetch(`${API_BASE}/public/users/${encodeURIComponent(TENANT_EMAIL)}/cars/${carId}/reserved-dates?${queryParams}`, {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' }
+      });
+      return handleResponse(response);
+    } catch (error) {
+      return { success: true, data: [], usingMockData: true };
+    }
   }
 };
 
@@ -946,9 +1207,316 @@ export const bookingAPI = {
   }
 };
 
+// Additional Services API (from README)
+export const additionalServicesAPI = {
+  getServices: async () => {
+    try {
+      // Try tenant-specific endpoint first
+      const response = await fetch(`${API_BASE}/public/users/${encodeURIComponent(TENANT_EMAIL)}/services`, {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' }
+      });
+      
+      if (response.ok) {
+        return handleResponse(response);
+      }
+    } catch (error) {
+      console.warn('Tenant-specific services endpoint failed:', error);
+    }
+
+    // Fallback to general endpoint
+    try {
+      const response = await fetch(`${API_BASE}/public/services?tenantId=${encodeURIComponent(TENANT_EMAIL)}`, {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' }
+      });
+      
+      return handleResponse(response);
+    } catch (error) {
+      console.error('Services API failed:', error);
+      return { success: false, data: [], error: error.message };
+    }
+  },
+
+  getServicesForVehicle: async (vehicleId) => {
+    try {
+      const response = await fetch(`${API_BASE}/public/users/${encodeURIComponent(TENANT_EMAIL)}/services/vehicle/${vehicleId}`, {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' }
+      });
+      return handleResponse(response);
+    } catch (error) {
+      return { success: false, data: [], error: error.message };
+    }
+  },
+
+  calculateServicePrice: async (serviceId, quantity, days, distance, basePrice) => {
+    try {
+      const response = await fetch(`${API_BASE}/public/users/${encodeURIComponent(TENANT_EMAIL)}/services/calculate-price`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          serviceId,
+          quantity,
+          days,
+          distance,
+          basePrice
+        })
+      });
+      
+      return handleResponse(response);
+    } catch (error) {
+      return { success: false, error: error.message };
+    }
+  },
+
+  verifyDiscountCode: async (code) => {
+    try {
+      const response = await fetch(`${API_BASE}/public/users/${encodeURIComponent(TENANT_EMAIL)}/verify-discount`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ code })
+      });
+      
+      return handleResponse(response);
+    } catch (error) {
+      return { success: false, error: error.message };
+    }
+  }
+};
+
+// Banner Management API (from README)
+export const bannerAPI = {
+  getBanners: async () => {
+    try {
+      const response = await fetch(`${API_BASE}/public/users/${encodeURIComponent(TENANT_EMAIL)}/banners`, {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' }
+      });
+      
+      return handleResponse(response);
+    } catch (error) {
+      return { success: false, data: [], error: error.message };
+    }
+  },
+
+  getActiveBanners: async () => {
+    try {
+      const response = await fetch(`${API_BASE}/public/users/${encodeURIComponent(TENANT_EMAIL)}/banners?active=true`, {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' }
+      });
+      
+      return handleResponse(response);
+    } catch (error) {
+      return { success: false, data: [], error: error.message };
+    }
+  },
+
+  getBannersByPosition: async (position, page = null) => {
+    const queryParams = new URLSearchParams();
+    if (position) queryParams.append('position', position);
+    if (page) queryParams.append('page', page);
+    
+    try {
+      const response = await fetch(`${API_BASE}/public/users/${encodeURIComponent(TENANT_EMAIL)}/banners?${queryParams}`, {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' }
+      });
+      
+      return handleResponse(response);
+    } catch (error) {
+      return { success: false, data: [], error: error.message };
+    }
+  }
+};
+
+// Website Settings API (from README)
+export const websiteSettingsAPI = {
+  getWebsiteSettings: async () => {
+    try {
+      const response = await fetch(`${API_BASE}/public/users/${encodeURIComponent(TENANT_EMAIL)}/website-settings`, {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' }
+      });
+      
+      return handleResponse(response);
+    } catch (error) {
+      return { success: false, data: {}, error: error.message };
+    }
+  },
+
+  getInfoBar: async (page = 'homepage') => {
+    try {
+      const response = await fetch(`${API_BASE}/public/users/${encodeURIComponent(TENANT_EMAIL)}/info-bar?page=${page}`, {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' }
+      });
+      
+      return handleResponse(response);
+    } catch (error) {
+      return { success: false, data: {}, error: error.message };
+    }
+  },
+
+  getModal: async (page = 'homepage') => {
+    try {
+      const response = await fetch(`${API_BASE}/public/users/${encodeURIComponent(TENANT_EMAIL)}/modal?page=${page}`, {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' }
+      });
+      
+      return handleResponse(response);
+    } catch (error) {
+      return { success: false, data: {}, error: error.message };
+    }
+  }
+};
+
+// Blog API (from README)
+export const blogAPI = {
+  getBlogPosts: async (filters = {}) => {
+    const queryParams = new URLSearchParams();
+    if (filters.page) queryParams.append('page', filters.page);
+    if (filters.limit) queryParams.append('limit', filters.limit);
+    if (filters.category) queryParams.append('category', filters.category);
+    if (filters.tags) queryParams.append('tags', filters.tags);
+    if (filters.search) queryParams.append('search', filters.search);
+    if (filters.sort) queryParams.append('sort', filters.sort);
+    
+    try {
+      const response = await fetch(`${API_BASE}/public/users/${encodeURIComponent(TENANT_EMAIL)}/blogs?${queryParams}`, {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' }
+      });
+      
+      return handleResponse(response);
+    } catch (error) {
+      return { success: false, data: [], error: error.message };
+    }
+  },
+
+  getBlogPost: async (slug) => {
+    try {
+      const response = await fetch(`${API_BASE}/public/users/${encodeURIComponent(TENANT_EMAIL)}/blogs/${slug}`, {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' }
+      });
+      
+      return handleResponse(response);
+    } catch (error) {
+      return { success: false, data: {}, error: error.message };
+    }
+  },
+
+  getBlogCategories: async () => {
+    try {
+      const response = await fetch(`${API_BASE}/public/users/${encodeURIComponent(TENANT_EMAIL)}/blog-categories`, {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' }
+      });
+      
+      return handleResponse(response);
+    } catch (error) {
+      return { success: false, data: [], error: error.message };
+    }
+  },
+
+  getBlogTags: async () => {
+    try {
+      const response = await fetch(`${API_BASE}/public/users/${encodeURIComponent(TENANT_EMAIL)}/blog-tags`, {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' }
+      });
+      
+      return handleResponse(response);
+    } catch (error) {
+      return { success: false, data: [], error: error.message };
+    }
+  },
+
+  likeBlogPost: async (slug) => {
+    try {
+      const response = await fetch(`${API_BASE}/public/users/${encodeURIComponent(TENANT_EMAIL)}/blogs/${slug}/like`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' }
+      });
+      
+      return handleResponse(response);
+    } catch (error) {
+      return { success: false, error: error.message };
+    }
+  },
+
+  addBlogComment: async (slug, commentData) => {
+    try {
+      const response = await fetch(`${API_BASE}/public/users/${encodeURIComponent(TENANT_EMAIL)}/blogs/${slug}/comments`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(commentData)
+      });
+      
+      return handleResponse(response);
+    } catch (error) {
+      return { success: false, error: error.message };
+    }
+  }
+};
+
+// Newsletter API (from README)
+export const newsletterAPI = {
+  subscribeToNewsletter: async (subscriberData) => {
+    try {
+      const response = await fetch(`${API_BASE}/public/users/${encodeURIComponent(TENANT_EMAIL)}/newsletter`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(subscriberData)
+      });
+      
+      return handleResponse(response);
+    } catch (error) {
+      return { success: false, error: error.message };
+    }
+  }
+};
+
+// Location API (from README)
+export const locationAPI = {
+  getPickupLocations: async () => {
+    try {
+      const response = await fetch(`${API_BASE}/public/users/${encodeURIComponent(TENANT_EMAIL)}/pickup-locations`, {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' }
+      });
+      
+      return handleResponse(response);
+    } catch (error) {
+      return { 
+        success: true, 
+        data: [{
+          name: 'Bratislava',
+          address: {
+            street: 'Záhradnícka 68',
+            city: 'Bratislava',
+            zipCode: '821 08',
+            country: 'Slovensko'
+          }
+        }],
+        usingMockData: true 
+      };
+    }
+  }
+};
+
 export default {
   auth: authAPI,
   cars: carsAPI,
   reservations: reservationsAPI,
-  booking: bookingAPI
+  booking: bookingAPI,
+  additionalServices: additionalServicesAPI,
+  banner: bannerAPI,
+  websiteSettings: websiteSettingsAPI,
+  blog: blogAPI,
+  newsletter: newsletterAPI,
+  location: locationAPI
 }; 
