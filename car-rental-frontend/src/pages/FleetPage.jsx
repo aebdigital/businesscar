@@ -159,12 +159,24 @@ const FleetPage = () => {
         setError(null);
         
         // Fetch cars from backend API
-        const carsData = await carsAPI.getAvailableCars();
+        console.log('🚗 FleetPage: Starting to load cars...');
+        const result = await carsAPI.getCars({ limit: 100 });
+        console.log('🚗 FleetPage: API result:', result);
         
-        setCars(carsData);
-        applyFilters(carsData, filters, rentalDetails);
+        if (result.success && result.data) {
+          console.log('🚗 FleetPage: Setting cars:', result.data.length, 'cars');
+          setCars(result.data);
+          applyFilters(result.data, filters, rentalDetails);
+        } else {
+          console.log('🚗 FleetPage: No cars or API failed');
+          setCars([]);
+          setFilteredCars([]);
+          if (result.error) {
+            setError(result.error);
+          }
+        }
       } catch (err) {
-        console.error('Failed to load cars:', err);
+        console.error('🚗 FleetPage: Failed to load cars:', err);
         setError('Failed to load cars. Please try again later.');
         setCars([]);
         setFilteredCars([]);

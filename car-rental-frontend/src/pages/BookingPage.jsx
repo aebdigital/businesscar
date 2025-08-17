@@ -284,8 +284,15 @@ const BookingPage = () => {
         
         // Load selected car
         if (selectedCarId) {
-          const car = await carsAPI.getCarDetails(selectedCarId);
-          setSelectedCar(car);
+          console.log('🚗 BookingPage: Loading car details for ID:', selectedCarId);
+          const result = await carsAPI.getCarById(selectedCarId);
+          console.log('🚗 BookingPage: API result:', result);
+          
+          if (result.success && result.data) {
+            setSelectedCar(result.data);
+          } else {
+            console.error('🚗 BookingPage: Failed to load car:', result.error);
+          }
           
           // Load initial availability for next 6 months
           const startDate = new Date();

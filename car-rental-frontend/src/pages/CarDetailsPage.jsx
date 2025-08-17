@@ -53,8 +53,15 @@ const CarDetailsPage = () => {
     const loadCarDetails = async () => {
       try {
         setLoading(true);
-        const carData = await carsAPI.getCarDetails(id);
-        setCar(carData);
+        console.log('🚗 CarDetailsPage: Loading car details for ID:', id);
+        const result = await carsAPI.getCarById(id);
+        console.log('🚗 CarDetailsPage: API result:', result);
+        
+        if (result.success && result.data) {
+          setCar(result.data);
+        } else {
+          setError(result.error || 'Car not found');
+        }
         
         // Load availability
         const startDate = new Date();
