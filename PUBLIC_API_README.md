@@ -37,14 +37,14 @@ These are public endpoints that **do not require authentication**. However, tena
 
 ### Get Cars for Specific User/Tenant
 
-**Use this endpoint to show only cars belonging to a specific user (e.g., rival@test.sk)**
+**Use this endpoint to show only cars belonging to a specific user (e.g., info@businesscar.sk)**
 
 ```http
 GET /users/{email}/cars
 ```
 
 **Parameters:**
-- `email` (string, required): User email to filter by tenant (e.g., "rival@test.sk")
+- `email` (string, required): User email to filter by tenant (e.g., "info@businesscar.sk")
 
 **Query Parameters:**
 - `page` (number, optional): Page number for pagination (default: 1)
@@ -56,7 +56,7 @@ GET /users/{email}/cars
 
 **Example Request:**
 ```bash
-curl "https://carflow-reservation-system.onrender.com/api/public/users/rival@test.sk/cars?category=luxury&limit=10"
+curl "https://carflow-reservation-system.onrender.com/api/public/users/info@businesscar.sk/cars?category=luxury&limit=10"
 ```
 
 **Example Response:**
@@ -122,7 +122,7 @@ GET /users/{email}/cars/{carId}
 
 **Example Request:**
 ```bash
-curl "https://carflow-reservation-system.onrender.com/api/public/users/rival@test.sk/cars/60d5ec49e8b4f5d2c8e1b2a3"
+curl "https://carflow-reservation-system.onrender.com/api/public/users/info@businesscar.sk/cars/60d5ec49e8b4f5d2c8e1b2a3"
 ```
 
 ### Check Car Availability
@@ -141,7 +141,7 @@ GET /users/{email}/cars/{carId}/availability?startDate={date}&endDate={date}
 
 **Example Request:**
 ```bash
-curl "https://carflow-reservation-system.onrender.com/api/public/users/rival@test.sk/cars/60d5ec49e8b4f5d2c8e1b2a3/availability?startDate=2024-01-15&endDate=2024-01-20"
+curl "https://carflow-reservation-system.onrender.com/api/public/users/info@businesscar.sk/cars/60d5ec49e8b4f5d2c8e1b2a3/availability?startDate=2024-01-15&endDate=2024-01-20"
 ```
 
 **Example Response:**
@@ -169,7 +169,7 @@ GET /users/{email}/cars/category/{category}
 
 **Example Request:**
 ```bash
-curl "https://carflow-reservation-system.onrender.com/api/public/users/rival@test.sk/cars/category/luxury"
+curl "https://carflow-reservation-system.onrender.com/api/public/users/info@businesscar.sk/cars/category/luxury"
 ```
 
 ### Get Available Features
@@ -213,7 +213,7 @@ POST /users/{email}/reservations
 ```
 
 **Parameters:**
-- `email` (string, required): User email to determine tenant (e.g., "rival@test.sk")
+- `email` (string, required): User email to determine tenant (e.g., "info@businesscar.sk")
 
 **Request Body:**
 ```json
@@ -274,7 +274,7 @@ POST /users/{email}/reservations
 
 **Example Request:**
 ```bash
-curl -X POST "https://carflow-reservation-system.onrender.com/api/public/users/rival@test.sk/reservations" \
+curl -X POST "https://carflow-reservation-system.onrender.com/api/public/users/info@businesscar.sk/reservations" \
   -H "Content-Type: application/json" \
   -d '{
     "firstName": "John",
@@ -343,10 +343,10 @@ curl -X POST "https://carflow-reservation-system.onrender.com/api/public/users/r
 ### JavaScript/Fetch Example
 
 ```javascript
-// Get cars for rival@test.sk
+// Get cars for info@businesscar.sk
 async function getRivalCars() {
   try {
-    const response = await fetch('https://carflow-reservation-system.onrender.com/api/public/users/rival@test.sk/cars?category=luxury');
+    const response = await fetch('https://carflow-reservation-system.onrender.com/api/public/users/info@businesscar.sk/cars?category=luxury');
     const data = await response.json();
     
     if (data.success) {
@@ -358,10 +358,10 @@ async function getRivalCars() {
   }
 }
 
-// Create reservation for rival@test.sk tenant
+// Create reservation for info@businesscar.sk tenant
 async function createReservation(reservationData) {
   try {
-    const response = await fetch('https://carflow-reservation-system.onrender.com/api/public/users/rival@test.sk/reservations', {
+    const response = await fetch('https://carflow-reservation-system.onrender.com/api/public/users/info@businesscar.sk/reservations', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -396,7 +396,7 @@ function useRivalCars() {
   useEffect(() => {
     async function fetchCars() {
       try {
-        const response = await fetch('https://carflow-reservation-system.onrender.com/api/public/users/rival@test.sk/cars');
+        const response = await fetch('https://carflow-reservation-system.onrender.com/api/public/users/info@businesscar.sk/cars');
         const data = await response.json();
         
         if (data.success) {
@@ -478,7 +478,7 @@ The API will be available at `http://localhost:3001/api/public`
 
 ```bash
 # Test getting cars for a specific user
-curl "http://localhost:3001/api/public/users/rival@test.sk/cars"
+curl "http://localhost:3001/api/public/users/info@businesscar.sk/cars"
 
 # Test health check
 curl "http://localhost:3001/api/health"
@@ -512,7 +512,7 @@ All endpoints return standardized error responses:
 ### Tenant Isolation
 - Each user email corresponds to a specific tenant
 - Cars and reservations are isolated by tenant
-- A user "rival@test.sk" will only see cars belonging to their tenant
+- A user "info@businesscar.sk" will only see cars belonging to their tenant
 
 ### Customer Creation
 - New customers are automatically created when making reservations
