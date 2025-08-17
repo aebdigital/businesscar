@@ -1,10 +1,20 @@
 import { useState, useEffect } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
-import { CheckCircleIcon } from '@heroicons/react/24/outline';
+import { 
+  CheckCircleIcon, 
+  CheckIcon, 
+  CalendarDaysIcon,
+  ShieldCheckIcon,
+  CogIcon,
+  UserIcon,
+  MapPinIcon,
+  ClockIcon
+} from '@heroicons/react/24/outline';
 import Button from '../components/Button';
 import CarImage from '../components/CarImage';
 import DatePicker from '../components/DatePicker';
 import { carsAPI, bookingAPI, authAPI } from '../services/api';
+import Image1 from '../assets/1.jpg';
 
 const BookingPage = () => {
   const [searchParams] = useSearchParams();
@@ -15,14 +25,14 @@ const BookingPage = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [selectedCar, setSelectedCar] = useState(null);
-  const [bookingResult, setBookingResult] = useState(null);
   const [currentUser, setCurrentUser] = useState(null);
   const [unavailableDates, setUnavailableDates] = useState([]);
+  const [completedSteps, setCompletedSteps] = useState([]);
   
   // Generate time slots in 30-minute intervals
   const generateTimeSlots = () => {
     const slots = [];
-    for (let hour = 0; hour < 24; hour++) {
+    for (let hour = 8; hour < 20; hour++) {
       for (let minute = 0; minute < 60; minute += 30) {
         const time = `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`;
         slots.push(time);
@@ -34,7 +44,7 @@ const BookingPage = () => {
   const timeSlots = generateTimeSlots();
   
   const [formData, setFormData] = useState({
-    // Step 1: Rental Details
+    // Rental details (always visible on right side)
     pickupDate: null,
     returnDate: null,
     pickupTime: '08:00',
@@ -56,7 +66,7 @@ const BookingPage = () => {
       country: 'SK'
     },
     
-    // Step 2: Personal Information (for new customers)
+    // Step 3: Personal Information (for new customers)
     firstName: '',
     lastName: '',
     email: '',
@@ -73,19 +83,111 @@ const BookingPage = () => {
       country: 'SK'
     },
     
-    // Step 3: Extras
+    // Step 2: Insurance packages
+    selectedInsurance: '',
+    
+    // Step 3: Additional services
     additionalDrivers: [],
     specialRequests: '',
-    // Extras for pricing (if needed)
     gps: false,
     childSeat: false,
-    fullInsurance: false
+    wheelChair: false
   });
 
   const steps = [
-    { number: 1, title: 'Detaily prenájmu' },
-    { number: 2, title: 'Informácie o zákazníkovi' },
-    { number: 3, title: 'Kontrola a potvrdenie' }
+    { 
+      number: 1, 
+      title: 'Dátum a miesto', 
+      icon: CalendarDaysIcon,
+      description: 'Vyberte dátum a miesto vyzdvihnutia' 
+    },
+    { 
+      number: 2, 
+      title: 'Poistenie', 
+      icon: ShieldCheckIcon,
+      description: 'Zvoľte si poistný balíček' 
+    },
+    { 
+      number: 3, 
+      title: 'Dodatočné služby', 
+      icon: CogIcon,
+      description: 'Pridajte si dodatočné služby' 
+    },
+    { 
+      number: 4, 
+      title: 'Osobné údaje', 
+      icon: UserIcon,
+      description: 'Vyplňte osobné informácie' 
+    }
+  ];
+
+  // Insurance packages
+  const insurancePackages = [
+    {
+      id: 'basic',
+      name: 'Základné poistenie',
+      price: 0,
+      description: 'Povinné ručenie a havarijné poistenie',
+      features: [
+        'Povinné ručenie',
+        'Základné havarijné poistenie',
+        'Spoluúčasť 500€'
+      ]
+    },
+    {
+      id: 'standard',
+      name: 'Štandardné poistenie',
+      price: 8,
+      description: 'Rozšírené poistenie s nižšou spoluúčasťou',
+      features: [
+        'Všetko zo základného balíčka',
+        'Znížená spoluúčasť na 200€',
+        'Poistenie skiel a svetiel',
+        'Krádež vozidla'
+      ],
+      recommended: true
+    },
+    {
+      id: 'premium',
+      name: 'Prémiové poistenie',
+      price: 15,
+      description: 'Kompletné poistenie bez spoluúčasti',
+      features: [
+        'Všetko zo štandardného balíčka',
+        'Bez spoluúčasti (0€)',
+        'Poistenie pneumatík a ráfikov',
+        'Asistenčná služba 24/7',
+        'Náhradné vozidlo pri poruche'
+      ]
+    }
+  ];
+
+  // Additional services
+  const additionalServices = [
+    {
+      id: 'gps',
+      name: 'GPS navigácia',
+      price: 3,
+      description: 'Moderné GPS zariadenie s aktuálnymi mapami'
+    },
+    {
+      id: 'childSeat',
+      name: 'Detská sedačka',
+      price: 5,
+      description: 'Bezpečná detská sedačka pre rôzne vekové kategórie'
+    },
+    {
+      id: 'wheelChair',
+      name: 'Invalidný vozík',
+      price: 10,
+      description: 'Prenosný invalidný vozík'
+    },
+    {
+      id: 'additionalDriver',
+      name: 'Dodatočný vodič',
+      price: 12,
+      description: 'Povolenie pre ďalšieho vodiča'
+    }
   ];
 
   // Predefined locations - Slovak locations (Bratislava)
@@ -198,18 +300,18 @@ const BookingPage = () => {
             setUnavailableDates([]);
           }
         } else {
-          navigate('/fleet');
+          setError('Nebol vybratý žiadny automobil');
         }
       } catch (err) {
-        console.error('Failed to load data:', err);
-        setError('Nepodarilo sa načítať údaje rezervácie');
+        console.error('Chyba pri načítavaní dát:', err);
+        setError('Chyba pri načítavaní dát');
       } finally {
         setLoading(false);
       }
     };
 
     loadData();
-  }, [selectedCarId, navigate, searchParams]);
+  }, [selectedCarId, searchParams]);
 
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -232,31 +334,32 @@ const BookingPage = () => {
   };
 
   const handleDateSelect = (field, date) => {
-    setFormData(prev => {
-      const updated = {
-        ...prev,
-        [field]: date
-      };
-      
-      // If pickup date is selected and is after return date, clear return date
-      if (field === 'pickupDate' && prev.returnDate && date >= prev.returnDate) {
-        updated.returnDate = null;
-      }
-      
-      return updated;
-    });
-  };
-
-  const handleLocationChange = (locationType, locationIndex) => {
-    const selectedLocation = locations[locationIndex];
     setFormData(prev => ({
       ...prev,
-      [locationType]: selectedLocation
+      [field]: date
     }));
   };
 
+  const handleLocationChange = (locationType, locationIndex) => {
+    if (locationIndex === '' || locationIndex < 0) {
+      setFormData(prev => ({
+        ...prev,
+        [locationType]: { name: '', address: '', city: '', state: '', postalCode: '', country: 'SK' }
+      }));
+    } else {
+      setFormData(prev => ({
+        ...prev,
+        [locationType]: locations[locationIndex]
+      }));
+    }
+  };
+
   const nextStep = () => {
-    if (currentStep < 3) {
+    if (currentStep < 4) {
+      // Mark current step as completed
+      if (!completedSteps.includes(currentStep)) {
+        setCompletedSteps(prev => [...prev, currentStep]);
+      }
       setCurrentStep(currentStep + 1);
     }
   };
@@ -267,188 +370,97 @@ const BookingPage = () => {
     }
   };
 
-  // Step validation functions
   const isStep1Valid = () => {
-    return formData.pickupDate && 
-           formData.returnDate && 
-           formData.pickupLocation.name && 
-           formData.returnLocation.name;
+    return formData.pickupDate && formData.returnDate && 
+           formData.pickupLocation.name && formData.returnLocation.name;
   };
 
   const isStep2Valid = () => {
-    if (currentUser) return true; // If logged in, step 2 is always valid
-    
-    return formData.firstName?.trim() &&
-           formData.lastName?.trim() &&
-           formData.email?.trim() &&
-           formData.phone?.trim() &&
-           formData.licenseNumber?.trim() &&
-           formData.licenseExpiry?.trim() &&
-           formData.dateOfBirth?.trim() &&
-           formData.address.street?.trim() &&
-           formData.address.city?.trim() &&
-           formData.address.state?.trim() &&
-           formData.address.postalCode?.trim();
+    return formData.selectedInsurance !== '';
   };
 
-  // Check if a step can be navigated to
+  const isStep3Valid = () => {
+    return true; // Additional services are optional
+  };
+
+  const isStep4Valid = () => {
+    return formData.firstName && formData.lastName && formData.email && formData.phone && 
+           formData.dateOfBirth && formData.licenseNumber && formData.licenseExpiry &&
+           formData.address.street && formData.address.city && formData.address.postalCode &&
+           (!currentUser ? formData.password : true);
+  };
+
   const canNavigateToStep = (stepNumber) => {
-    if (stepNumber === 1) return true; // Can always go to step 1
-    if (stepNumber === 2) return isStep1Valid(); // Can go to step 2 if step 1 is valid
-    if (stepNumber === 3) return isStep1Valid() && isStep2Valid(); // Can go to step 3 if both previous steps are valid
+    if (stepNumber === 1) return true;
+    if (stepNumber === 2) return completedSteps.includes(1) || isStep1Valid();
+    if (stepNumber === 3) return completedSteps.includes(2) || (isStep1Valid() && isStep2Valid());
+    if (stepNumber === 4) return completedSteps.includes(3) || (isStep1Valid() && isStep2Valid() && isStep3Valid());
     return false;
   };
 
-  // Navigate to a specific step
   const goToStep = (stepNumber) => {
     if (canNavigateToStep(stepNumber)) {
       setCurrentStep(stepNumber);
     }
   };
 
+  const handleInsuranceSelect = (insuranceId) => {
+    setFormData(prev => ({
+      ...prev,
+      selectedInsurance: insuranceId
+    }));
+  };
+
+  const handleServiceToggle = (serviceId) => {
+    setFormData(prev => ({
+      ...prev,
+      [serviceId]: !prev[serviceId]
+    }));
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true);
-    setError(null);
+    
+    if (!selectedCar || !isStep4Valid()) {
+      setError('Prosím vyplňte všetky požadované údaje');
+      return;
+    }
 
     try {
-      // Validate dates
-      const pickupDate = new Date(formData.pickupDate);
-      const returnDate = new Date(formData.returnDate);
-      const today = new Date();
-      today.setHours(0, 0, 0, 0);
-
-      if (pickupDate < today) {
-        throw new Error('Dátum prevzatia nemôže byť v minulosti');
-      }
-
-      if (returnDate <= pickupDate) {
-        throw new Error('Dátum vrátenia musí byť po dátume prevzatia');
-      }
+      setLoading(true);
+      setError(null);
 
       // Prepare booking data
       const bookingData = {
-        selectedCarId,
-        startDate: formData.pickupDate.toISOString().split('T')[0],
-        endDate: formData.returnDate.toISOString().split('T')[0],
+        selectedCarId: selectedCarId,
+        startDate: formData.pickupDate.toISOString(),
+        endDate: formData.returnDate.toISOString(),
         pickupLocation: formData.pickupLocation,
         dropoffLocation: formData.returnLocation,
         additionalDrivers: formData.additionalDrivers,
         specialRequests: formData.specialRequests
       };
 
-      // Prepare customer data for new customers
-      let customerData = null;
-      if (!currentUser) {
-        // Debug logging
-        console.log('Raw form data before validation:', {
-          firstName: formData.firstName,
-          lastName: formData.lastName, 
-          email: formData.email,
-          phone: formData.phone,
-          licenseNumber: formData.licenseNumber,
-          licenseExpiry: formData.licenseExpiry,
-          dateOfBirth: formData.dateOfBirth
-        });
-
-        // Validate required fields (check for both null/undefined and empty strings)
-        const requiredFields = {
-          firstName: formData.firstName?.trim(),
-          lastName: formData.lastName?.trim(),
-          email: formData.email?.trim(),
-          phone: formData.phone?.trim(),
-          licenseNumber: formData.licenseNumber?.trim(),
-          licenseExpiry: formData.licenseExpiry?.trim(),
-          dateOfBirth: formData.dateOfBirth?.trim()
-        };
-
-        // Check for missing required fields
-        const missingFields = Object.entries(requiredFields)
-          .filter(([key, value]) => !value || value === '')
-          .map(([key]) => key);
-
-        console.log('Missing fields:', missingFields);
-        console.log('Required fields after trim:', requiredFields);
-
-        if (missingFields.length > 0) {
-          throw new Error(`Please fill in all required fields: ${missingFields.join(', ')}`);
-        }
-
-        // Validate phone number (ensure it's a string and remove any formatting)
-        if (!formData.phone || formData.phone.trim() === '') {
-          throw new Error('Phone number is required');
-        }
-        
-        const cleanPhone = formData.phone.toString().replace(/\D/g, '');
-        console.log('Phone validation:', {
-          original: formData.phone,
-          cleaned: cleanPhone,
-          length: cleanPhone.length
-        });
-        
-        if (cleanPhone.length < 10) {
-          throw new Error('Please provide a valid phone number (minimum 10 digits)');
-        }
-
-        // Validate license expiry date  
-        if (!formData.licenseExpiry || formData.licenseExpiry.trim() === '') {
-          throw new Error('License expiry date is required');
-        }
-        
-        const licenseExpiryDate = new Date(formData.licenseExpiry);
-        console.log('License expiry validation:', {
-          original: formData.licenseExpiry,
-          asDate: licenseExpiryDate,
-          isValid: !isNaN(licenseExpiryDate.getTime()),
-          today: today
-        });
-        
-        if (isNaN(licenseExpiryDate.getTime())) {
-          throw new Error('Please provide a valid license expiry date');
-        }
-        
-        if (licenseExpiryDate <= today) {
-          throw new Error('License expiry date must be in the future');
-        }
-
-        customerData = {
-          firstName: requiredFields.firstName,
-          lastName: requiredFields.lastName,
-          email: requiredFields.email,
-          password: formData.password?.trim() || 'customer123', // Default password if not provided
-          phone: cleanPhone, // Use the cleaned phone number
-          licenseNumber: requiredFields.licenseNumber,
-          licenseExpiry: formData.licenseExpiry, // Should be in YYYY-MM-DD format
-          dateOfBirth: formData.dateOfBirth, // Should be in YYYY-MM-DD format
-          address: formData.address?.street?.trim() ? formData.address : {
-            street: '123 Main St',
-            city: 'New York',
-            state: 'NY',
-            postalCode: '10001',
-            country: 'US'
-          }
-        };
-
-        // Debug logging
-        console.log('Sending customer data:', customerData);
-        console.log('Form data:', formData);
-        console.log('License Expiry:', formData.licenseExpiry, 'Type:', typeof formData.licenseExpiry);
-        console.log('Phone:', formData.phone, 'Cleaned Phone:', cleanPhone, 'Length:', cleanPhone.length);
-        console.log('All Required Fields:', requiredFields);
-        
-        console.log('Final booking data:', bookingData);
-        console.log('Final customer data:', customerData);
-      }
+      // Prepare customer data (if new customer)
+      const customerData = currentUser ? null : {
+        firstName: formData.firstName,
+        lastName: formData.lastName,
+        email: formData.email,
+        phone: formData.phone,
+        password: formData.password,
+        dateOfBirth: formData.dateOfBirth,
+        licenseNumber: formData.licenseNumber,
+        licenseExpiry: formData.licenseExpiry,
+        address: formData.address
+      };
 
       // Complete booking
-      const result = await bookingAPI.completeBooking(bookingData, customerData);
-      
-      setBookingResult(result);
-      setCurrentStep(4); // Move to confirmation step
+      await bookingAPI.completeBooking(bookingData, customerData);
+      navigate('/thank-you'); // Go to thank you page
       
     } catch (err) {
       console.error('Booking failed:', err);
-      setError(err.message || 'Rezervácia sa nepodarila. Skúste to znovu.');
+      setError(err.message || 'Rezervácia neúspešná. Skúste to prosím znova.');
     } finally {
       setLoading(false);
     }
@@ -456,14 +468,21 @@ const BookingPage = () => {
 
   const calculateTotal = () => {
     if (!selectedCar || !formData.pickupDate || !formData.returnDate) return 0;
-    
     const days = Math.ceil((formData.returnDate - formData.pickupDate) / (1000 * 60 * 60 * 24));
     let total = selectedCar.dailyRate * days;
     
-    // Add extras if needed
-    if (formData.gps) total += 5 * days;
-    if (formData.childSeat) total += 8 * days;
-    if (formData.fullInsurance) total += 25 * days;
+    // Add insurance cost
+    const selectedInsurancePackage = insurancePackages.find(pkg => pkg.id === formData.selectedInsurance);
+    if (selectedInsurancePackage) {
+      total += selectedInsurancePackage.price * days;
+    }
+    
+    // Add additional services
+    additionalServices.forEach(service => {
+      if (formData[service.id]) {
+        total += service.price * days;
+      }
+    });
     
     return total;
   };
@@ -473,11 +492,11 @@ const BookingPage = () => {
     return Math.ceil((formData.returnDate - formData.pickupDate) / (1000 * 60 * 60 * 24));
   };
 
-  if (loading && !selectedCar) {
+  if (loading) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-accent mx-auto"></div>
+          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-blue-600 mx-auto"></div>
           <p className="mt-4 text-gray-600">Načítavajú sa detaily rezervácie...</p>
         </div>
       </div>
@@ -503,194 +522,82 @@ const BookingPage = () => {
     );
   }
 
-  // Confirmation step
-  if (currentStep === 4 && bookingResult) {
-    return (
-      <div className="min-h-screen bg-gray-50">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-          <div className="bg-white rounded-lg shadow-sm p-8 text-center">
-            <div className="text-green-500 mb-6">
-              <CheckCircleIcon className="w-16 h-16 mx-auto" />
-            </div>
-            <h1 className="text-3xl font-bold text-gray-900 mb-4">
-              Rezervácia potvrdená!
-            </h1>
-            <p className="text-gray-600 mb-8">
-              Vaša rezervácia bola úspešne vytvorená.
-            </p>
-            
-            {/* New account credentials info */}
-            {bookingResult.credentials && (
-              <div className="bg-blue-50 border border-blue-200 rounded-lg p-6 mb-8">
-                <h3 className="text-lg font-semibold text-blue-900 mb-3">
-                  🎉 Účet úspešne vytvorený!
-                </h3>
-                <p className="text-blue-800 mb-4">
-                  Vytvorili sme pre vás zákaznícky účet. Uložte si tieto prihlasovacie údaje:
-                </p>
-                <div className="bg-white rounded-md p-4 text-left">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                      <strong>Email:</strong><br />
-                      <code className="bg-gray-100 px-2 py-1 rounded text-sm">{bookingResult.credentials.email}</code>
-                    </div>
-                    <div>
-                      <strong>Heslo:</strong><br />
-                      <code className="bg-gray-100 px-2 py-1 rounded text-sm">{bookingResult.credentials.password}</code>
-                    </div>
-                  </div>
-                </div>
-                <p className="text-blue-700 mt-3 text-sm">
-                  Tieto údaje môžete použiť na prihlásenie a správu vašich rezervácií v budúcnosti.
-                </p>
-              </div>
-            )}
-            
-            <div className="bg-gray-50 rounded-lg p-6 mb-8">
-              <h3 className="text-lg font-semibold mb-4">Detaily rezervácie</h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-left">
-                <div>
-                  <strong>Číslo rezervácie:</strong><br />
-                  {bookingResult.reservation.reservationNumber || bookingResult.reservation._id}
-                </div>
-                <div>
-                  <strong>Vozidlo:</strong><br />
-                  {bookingResult.car.brand} {bookingResult.car.model} ({bookingResult.car.year})
-                </div>
-                <div>
-                  <strong>Dátum prevzatia:</strong><br />
-                  {formData.pickupDate?.toLocaleDateString()}
-                </div>
-                <div>
-                  <strong>Dátum vrátenia:</strong><br />
-                  {formData.returnDate?.toLocaleDateString()}
-                </div>
-                <div>
-                  <strong>Celkové náklady:</strong><br />
-                  ${bookingResult.costs.totalCost}{bookingResult.costs.deposit > 0 ? ` (vrátane $${bookingResult.costs.deposit} zálohy)` : ''}
-                </div>
-                <div>
-                  <strong>Dni prenájmu:</strong><br />
-                  {bookingResult.costs.days} dní
-                </div>
-              </div>
-            </div>
-            
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button onClick={() => navigate('/fleet')}>
-                Prehľadať viac áut
-              </Button>
-              <Button variant="outline" onClick={() => navigate('/')}>
-                Späť na domov
-              </Button>
-              {bookingResult.credentials && (
-                <Button variant="accent" onClick={() => {
-                  // Auto-login the user with new credentials
-                  authAPI.login(bookingResult.credentials.email, bookingResult.credentials.password)
-                    .then(() => {
-                      navigate('/reservations'); // Assuming there's a reservations page
-                    })
-                    .catch(() => {
-                      navigate('/'); // Fallback to home if login fails
-                    });
-                }}>
-                  Prihlásiť sa do účtu
-                </Button>
-              )}
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <div className="bg-white shadow-sm">
+      {/* Mini Hero Section */}
+      <div 
+        className="relative h-[15vh] bg-cover bg-center"
+        style={{
+          backgroundImage: `linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url(${Image1})`
+        }}
+      >
+      </div>
+
+      {/* Progress Steps at Top */}
+      <div className="bg-white border-b border-gray-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <h1 className="text-3xl font-bold text-gray-900">Dokončte vašu rezerváciu</h1>
-          <p className="text-gray-600 mt-2">
-            Len pár krokov k zabezpečeniu vášho prenájmu
-          </p>
+          <div className="max-w-5xl mx-auto">
+            {/* Step boxes */}
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+              {steps.map((step) => {
+                const Icon = step.icon;
+                const isCompleted = completedSteps.includes(step.number);
+                const isCurrent = currentStep === step.number;
+                const isAccessible = canNavigateToStep(step.number);
+                
+                return (
+                  <div 
+                    key={step.number}
+                    onClick={() => isAccessible && goToStep(step.number)}
+                    className={`relative p-6 rounded-xl border-2 transition-all duration-300 cursor-pointer ${
+                      isCompleted 
+                        ? 'border-green-500 bg-green-50 text-green-700' 
+                        : isCurrent
+                        ? 'border-blue-500 bg-blue-50 text-blue-700 shadow-lg'
+                        : isAccessible
+                        ? 'border-gray-300 bg-white text-gray-600 hover:border-blue-300 hover:bg-blue-50'
+                        : 'border-gray-200 bg-gray-50 text-gray-400 cursor-not-allowed'
+                    }`}
+                  >
+                    <div className="flex items-center mb-3">
+                      <div className={`w-10 h-10 rounded-full flex items-center justify-center mr-3 ${
+                        isCompleted 
+                          ? 'bg-green-500 text-white' 
+                          : isCurrent
+                          ? 'bg-blue-500 text-white'
+                          : isAccessible
+                          ? 'bg-gray-300 text-gray-600'
+                          : 'bg-gray-200 text-gray-400'
+                      }`}>
+                        {isCompleted ? (
+                          <CheckIcon className="h-6 w-6" />
+                        ) : (
+                          <Icon className="h-6 w-6" />
+                        )}
+                      </div>
+                      <div className="flex-1">
+                        <h3 className="font-semibold text-lg">{step.title}</h3>
+                      </div>
+                    </div>
+                    <p className="text-sm opacity-75">{step.description}</p>
+                    
+                    {/* Active indicator */}
+                    {isCurrent && (
+                      <div className="absolute top-0 right-0 w-4 h-4 bg-blue-500 rounded-full -mt-2 -mr-2 animate-pulse"></div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          </div>
         </div>
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Progress Steps */}
-          <div className="lg:col-span-1">
-            <div className="bg-white rounded-lg shadow-sm p-6 sticky top-24">
-              <h3 className="text-lg font-semibold text-gray-900 mb-6">Priebeh rezervácie</h3>
-              <div className="space-y-4">
-                {steps.map((step) => (
-                  <div 
-                    key={step.number} 
-                    className={`flex items-center ${
-                      canNavigateToStep(step.number) 
-                        ? 'cursor-pointer hover:bg-gray-50 p-2 rounded-lg transition-colors' 
-                        : 'cursor-not-allowed opacity-60'
-                    }`}
-                    onClick={() => goToStep(step.number)}
-                  >
-                    <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${
-                      currentStep >= step.number 
-                        ? 'bg-accent text-black' 
-                        : canNavigateToStep(step.number)
-                        ? 'bg-gray-300 text-gray-700'
-                        : 'bg-gray-200 text-gray-600'
-                    }`}>
-                      {currentStep > step.number ? (
-                        <CheckCircleIcon className="h-5 w-5" />
-                      ) : (
-                        step.number
-                      )}
-                    </div>
-                    <span className={`ml-3 ${
-                      currentStep >= step.number 
-                        ? 'text-gray-900 font-medium' 
-                        : canNavigateToStep(step.number)
-                        ? 'text-gray-700'
-                        : 'text-gray-500'
-                    }`}>
-                      {step.title}
-                    </span>
-                  </div>
-                ))}
-              </div>
-
-              {/* Selected Car Summary */}
-              {selectedCar && (
-                <div className="mt-8 border-t pt-6">
-                  <h4 className="font-semibold text-gray-900 mb-4">Vybrané vozidlo</h4>
-                  <div className="space-y-3">
-                    <CarImage
-                      car={selectedCar}
-                      size="medium"
-                      className="w-full h-32 object-cover rounded-lg"
-                    />
-                    <div>
-                      <p className="font-medium">{selectedCar.brand} {selectedCar.model}</p>
-                      <p className="text-sm text-gray-600">{selectedCar.category}</p>
-                      <div className="mt-2">
-                        <p className="text-lg font-bold text-primary">{selectedCar.dailyRate}€/deň</p>
-                        {formData.pickupDate && formData.returnDate && (
-                          <div className="text-sm text-gray-600 mt-1">
-                            <p>{calculateDays()} dní = {calculateTotal()}€</p>
-                            <p>Záloha: {selectedCar.deposit}€</p>
-                            <p className="font-semibold">Celkom: {calculateTotal() + selectedCar.deposit}€</p>
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              )}
-            </div>
-          </div>
-
-          {/* Main Form */}
-          <div className="lg:col-span-2">
+        <div className="grid grid-cols-1 lg:grid-cols-5 gap-8">
+          {/* Left Side - Form Content */}
+          <div className="lg:col-span-3">
             <div className="bg-white rounded-lg shadow-sm p-8">
               {error && (
                 <div className="bg-red-50 border border-red-200 rounded-md p-4 mb-6">
@@ -701,448 +608,638 @@ const BookingPage = () => {
                       </svg>
                     </div>
                     <div className="ml-3">
-                      <h3 className="text-sm font-medium text-red-800">Booking Error</h3>
-                      <p className="text-sm text-red-700 mt-1">{error}</p>
+                      <h3 className="text-sm font-medium text-red-800">Chyba</h3>
+                      <div className="mt-2 text-sm text-red-700">
+                        <p>{error}</p>
+                      </div>
                     </div>
                   </div>
                 </div>
               )}
 
               <form onSubmit={handleSubmit}>
-                {/* Step 1: Rental Details */}
+                {/* Step 1: Date and Place Pickup */}
                 {currentStep === 1 && (
                   <div>
-                    <h2 className="text-2xl font-bold text-gray-900 mb-6">Detaily prenájmu</h2>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                          Dátum prevzatia *
-                        </label>
-                        <DatePicker
-                          selectedDate={formData.pickupDate}
-                          onDateSelect={(date) => handleDateSelect('pickupDate', date)}
-                          minDate={new Date()}
-                          unavailableDates={unavailableDates}
-                          carId={selectedCarId}
-                        />
-                      </div>
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                          Dátum vrátenia *
-                        </label>
-                        <DatePicker
-                          selectedDate={formData.returnDate}
-                          onDateSelect={(date) => handleDateSelect('returnDate', date)}
-                          minDate={formData.pickupDate ? new Date(formData.pickupDate.getTime() + 86400000) : new Date()}
-                          unavailableDates={unavailableDates}
-                          carId={selectedCarId}
-                        />
-                      </div>
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                          Čas prevzatia *
-                        </label>
-                        <select
-                          value={formData.pickupTime}
-                          onChange={(e) => handleInputChange({ target: { name: 'pickupTime', value: e.target.value } })}
-                          className="w-full border border-gray-300 rounded-md px-3 py-2 h-10 focus:outline-none focus:ring-2 focus:ring-green-500"
-                        >
-                          {timeSlots.map(time => (
-                            <option key={time} value={time}>{time}</option>
-                          ))}
-                        </select>
-                      </div>
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                          Čas vrátenia *
-                        </label>
-                        <select
-                          value={formData.returnTime}
-                          onChange={(e) => handleInputChange({ target: { name: 'returnTime', value: e.target.value } })}
-                          className="w-full border border-gray-300 rounded-md px-3 py-2 h-10 focus:outline-none focus:ring-2 focus:ring-green-500"
-                        >
-                          {timeSlots.map(time => (
-                            <option key={time} value={time}>{time}</option>
-                          ))}
-                        </select>
-                      </div>
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                          Miesto prevzatia *
-                        </label>
-                        <select
-                          value={formData.pickupLocation.name ? locations.findIndex(loc => loc.name === formData.pickupLocation.name) : ''}
-                          onChange={(e) => handleLocationChange('pickupLocation', parseInt(e.target.value))}
-                          className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-accent"
-                          required
-                        >
-                          <option value="">Vyberte miesto prevzatia</option>
-                          {locations.map((location, index) => (
-                            <option key={index} value={index}>
-                              {location.name}
-                            </option>
-                          ))}
-                        </select>
-                      </div>
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                          Miesto vrátenia *
-                        </label>
-                        <select
-                          value={formData.returnLocation.name ? locations.findIndex(loc => loc.name === formData.returnLocation.name) : ''}
-                          onChange={(e) => handleLocationChange('returnLocation', parseInt(e.target.value))}
-                          className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-accent"
-                          required
-                        >
-                          <option value="">Vyberte miesto vrátenia</option>
-                          {locations.map((location, index) => (
-                            <option key={index} value={index}>
-                              {location.name}
-                            </option>
-                          ))}
-                        </select>
-                      </div>
-                    </div>
-                    
-                    <div className="flex justify-end mt-8">
-                      <Button 
-                        type="button" 
-                        onClick={nextStep}
-                        disabled={!formData.pickupDate || !formData.returnDate || !formData.pickupLocation.name || !formData.returnLocation.name}
-                      >
-                        Ďalší krok
-                      </Button>
-                    </div>
-                  </div>
-                )}
-
-                {/* Step 2: Customer Information */}
-                {currentStep === 2 && (
-                  <div>
-                    <h2 className="text-2xl font-bold text-gray-900 mb-6">
-                      {currentUser ? 'Potvrďte vaše údaje' : 'Informácie o zákazníkovi'}
+                    <h2 className="text-2xl font-bold text-gray-900 mb-6 text-center">
+                      Dátum a miesto vyzdvihnutia
                     </h2>
                     
-                    {currentUser ? (
-                      <div className="bg-green-50 border border-green-200 rounded-md p-4 mb-6">
-                        <p className="text-green-800">Vitajte späť, {currentUser.firstName}! Vaše údaje sú predvyplnené nižšie.</p>
-                      </div>
-                    ) : (
-                      <div className="bg-blue-50 border border-blue-200 rounded-md p-4 mb-6">
-                        <p className="text-blue-800">Prosím zadajte vaše údaje pre vytvorenie zákazníckeho účtu.</p>
-                      </div>
-                    )}
-                    
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                          Krstné meno *
-                        </label>
-                        <input
-                          type="text"
-                          name="firstName"
-                          value={formData.firstName}
-                          onChange={handleInputChange}
-                          className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-accent"
-                          required
-                          disabled={!!currentUser}
-                        />
-                      </div>
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                          Priezvisko *
-                        </label>
-                        <input
-                          type="text"
-                          name="lastName"
-                          value={formData.lastName}
-                          onChange={handleInputChange}
-                          className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-accent"
-                          required
-                          disabled={!!currentUser}
-                        />
-                      </div>
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                          Email *
-                        </label>
-                        <input
-                          type="email"
-                          name="email"
-                          value={formData.email}
-                          onChange={handleInputChange}
-                          className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-accent"
-                          required
-                          disabled={!!currentUser}
-                        />
-                      </div>
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                          Telefónne číslo *
-                        </label>
-                        <input
-                          type="tel"
-                          name="phone"
-                          value={formData.phone}
-                          onChange={handleInputChange}
-                          placeholder="+421 XXX XXX XXX"
-                          className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-accent"
-                          required
-                          disabled={!!currentUser}
-                        />
-                        <p className="text-xs text-gray-500 mt-1">
-                          Zadajte telefónne číslo s alebo bez formátovania
-                        </p>
-                      </div>
-                      
-                      {!currentUser && (
-                        <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-2">
-                            Heslo *
-                          </label>
-                          <input
-                            type="password"
-                            name="password"
-                            value={formData.password}
-                            onChange={handleInputChange}
-                            className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-accent"
-                            required
-                            minLength={6}
-                          />
-                        </div>
-                      )}
-                      
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                          Dátum narodenia *
-                        </label>
-                        <input
-                          type="date"
-                          name="dateOfBirth"
-                          value={formData.dateOfBirth}
-                          onChange={handleInputChange}
-                          className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-accent"
-                          required
-                          disabled={!!currentUser}
-                        />
-                      </div>
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                          Vodičský preukaz *
-                        </label>
-                        <input
-                          type="text"
-                          name="licenseNumber"
-                          value={formData.licenseNumber}
-                          onChange={handleInputChange}
-                          className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-accent"
-                          required
-                          disabled={!!currentUser}
-                        />
-                      </div>
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                          Dátum expirácie vodičského preukazu *
-                        </label>
-                        <input
-                          type="date"
-                          name="licenseExpiry"
-                          value={formData.licenseExpiry}
-                          onChange={handleInputChange}
-                          min={new Date().toISOString().split('T')[0]}
-                          className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-accent"
-                          required
-                          disabled={!!currentUser}
-                        />
-                        <p className="text-xs text-gray-500 mt-1">
-                          Váš vodičský preukaz musí byť platný počas celého obdobia prenájmu
-                        </p>
-                      </div>
-                    </div>
-
-                    {/* Address */}
-                    <div className="mt-6">
-                      <h3 className="text-lg font-semibold text-gray-900 mb-4">Adresa</h3>
+                    <div className="space-y-6">
+                      {/* Location Selection */}
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div className="md:col-span-2">
+                        <div>
                           <label className="block text-sm font-medium text-gray-700 mb-2">
-                            Ulica a číslo *
+                            <MapPinIcon className="inline h-5 w-5 mr-2" />
+                            Miesto vyzdvihnutia *
                           </label>
-                          <input
-                            type="text"
-                            name="address.street"
-                            value={formData.address.street}
-                            onChange={handleInputChange}
-                            className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-accent"
+                          <select
+                            value={formData.pickupLocation.name ? locations.findIndex(loc => loc.name === formData.pickupLocation.name) : ''}
+                            onChange={(e) => handleLocationChange('pickupLocation', parseInt(e.target.value))}
+                            className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
                             required
-                            disabled={!!currentUser}
+                          >
+                            <option value="">Vyberte miesto prevzatia</option>
+                            {locations.map((location, index) => (
+                              <option key={index} value={index}>
+                                {location.name}
+                              </option>
+                            ))}
+                          </select>
+                        </div>
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-2">
+                            <MapPinIcon className="inline h-5 w-5 mr-2" />
+                            Miesto vrátenia *
+                          </label>
+                          <select
+                            value={formData.returnLocation.name ? locations.findIndex(loc => loc.name === formData.returnLocation.name) : ''}
+                            onChange={(e) => handleLocationChange('returnLocation', parseInt(e.target.value))}
+                            className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            required
+                          >
+                            <option value="">Vyberte miesto vrátenia</option>
+                            {locations.map((location, index) => (
+                              <option key={index} value={index}>
+                                {location.name}
+                              </option>
+                            ))}
+                          </select>
+                        </div>
+                      </div>
+
+                      {/* Date Selection */}
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-2">
+                            <CalendarDaysIcon className="inline h-5 w-5 mr-2" />
+                            Dátum vyzdvihnutia *
+                          </label>
+                          <DatePicker
+                            selectedDate={formData.pickupDate}
+                            onDateSelect={(date) => handleDateSelect('pickupDate', date)}
+                            minDate={new Date()}
+                            unavailableDates={unavailableDates}
+                            carId={selectedCarId}
+                            className="w-full"
                           />
                         </div>
                         <div>
                           <label className="block text-sm font-medium text-gray-700 mb-2">
-                            Mesto *
+                            <CalendarDaysIcon className="inline h-5 w-5 mr-2" />
+                            Dátum vrátenia *
                           </label>
-                          <input
-                            type="text"
-                            name="address.city"
-                            value={formData.address.city}
-                            onChange={handleInputChange}
-                            className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-accent"
-                            required
-                            disabled={!!currentUser}
+                          <DatePicker
+                            selectedDate={formData.returnDate}
+                            onDateSelect={(date) => handleDateSelect('returnDate', date)}
+                            minDate={formData.pickupDate ? new Date(formData.pickupDate.getTime() + 86400000) : new Date()}
+                            unavailableDates={unavailableDates}
+                            carId={selectedCarId}
+                            className="w-full"
                           />
+                        </div>
+                      </div>
+
+                      {/* Time Selection */}
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-2">
+                            <ClockIcon className="inline h-5 w-5 mr-2" />
+                            Čas vyzdvihnutia
+                          </label>
+                          <select
+                            value={formData.pickupTime}
+                            onChange={(e) => handleInputChange({ target: { name: 'pickupTime', value: e.target.value } })}
+                            className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                          >
+                            {timeSlots.map(time => (
+                              <option key={time} value={time}>{time}</option>
+                            ))}
+                          </select>
                         </div>
                         <div>
                           <label className="block text-sm font-medium text-gray-700 mb-2">
-                            Kraj *
+                            <ClockIcon className="inline h-5 w-5 mr-2" />
+                            Čas vrátenia
                           </label>
-                          <input
-                            type="text"
-                            name="address.state"
-                            value={formData.address.state}
-                            onChange={handleInputChange}
-                            className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-accent"
-                            required
-                            disabled={!!currentUser}
-                          />
-                        </div>
-                        <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-2">
-                            PSČ *
-                          </label>
-                          <input
-                            type="text"
-                            name="address.postalCode"
-                            value={formData.address.postalCode}
-                            onChange={handleInputChange}
-                            className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-accent"
-                            required
-                            disabled={!!currentUser}
-                          />
+                          <select
+                            value={formData.returnTime}
+                            onChange={(e) => handleInputChange({ target: { name: 'returnTime', value: e.target.value } })}
+                            className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                          >
+                            {timeSlots.map(time => (
+                              <option key={time} value={time}>{time}</option>
+                            ))}
+                          </select>
                         </div>
                       </div>
                     </div>
                     
                     <div className="flex justify-between mt-8">
-                      <Button type="button" variant="outline" onClick={prevStep}>
+                      <Button variant="outline" onClick={() => navigate(-1)}>
                         Späť
                       </Button>
-                      <Button type="button" onClick={nextStep}>
+                      <Button 
+                        type="button" 
+                        onClick={nextStep}
+                        disabled={!isStep1Valid()}
+                      >
                         Ďalší krok
                       </Button>
                     </div>
                   </div>
                 )}
 
-                {/* Step 3: Review & Confirm */}
-                {currentStep === 3 && (
+                {/* Step 2: Insurance Packages */}
+                {currentStep === 2 && (
                   <div>
-                    <h2 className="text-2xl font-bold text-gray-900 mb-6">Prehľad a potvrdenie</h2>
+                    <h2 className="text-2xl font-bold text-gray-900 mb-6 text-center">
+                      Vyberte si poistný balíček
+                    </h2>
                     
-                    {/* Booking Summary */}
-                    <div className="bg-gray-50 rounded-lg p-6 mb-6">
-                      <h3 className="text-lg font-semibold mb-4">Súhrn rezervácie</h3>
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div>
-                          <strong>Vozidlo:</strong><br />
-                          {selectedCar?.brand} {selectedCar?.model} ({selectedCar?.year})
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                      {insurancePackages.map((insurance) => (
+                        <div
+                          key={insurance.id}
+                          onClick={() => handleInsuranceSelect(insurance.id)}
+                          className={`relative border-2 rounded-xl p-6 cursor-pointer transition-all duration-300 ${
+                            formData.selectedInsurance === insurance.id
+                              ? 'border-blue-500 bg-blue-50 shadow-lg'
+                              : 'border-gray-300 bg-white hover:border-blue-300 hover:shadow-md'
+                          }`}
+                        >
+                          {insurance.recommended && (
+                            <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
+                              <span className="bg-green-500 text-white px-3 py-1 rounded-full text-xs font-semibold">
+                                Odporúčané
+                              </span>
+                            </div>
+                          )}
+                          
+                          <div className="text-center mb-4">
+                            <h3 className="text-xl font-bold text-gray-900 mb-2">{insurance.name}</h3>
+                            <div className="text-3xl font-bold text-blue-600 mb-2">
+                              {insurance.price === 0 ? 'Zahrnuté' : `${insurance.price}€/deň`}
+                            </div>
+                            <p className="text-gray-600 text-sm">{insurance.description}</p>
+                          </div>
+                          
+                          <ul className="space-y-2">
+                            {insurance.features.map((feature, index) => (
+                              <li key={index} className="flex items-center text-sm text-gray-700">
+                                <CheckIcon className="h-4 w-4 text-green-500 mr-2 flex-shrink-0" />
+                                {feature}
+                              </li>
+                            ))}
+                          </ul>
+                          
+                          {formData.selectedInsurance === insurance.id && (
+                            <div className="absolute top-4 right-4">
+                              <div className="w-6 h-6 bg-blue-500 rounded-full flex items-center justify-center">
+                                <CheckIcon className="h-4 w-4 text-white" />
+                              </div>
+                            </div>
+                          )}
                         </div>
-                        <div>
-                          <strong>Kategória:</strong><br />
-                          {selectedCar?.category}
-                        </div>
-                        <div>
-                          <strong>Prevzatie:</strong><br />
-                          {formData.pickupDate?.toLocaleDateString()}<br />
-                          {formData.pickupLocation.name}
-                        </div>
-                        <div>
-                          <strong>Vrátenie:</strong><br />
-                          {formData.returnDate?.toLocaleDateString()}<br />
-                          {formData.returnLocation.name}
-                        </div>
-                        <div>
-                          <strong>Trvanie:</strong><br />
-                          {calculateDays()} dní
-                        </div>
-                        <div>
-                          <strong>Zákazník:</strong><br />
-                          {formData.firstName} {formData.lastName}<br />
-                          {formData.email}
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Pricing Breakdown */}
-                    <div className="bg-gray-50 rounded-lg p-6 mb-6">
-                      <h3 className="text-lg font-semibold mb-4">Rozpis cien</h3>
-                      <div className="space-y-2">
-                        <div className="flex justify-between">
-                          <span>Denná sadzba ({calculateDays()} dní):</span>
-                          <span>${calculateTotal()}</span>
-                        </div>
-                        <div className="flex justify-between">
-                          <span>Bezpečnostná záloha:</span>
-                          <span>${selectedCar?.deposit || 0}</span>
-                        </div>
-                        <div className="border-t pt-2 flex justify-between font-semibold text-lg">
-                          <span>Celková suma:</span>
-                          <span>${calculateTotal() + (selectedCar?.deposit || 0)}</span>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Special Requests */}
-                    <div className="mb-6">
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
-                        Špeciálne požiadavky (voliteľné)
-                      </label>
-                      <textarea
-                        name="specialRequests"
-                        value={formData.specialRequests}
-                        onChange={handleInputChange}
-                        rows={3}
-                        className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-accent"
-                        placeholder="Akékoľvek špeciálne požiadavky alebo požiadavky..."
-                      />
-                    </div>
-
-                    {/* Terms and Conditions */}
-                    <div className="mb-6">
-                      <label className="flex items-start">
-                        <input
-                          type="checkbox"
-                          required
-                          className="mt-1 text-accent focus:ring-accent"
-                        />
-                        <span className="ml-2 text-sm text-gray-700">
-                          Súhlasím s <a href="/terms" className="text-accent hover:underline">Obchodnými podmienkami</a> a <a href="/privacy" className="text-accent hover:underline">Zásadami ochrany súkromia</a>
-                        </span>
-                      </label>
+                      ))}
                     </div>
                     
-                    <div className="flex justify-between">
-                      <Button type="button" variant="outline" onClick={prevStep}>
+                    <div className="flex justify-between mt-8">
+                      <Button variant="outline" onClick={prevStep}>
                         Späť
                       </Button>
                       <Button 
-                        type="submit" 
-                        disabled={loading}
-                        className="flex items-center"
+                        type="button" 
+                        onClick={nextStep}
+                        disabled={!isStep2Valid()}
                       >
-                        {loading ? (
-                          <>
-                            <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-                            Spracováva sa...
-                          </>
-                        ) : (
-                          'Potvrdiť rezerváciu'
-                        )}
+                        Ďalší krok
+                      </Button>
+                    </div>
+                  </div>
+                )}
+
+                {/* Step 3: Additional Services */}
+                {currentStep === 3 && (
+                  <div>
+                    <h2 className="text-2xl font-bold text-gray-900 mb-6 text-center">
+                      Dodatočné služby
+                    </h2>
+                    <p className="text-gray-600 text-center mb-8">
+                      Vyberte si dodatočné služby pre vaše pohodlie (voliteľné)
+                    </p>
+                    
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      {additionalServices.map((service) => (
+                        <div
+                          key={service.id}
+                          onClick={() => handleServiceToggle(service.id)}
+                          className={`border-2 rounded-xl p-6 cursor-pointer transition-all duration-300 ${
+                            formData[service.id]
+                              ? 'border-blue-500 bg-blue-50 shadow-lg'
+                              : 'border-gray-300 bg-white hover:border-blue-300 hover:shadow-md'
+                          }`}
+                        >
+                          <div className="flex items-center justify-between mb-4">
+                            <div className="flex-1">
+                              <h3 className="text-lg font-semibold text-gray-900 mb-2">{service.name}</h3>
+                              <p className="text-gray-600 text-sm">{service.description}</p>
+                            </div>
+                            <div className="ml-4 text-right">
+                              <div className="text-2xl font-bold text-blue-600">{service.price}€/deň</div>
+                              <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center mt-2 ${
+                                formData[service.id]
+                                  ? 'border-blue-500 bg-blue-500'
+                                  : 'border-gray-300'
+                              }`}>
+                                {formData[service.id] && (
+                                  <CheckIcon className="h-4 w-4 text-white" />
+                                )}
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                    
+                    <div className="flex justify-between mt-8">
+                      <Button variant="outline" onClick={prevStep}>
+                        Späť
+                      </Button>
+                      <Button 
+                        type="button" 
+                        onClick={nextStep}
+                      >
+                        Ďalší krok
+                      </Button>
+                    </div>
+                  </div>
+                )}
+
+                {/* Step 4: Personal Information */}
+                {currentStep === 4 && (
+                  <div>
+                    <h2 className="text-2xl font-bold text-gray-900 mb-6">
+                      Osobné údaje
+                    </h2>
+                    
+                    {currentUser && (
+                      <div className="bg-green-50 border border-green-200 rounded-md p-4 mb-6">
+                        <p className="text-green-800">Vitajte späť, {currentUser.firstName}! Vaše údaje sú predvyplnené nižšie.</p>
+                      </div>
+                    )}
+                    
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div>
+                        <input
+                          type="text"
+                          name="firstName"
+                          value={formData.firstName}
+                          onChange={handleInputChange}
+                          placeholder="Meno*"
+                          className="w-full border border-gray-300 rounded-md px-4 py-3 text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                          required
+                          disabled={!!currentUser}
+                        />
+                      </div>
+                                              <div>
+                        <input
+                          type="text"
+                          name="lastName"
+                          value={formData.lastName}
+                          onChange={handleInputChange}
+                          placeholder="Priezvisko*"
+                          className="w-full border border-gray-300 rounded-md px-4 py-3 text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                          required
+                          disabled={!!currentUser}
+                        />
+                      </div>
+                      <div>
+                        <input
+                          type="tel"
+                          name="phone"
+                          value={formData.phone}
+                          onChange={handleInputChange}
+                          placeholder="Telefónne číslo*"
+                          className="w-full border border-gray-300 rounded-md px-4 py-3 text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                          required
+                          disabled={!!currentUser}
+                        />
+                      </div>
+                      <div>
+                        <input
+                          type="email"
+                          name="email"
+                          value={formData.email}
+                          onChange={handleInputChange}
+                          placeholder="E-mail*"
+                          className="w-full border border-gray-300 rounded-md px-4 py-3 text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                          required
+                          disabled={!!currentUser}
+                        />
+                      </div>
+                      <div>
+                        <input
+                          type="text"
+                          name="licenseNumber"
+                          value={formData.licenseNumber}
+                          onChange={handleInputChange}
+                          placeholder="Číslo občianskeho preukazu*"
+                          className="w-full border border-gray-300 rounded-md px-4 py-3 text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                          required
+                          disabled={!!currentUser}
+                        />
+                      </div>
+                      <div>
+                        <input
+                          type="date"
+                          name="dateOfBirth"
+                          value={formData.dateOfBirth}
+                          onChange={handleInputChange}
+                          placeholder="Rodné číslo (bez lomítka)*"
+                          className="w-full border border-gray-300 rounded-md px-4 py-3 text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                          required
+                          disabled={!!currentUser}
+                        />
+                      </div>
+                      <div>
+                        <input
+                          type="text"
+                          name="licenseExpiry"
+                          value={formData.licenseExpiry}
+                          onChange={handleInputChange}
+                          placeholder="Číslo vodičského preukazu*"
+                          className="w-full border border-gray-300 rounded-md px-4 py-3 text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                          required
+                          disabled={!!currentUser}
+                        />
+                      </div>
+                      
+                                             {!currentUser && (
+                        <div>
+                          <input
+                            type="password"
+                            name="password"
+                            value={formData.password}
+                            onChange={handleInputChange}
+                            placeholder="Heslo*"
+                            className="w-full border border-gray-300 rounded-md px-4 py-3 text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                            required
+                            minLength={6}
+                          />
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Address Section */}
+                    <div className="mt-8">
+                      <h3 className="text-lg font-semibold text-gray-900 mb-4 text-left">Kontaktné údaje *</h3>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div className="md:col-span-2">
+                          <input
+                            type="text"
+                            name="address.street"
+                            value={formData.address.street}
+                            onChange={handleInputChange}
+                            placeholder="Adresa*"
+                            className="w-full border border-gray-300 rounded-md px-4 py-3 text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                            required
+                            disabled={!!currentUser}
+                          />
+                        </div>
+                        <div>
+                          <input
+                            type="text"
+                            name="address.city"
+                            value={formData.address.city}
+                            onChange={handleInputChange}
+                            placeholder="Mesto*"
+                            className="w-full border border-gray-300 rounded-md px-4 py-3 text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                            required
+                            disabled={!!currentUser}
+                          />
+                        </div>
+                        <div>
+                          <input
+                            type="text"
+                            name="address.postalCode"
+                            value={formData.address.postalCode}
+                            onChange={handleInputChange}
+                            placeholder="Smerovacíe číslo*"
+                            className="w-full border border-gray-300 rounded-md px-4 py-3 text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                            required
+                            disabled={!!currentUser}
+                          />
+                        </div>
+                        <div>
+                          <input
+                            type="text"
+                            name="address.state"
+                            value={formData.address.state}
+                            onChange={handleInputChange}
+                            placeholder="Krajina*"
+                            className="w-full border border-gray-300 rounded-md px-4 py-3 text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                            required
+                            disabled={!!currentUser}
+                          />
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Document Upload Section */}
+                    <div className="mt-8">
+                      <h3 className="text-lg font-semibold text-gray-900 mb-4 text-left">Identifikačné údaje</h3>
+                      <div className="space-y-2">
+                        <div className="border border-gray-300 rounded-lg px-4 py-2 flex justify-between items-center">
+                          <div className="text-left">
+                            <p className="text-gray-700 text-sm">Občiansky preukaz - predná strana</p>
+                            <p className="text-gray-400 text-xs">Vyberte súbor</p>
+                          </div>
+                          <span className="text-blue-600 text-sm cursor-pointer hover:text-blue-700">Choose file</span>
+                        </div>
+                        <div className="border border-gray-300 rounded-lg px-4 py-2 flex justify-between items-center">
+                          <div className="text-left">
+                            <p className="text-gray-700 text-sm">Občiansky preukaz - zadná strana</p>
+                            <p className="text-gray-400 text-xs">Vyberte súbor</p>
+                          </div>
+                          <span className="text-blue-600 text-sm cursor-pointer hover:text-blue-700">Choose file</span>
+                        </div>
+                        <div className="border border-gray-300 rounded-lg px-4 py-2 flex justify-between items-center">
+                          <div className="text-left">
+                            <p className="text-gray-700 text-sm">Vodičský preukaz - predná strana</p>
+                            <p className="text-gray-400 text-xs">Vyberte súbor</p>
+                          </div>
+                          <span className="text-blue-600 text-sm cursor-pointer hover:text-blue-700">Choose file</span>
+                        </div>
+                        <div className="border border-gray-300 rounded-lg px-4 py-2 flex justify-between items-center">
+                          <div className="text-left">
+                            <p className="text-gray-700 text-sm">Vodičský preukaz - zadná strana</p>
+                            <p className="text-gray-400 text-xs">Vyberte súbor</p>
+                          </div>
+                          <span className="text-blue-600 text-sm cursor-pointer hover:text-blue-700">Choose file</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Agreement Section */}
+                    <div className="mt-8">
+                      <div className="flex items-center gap-2 mb-4">
+                        <input
+                          type="checkbox"
+                          id="businessTerms"
+                          className="w-4 h-4 text-blue-600 bg-white border-gray-300 rounded focus:ring-blue-500"
+                          required
+                        />
+                        <label htmlFor="businessTerms" className="text-gray-900 text-sm">
+                          Súhlasím so <span className="text-blue-600 underline">všeobecnými obchodnými podmienkami</span> *
+                        </label>
+                      </div>
+                      <div className="flex items-center gap-2 mb-6">
+                        <input
+                          type="checkbox"
+                          id="dataProcessing"
+                          className="w-4 h-4 text-blue-600 bg-white border-gray-300 rounded focus:ring-blue-500"
+                          required
+                        />
+                        <label htmlFor="dataProcessing" className="text-gray-900 text-sm">
+                          Súhlasím so <span className="text-blue-600 underline">spracovaním osobných údajov</span> *
+                        </label>
+                      </div>
+                      
+                      <div className="text-center">
+                        <Button type="submit" disabled={loading || !isStep4Valid()}>
+                          {loading ? 'Spracováva sa...' : 'Potvrdiť objednávku'}
+                        </Button>
+                      </div>
+                    </div>
+                    
+                    <div className="flex justify-between mt-8">
+                      <Button variant="outline" onClick={prevStep}>
+                        Späť
                       </Button>
                     </div>
                   </div>
                 )}
               </form>
+            </div>
+          </div>
+
+          {/* Right Side - Rental Details */}
+          <div className="lg:col-span-2">
+            <div className="bg-white rounded-lg shadow-sm overflow-hidden sticky top-24">
+              {/* Selected Car - Full Width Image */}
+              {selectedCar && (
+                <div className="mb-6">
+                  <CarImage
+                    car={selectedCar}
+                    size="medium"
+                    className="w-full h-64 object-cover"
+                  />
+                  <div className="p-6 pb-0">
+                    <h4 className="font-semibold text-gray-900">{selectedCar.brand} {selectedCar.model}</h4>
+                    <p className="text-sm text-gray-600 capitalize">{selectedCar.category}</p>
+                  </div>
+                </div>
+              )}
+              
+              <div className="p-6">{/* Container for rest of content */}
+
+              {/* Booking Summary */}
+              <div className="mb-6">
+                {/* Date & Time and Locations - Side by Side */}
+                {((formData.pickupDate && formData.returnDate) || (formData.pickupLocation.name || formData.returnLocation.name)) && (
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                    {/* Dates */}
+                    {formData.pickupDate && formData.returnDate && (
+                      <div>
+                        <h4 className="font-semibold text-gray-900 mb-2 text-sm">Dátumy</h4>
+                        <div className="space-y-1 text-xs">
+                          <div className="flex justify-between">
+                            <span className="text-gray-600">Vyzdvihnutie:</span>
+                            <span className="font-medium">
+                              {formData.pickupDate.toLocaleDateString()} {formData.pickupTime}
+                            </span>
+                          </div>
+                          <div className="flex justify-between">
+                            <span className="text-gray-600">Vrátenie:</span>
+                            <span className="font-medium">
+                              {formData.returnDate.toLocaleDateString()} {formData.returnTime}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Locations */}
+                    {(formData.pickupLocation.name || formData.returnLocation.name) && (
+                      <div>
+                        <h4 className="font-semibold text-gray-900 mb-2 text-sm">Miesta</h4>
+                        <div className="space-y-1 text-xs">
+                          {formData.pickupLocation.name && (
+                            <div className="flex justify-between">
+                              <span className="text-gray-600">Vyzdvihnutie:</span>
+                              <span className="font-medium">{formData.pickupLocation.name}</span>
+                            </div>
+                          )}
+                          {formData.returnLocation.name && (
+                            <div className="flex justify-between">
+                              <span className="text-gray-600">Vrátenie:</span>
+                              <span className="font-medium">{formData.returnLocation.name}</span>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+
+              {/* Pricing Summary */}
+              {selectedCar && formData.pickupDate && formData.returnDate && (
+                <div className="border-t pt-4">
+                  <h4 className="font-semibold text-gray-900 mb-3">Cenový rozpis</h4>
+                  <div className="space-y-2">
+                    <div className="flex justify-between text-sm">
+                      <span className="text-gray-600">Vozidlo ({calculateDays()} dní):</span>
+                      <span className="font-medium">{selectedCar.dailyRate * calculateDays()}€</span>
+                    </div>
+                    
+                    {/* Insurance cost */}
+                    {formData.selectedInsurance && (() => {
+                      const insurance = insurancePackages.find(pkg => pkg.id === formData.selectedInsurance);
+                      return insurance && insurance.price > 0 ? (
+                        <div className="flex justify-between text-sm">
+                          <span className="text-gray-600">{insurance.name}:</span>
+                          <span className="font-medium">{insurance.price * calculateDays()}€</span>
+                        </div>
+                      ) : null;
+                    })()}
+                    
+                    {/* Additional services costs */}
+                    {additionalServices.map(service => 
+                      formData[service.id] && (
+                        <div key={service.id} className="flex justify-between text-sm">
+                          <span className="text-gray-600">{service.name}:</span>
+                          <span className="font-medium">{service.price * calculateDays()}€</span>
+                        </div>
+                      )
+                    )}
+                    
+                    <div className="flex justify-between text-sm">
+                      <span className="text-gray-600">Záloha:</span>
+                      <span className="font-medium">{selectedCar.deposit}€</span>
+                    </div>
+                    <div className="border-t pt-3 mt-3">
+                      <div className="flex justify-between text-lg font-bold">
+                        <span>Celkom:</span>
+                        <span className="text-blue-600">{calculateTotal() + selectedCar.deposit}€</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+              
+              </div> {/* End of p-6 container */}
             </div>
           </div>
         </div>

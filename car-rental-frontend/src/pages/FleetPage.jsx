@@ -396,91 +396,6 @@ const FleetPage = () => {
       </div>
 
       <div className="mx-auto px-4 sm:px-6 lg:px-8 py-8" style={{ maxWidth: '90rem' }}>
-        {/* Date and Time Selection */}
-        <div className="bg-white rounded-lg shadow-sm p-6 mb-8">
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {/* Pickup */}
-            <div className="space-y-4">
-              <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Dátum prevzatia
-              </label>
-                  <input
-                    type="date"
-                    value={rentalDetails.pickupDate ? rentalDetails.pickupDate.toISOString().split('T')[0] : ''}
-                    onChange={(e) => handleRentalDetailChange('pickupDate', e.target.value ? new Date(e.target.value) : null)}
-                    min={new Date().toISOString().split('T')[0]}
-                    className="w-full border border-gray-300 rounded-md px-3 py-2 h-10 focus:outline-none focus:ring-2 focus:ring-green-500"
-              />
-            </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Čas prevzatia
-                  </label>
-                  <select
-                    value={rentalDetails.pickupTime}
-                    onChange={(e) => handleRentalDetailChange('pickupTime', e.target.value)}
-                    className="w-full border border-gray-300 rounded-md px-3 py-2 h-10 focus:outline-none focus:ring-2 focus:ring-green-500"
-                  >
-                    {timeSlots.map(time => (
-                      <option key={time} value={time}>{time}</option>
-                    ))}
-                  </select>
-                </div>
-              </div>
-              {filters.pickupOutOfHours && (
-                <div className="p-3 bg-yellow-50 border border-yellow-200 rounded-md">
-                  <p className="text-yellow-800 text-sm">
-                    ⚠️ Vyzdvihnutie mimo otváracích hodín - automaticky pridané do služieb
-                  </p>
-                </div>
-              )}
-            </div>
-
-            {/* Return */}
-            <div className="space-y-4">
-              <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Dátum vrátenia
-              </label>
-                  <input
-                    type="date"
-                    value={rentalDetails.returnDate ? rentalDetails.returnDate.toISOString().split('T')[0] : ''}
-                    onChange={(e) => handleRentalDetailChange('returnDate', e.target.value ? new Date(e.target.value) : null)}
-                    min={rentalDetails.pickupDate ? new Date(rentalDetails.pickupDate.getTime() + 86400000).toISOString().split('T')[0] : new Date().toISOString().split('T')[0]}
-                    className="w-full border border-gray-300 rounded-md px-3 py-2 h-10 focus:outline-none focus:ring-2 focus:ring-green-500"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Čas vrátenia
-                  </label>
-                  <select
-                    value={rentalDetails.returnTime}
-                    onChange={(e) => handleRentalDetailChange('returnTime', e.target.value)}
-                    className="w-full border border-gray-300 rounded-md px-3 py-2 h-10 focus:outline-none focus:ring-2 focus:ring-green-500"
-                  >
-                    {timeSlots.map(time => (
-                      <option key={time} value={time}>{time}</option>
-                    ))}
-                  </select>
-                </div>
-              </div>
-              {filters.returnOutOfHours && (
-                <div className="p-3 bg-yellow-50 border border-yellow-200 rounded-md">
-                  <p className="text-yellow-800 text-sm">
-                    ⚠️ Odovzdanie mimo otváracích hodín - automaticky pridané do služieb
-                  </p>
-                </div>
-              )}
-            </div>
-          </div>
-          
-
-        </div>
 
         {/* Fallback Message */}
         {fallbackMessage && (
@@ -492,191 +407,148 @@ const FleetPage = () => {
         <div className="flex flex-col lg:flex-row gap-8">
           {/* Enhanced Filters Sidebar */}
           <div className="lg:w-1/5">
-            <div className="bg-white rounded-lg shadow-sm p-6 sticky top-32">
-              <div className="flex items-center justify-between mb-6">
-                <h3 className="text-lg font-semibold text-gray-900 flex items-center">
-                  <FunnelIcon className="h-5 w-5 mr-2" />
-                  Filtre
-                </h3>
-                <button 
-                  onClick={clearFilters}
-                  className="text-sm text-green-600 hover:text-green-700"
-                >
-                  Zrušiť všetko
-                </button>
+            <div className="space-y-4 sticky top-8">
+              {/* Date Selection Filter */}
+              <div className="bg-white rounded-lg shadow-md border border-gray-200 p-4">
+                <h4 className="text-sm font-medium text-gray-900 mb-3 flex items-center">
+                  <CalendarIcon className="h-4 w-4 mr-2" />
+                  Výber dátumu
+                </h4>
+                <div className="space-y-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Dátum prevzatia
+                    </label>
+                    <input
+                      type="date"
+                      value={rentalDetails.pickupDate ? rentalDetails.pickupDate.toISOString().split('T')[0] : ''}
+                      onChange={(e) => handleRentalDetailChange('pickupDate', e.target.value ? new Date(e.target.value) : null)}
+                      min={new Date().toISOString().split('T')[0]}
+                      className="w-full border border-gray-300 rounded-md px-3 py-2 h-10 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Dátum odovzdania
+                    </label>
+                    <input
+                      type="date"
+                      value={rentalDetails.returnDate ? rentalDetails.returnDate.toISOString().split('T')[0] : ''}
+                      onChange={(e) => handleRentalDetailChange('returnDate', e.target.value ? new Date(e.target.value) : null)}
+                      min={rentalDetails.pickupDate ? new Date(rentalDetails.pickupDate.getTime() + 86400000).toISOString().split('T')[0] : new Date().toISOString().split('T')[0]}
+                      className="w-full border border-gray-300 rounded-md px-3 py-2 h-10 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    />
+                  </div>
+                </div>
               </div>
 
-              {/* Vehicle Class Filter */}
-              <div className="mb-6">
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Trieda vozidla
-                </label>
-                <select
-                  value={filters.vehicleClass}
-                  onChange={(e) => handleFilterChange('vehicleClass', e.target.value)}
-                  className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500"
-                >
-                  <option value="">Všetky triedy</option>
-                  {vehicleClasses.map(cls => (
-                    <option key={cls.id} value={cls.id}>
-                      {cls.name}
-                    </option>
-                  ))}
-                </select>
-                {filters.vehicleClass && (
-                  <p className="text-xs text-gray-500 mt-1">
-                    {vehicleClasses.find(c => c.id === filters.vehicleClass)?.models.join(', ')}
-                  </p>
+              {/* Main Filters Container */}
+              <div className="bg-white rounded-lg shadow-md border border-gray-200 p-4">
+                <div className="flex items-center justify-between mb-6">
+                  <h3 className="text-lg font-semibold text-gray-900 flex items-center">
+                    <FunnelIcon className="h-5 w-5 mr-2" />
+                    Filtre
+                  </h3>
+                  <button 
+                    onClick={clearFilters}
+                    className="text-sm text-blue-600 hover:text-blue-700"
+                  >
+                    Zrušiť všetko
+                  </button>
+                </div>
+
+                {/* Vehicle Class Filter */}
+                <div className="mb-6">
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Trieda vozidla
+                  </label>
+                  <select
+                    value={filters.vehicleClass}
+                    onChange={(e) => handleFilterChange('vehicleClass', e.target.value)}
+                    className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  >
+                    <option value="">Všetky triedy</option>
+                    {vehicleClasses.map(cls => (
+                      <option key={cls.id} value={cls.id}>
+                        {cls.name}
+                      </option>
+                    ))}
+                  </select>
+                  {filters.vehicleClass && (
+                    <p className="text-xs text-gray-500 mt-1">
+                      {vehicleClasses.find(c => c.id === filters.vehicleClass)?.models.join(', ')}
+                    </p>
+                  )}
+                </div>
+
+                {/* Seats Filter */}
+                <div className="mb-6">
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Počet miest
+                  </label>
+                  <select
+                    value={filters.seats}
+                    onChange={(e) => handleFilterChange('seats', e.target.value)}
+                    className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  >
+                    <option value="">Ľubovoľný počet</option>
+                    <option value="2">2+ miest</option>
+                    <option value="3">3+ miest</option>
+                    <option value="5">5+ miest</option>
+                    <option value="7">7+ miest</option>
+                    <option value="9">9+ miest</option>
+                  </select>
+                </div>
+
+                {/* Transmission Filter */}
+                <div className="mb-6">
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Prevodovka
+                  </label>
+                  <select
+                    value={filters.transmission}
+                    onChange={(e) => handleFilterChange('transmission', e.target.value)}
+                    className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  >
+                    <option value="">Všetky typy</option>
+                    <option value="automatic">Automat</option>
+                    <option value="manual">Manuál</option>
+                  </select>
+                </div>
+
+                {/* Fuel Type Filter */}
+                <div className="mb-6">
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Palivo
+                  </label>
+                  <select
+                    value={filters.fuelType}
+                    onChange={(e) => handleFilterChange('fuelType', e.target.value)}
+                    className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  >
+                    <option value="">Všetky typy</option>
+                    <option value="petrol">Benzín</option>
+                    <option value="diesel">Diesel</option>
+                    <option value="hybrid">Hybrid</option>
+                    <option value="electric">Elektro</option>
+                    <option value="lpg">Plyn</option>
+                  </select>
+                </div>
+
+
+                {/* Out of Hours Services Display */}
+                {(filters.pickupOutOfHours || filters.returnOutOfHours) && (
+                  <div className="mt-6 p-3 bg-blue-50 border border-blue-200 rounded-md">
+                    <h4 className="text-sm font-medium text-blue-900 mb-2">Automaticky pridané služby:</h4>
+                    {filters.pickupOutOfHours && (
+                      <p className="text-xs text-blue-800">• Vyzdvihnutie mimo otv. hodín</p>
+                    )}
+                    {filters.returnOutOfHours && (
+                      <p className="text-xs text-blue-800">• Odovzdanie mimo otv. hodín</p>
+                    )}
+                  </div>
                 )}
               </div>
-
-              {/* Seats Filter */}
-              <div className="mb-6">
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Počet miest
-                </label>
-                <select
-                  value={filters.seats}
-                  onChange={(e) => handleFilterChange('seats', e.target.value)}
-                  className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500"
-                >
-                  <option value="">Ľubovoľný počet</option>
-                  <option value="2">2+ miest</option>
-                  <option value="3">3+ miest</option>
-                  <option value="5">5+ miest</option>
-                  <option value="7">7+ miest</option>
-                  <option value="9">9+ miest</option>
-                </select>
-              </div>
-
-              {/* Transmission Filter */}
-              <div className="mb-6">
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Prevodovka
-                </label>
-                <select
-                  value={filters.transmission}
-                  onChange={(e) => handleFilterChange('transmission', e.target.value)}
-                  className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500"
-                >
-                  <option value="">Všetky typy</option>
-                  <option value="automatic">Automat</option>
-                  <option value="manual">Manuál</option>
-                </select>
-              </div>
-
-              {/* Fuel Type Filter */}
-              <div className="mb-6">
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Palivo
-                </label>
-                <select
-                  value={filters.fuelType}
-                  onChange={(e) => handleFilterChange('fuelType', e.target.value)}
-                  className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500"
-                >
-                  <option value="">Všetky typy</option>
-                  <option value="petrol">Benzín</option>
-                  <option value="diesel">Diesel</option>
-                  <option value="hybrid">Hybrid</option>
-                  <option value="electric">Elektro</option>
-                  <option value="lpg">Plyn</option>
-                </select>
-              </div>
-
-              {/* Advanced Filters Toggle */}
-              <div className="mb-4">
-                <button
-                  onClick={() => setShowAdvancedFilters(!showAdvancedFilters)}
-                  className="w-full flex items-center justify-between px-3 py-2 text-sm font-medium text-gray-700 bg-gray-50 rounded-md hover:bg-gray-100"
-                >
-                  <span>Rozšírené možnosti</span>
-                  {showAdvancedFilters ? 
-                    <ChevronUpIcon className="h-4 w-4" /> : 
-                    <ChevronDownIcon className="h-4 w-4" />
-                  }
-                </button>
-              </div>
-
-              {/* Advanced Filters */}
-              <div className={`space-y-4 overflow-hidden transition-all duration-300 ${showAdvancedFilters ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'}`}>
-                <div className="space-y-3">
-                  <label className="flex items-center">
-                    <input
-                      type="checkbox"
-                      checked={filters.unlimitedKm}
-                      onChange={(e) => handleFilterChange('unlimitedKm', e.target.checked)}
-                      className="rounded border-gray-300 text-green-600 focus:ring-green-500"
-                    />
-                    <span className="ml-2 text-sm text-gray-700">Bez obmedzenia km</span>
-                  </label>
-
-                  <label className="flex items-center">
-                    <input
-                      type="checkbox"
-                      checked={filters.petsAllowed}
-                      onChange={(e) => handleFilterChange('petsAllowed', e.target.checked)}
-                      className="rounded border-gray-300 text-green-600 focus:ring-green-500"
-                    />
-                    <span className="ml-2 text-sm text-gray-700">Domáce zvieratá povolené</span>
-                  </label>
-
-                  <label className="flex items-center">
-                    <input
-                      type="checkbox"
-                      checked={filters.childSeat}
-                      onChange={(e) => handleFilterChange('childSeat', e.target.checked)}
-                      className="rounded border-gray-300 text-green-600 focus:ring-green-500"
-                    />
-                    <span className="ml-2 text-sm text-gray-700">Detská sedačka</span>
-                  </label>
-
-                  <label className="flex items-center">
-                    <input
-                      type="checkbox"
-                      checked={filters.navigation}
-                      onChange={(e) => handleFilterChange('navigation', e.target.checked)}
-                      className="rounded border-gray-300 text-green-600 focus:ring-green-500"
-                    />
-                    <span className="ml-2 text-sm text-gray-700">Navigácia</span>
-                  </label>
-
-                  <label className="flex items-center">
-                    <input
-                      type="checkbox"
-                      checked={filters.roofBox}
-                      onChange={(e) => handleFilterChange('roofBox', e.target.checked)}
-                      className="rounded border-gray-300 text-green-600 focus:ring-green-500"
-                    />
-                    <span className="ml-2 text-sm text-gray-700">Strešný box</span>
-                  </label>
-
-                  <label className="flex items-center">
-                    <input
-                      type="checkbox"
-                      checked={filters.internationalTravel}
-                      onChange={(e) => handleFilterChange('internationalTravel', e.target.checked)}
-                      className="rounded border-gray-300 text-green-600 focus:ring-green-500"
-                    />
-                    <span className="ml-2 text-sm text-gray-700">Cestujem do zahraničia</span>
-                  </label>
-                </div>
-              </div>
-
-
-
-              {/* Out of Hours Services Display */}
-              {(filters.pickupOutOfHours || filters.returnOutOfHours) && (
-                <div className="mt-6 p-3 bg-blue-50 border border-blue-200 rounded-md">
-                  <h4 className="text-sm font-medium text-blue-900 mb-2">Automaticky pridané služby:</h4>
-                  {filters.pickupOutOfHours && (
-                    <p className="text-xs text-blue-800">• Vyzdvihnutie mimo otv. hodín</p>
-                  )}
-                  {filters.returnOutOfHours && (
-                    <p className="text-xs text-blue-800">• Odovzdanie mimo otv. hodín</p>
-                  )}
-                </div>
-              )}
             </div>
           </div>
 
@@ -691,7 +563,7 @@ const FleetPage = () => {
                 <select
                   value={filters.sortBy}
                   onChange={(e) => handleFilterChange('sortBy', e.target.value)}
-                  className="border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
+                  className="border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                 >
                   <option value="price-asc">Cena: Od najnižšej</option>
                   <option value="price-desc">Cena: Od najvyššej</option>
@@ -715,12 +587,12 @@ const FleetPage = () => {
                 <p className="text-gray-500 mb-4">
                   Skúste upraviť filtre alebo dátumy pre zobrazenie dostupných vozidiel.
                 </p>
-                <Button onClick={clearFilters} className="bg-green-600 hover:bg-green-700">
+                <Button onClick={clearFilters} className="bg-blue-600 hover:bg-blue-700">
                   Zrušiť filtre
                 </Button>
               </div>
             ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 2xl:grid-cols-3 gap-6">
+              <div className="space-y-4">
                 {filteredCars.map(car => (
                   <CarCard 
                     key={car._id} 

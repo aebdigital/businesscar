@@ -13,6 +13,7 @@ import Button from '../components/Button';
 import CarImage from '../components/CarImage';
 import DatePicker from '../components/DatePicker';
 import { carsAPI } from '../services/api';
+import Image1 from '../assets/1.jpg';
 
 const CarDetailsPage = () => {
   const { id } = useParams();
@@ -116,10 +117,24 @@ const CarDetailsPage = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-accent mx-auto"></div>
-          <p className="mt-4 text-gray-600">Načítavajú sa detaily vozidla...</p>
+      <div className="min-h-screen bg-gray-50">
+        {/* Mini Hero Section */}
+        <div 
+          className="relative h-[15vh] bg-cover bg-center flex items-center"
+          style={{
+            backgroundImage: `linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url(${Image1})`
+          }}
+        >
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
+            
+          </div>
+        </div>
+
+        <div className="flex items-center justify-center py-24">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-blue-600 mx-auto"></div>
+            <p className="mt-4 text-gray-600">Načítavajú sa detaily vozidla...</p>
+          </div>
         </div>
       </div>
     );
@@ -127,35 +142,60 @@ const CarDetailsPage = () => {
 
   if (error || !car) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-center max-w-md mx-auto px-4">
-          <div className="text-red-500 mb-4">
-            <svg className="w-16 h-16 mx-auto" fill="currentColor" viewBox="0 0 20 20">
-              <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
-            </svg>
+      <div className="min-h-screen bg-gray-50">
+        {/* Mini Hero Section */}
+        <div 
+          className="relative h-[15vh] bg-cover bg-center flex items-center"
+          style={{
+            backgroundImage: `linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url(${Image1})`
+          }}
+        >
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
+            
           </div>
-          <h2 className="text-xl font-semibold text-gray-900 mb-2">Vozidlo sa nenašlo</h2>
-          <p className="text-gray-600 mb-4">{error}</p>
-          <Button onClick={() => navigate('/fleet')}>
-            Späť na flotilu
-          </Button>
+        </div>
+
+        <div className="flex items-center justify-center py-24">
+          <div className="text-center max-w-md mx-auto px-4">
+            <div className="text-red-500 mb-4">
+              <svg className="w-16 h-16 mx-auto" fill="currentColor" viewBox="0 0 20 20">
+                <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+              </svg>
+            </div>
+            <h2 className="text-xl font-semibold text-gray-900 mb-2">Vozidlo sa nenašlo</h2>
+            <p className="text-gray-600 mb-4">{error}</p>
+            <Button onClick={() => navigate('/fleet')}>
+              Späť na flotilu
+            </Button>
+          </div>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-100">
+      {/* Mini Hero Section */}
+      <div 
+        className="relative h-[15vh] bg-cover bg-center flex items-center"
+        style={{
+          backgroundImage: `linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url(${Image1})`
+        }}
+      >
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
+          
+        </div>
+      </div>
+
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Left Column - Car Details */}
           <div className="lg:col-span-2">
             {/* Car Header */}
-            <div className="mb-6">
-              <h1 className="text-4xl font-bold text-gray-900 mb-2">
-                {car.brand} {car.model}
+            <div className="mb-8">
+              <h1 className="text-5xl font-black text-gray-900 mb-3 tracking-tight leading-tight">
+                {car.brand} <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600">{car.model}</span>
               </h1>
-              <p className="text-xl text-gray-600 mb-4 capitalize">{car.category}</p>
               <div className="flex items-center space-x-6 text-gray-600">
                 <div className="flex items-center space-x-1">
                   <BoltIcon className="h-5 w-5" />
@@ -177,7 +217,7 @@ const CarDetailsPage = () => {
             </div>
 
             {/* Car Image */}
-            <div className="relative rounded-2xl overflow-hidden mb-8 shadow-lg">
+            <div className="relative overflow-hidden mb-8 shadow-2xl group transition-all duration-500 hover:shadow-3xl">
               {car.status === 'available' && (
                 <div className="absolute top-4 left-4 z-10">
                   <span className="bg-green-500 text-white px-4 py-2 rounded-full text-sm font-medium shadow-lg">
@@ -193,17 +233,13 @@ const CarDetailsPage = () => {
               />
             </div>
 
-            {/* Car Description */}
-            {car.description && (
-              <div className="bg-white rounded-lg p-6 mb-6 shadow-sm border">
-                <h3 className="text-xl font-semibold text-gray-900 mb-3">O tomto vozidle</h3>
-                <p className="text-gray-700 leading-relaxed">{car.description}</p>
-              </div>
-            )}
 
             {/* Car Specifications */}
-            <div className="bg-white rounded-lg p-6 mb-6 shadow-sm border">
-              <h3 className="text-xl font-semibold text-gray-900 mb-4">Špecifikácie vozidla</h3>
+            <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-8 mb-8 shadow-xl border border-white/20 hover:bg-white/90 transition-all duration-300">
+              <h3 className="text-2xl font-bold text-gray-900 mb-6 flex items-center">
+                <div className="w-1 h-8 bg-gradient-to-b from-blue-500 to-purple-600 rounded-full mr-3"></div>
+                Špecifikácie vozidla
+              </h3>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
                 <div>
                   <div className="text-gray-500 text-sm font-medium">Rok</div>
@@ -248,13 +284,16 @@ const CarDetailsPage = () => {
 
             {/* Features */}
             {car.features && car.features.length > 0 && (
-              <div className="bg-white rounded-lg p-6 shadow-sm border">
-                <h3 className="text-xl font-semibold text-gray-900 mb-4">Vybavenie a funkcie</h3>
+              <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-8 shadow-xl border border-white/20 hover:bg-white/90 transition-all duration-300">
+                <h3 className="text-2xl font-bold text-gray-900 mb-6 flex items-center">
+                  <div className="w-1 h-8 bg-gradient-to-b from-green-500 to-blue-500 rounded-full mr-3"></div>
+                  Vybavenie a funkcie
+                </h3>
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
                   {car.features.map((feature, index) => (
-                    <div key={index} className="flex items-center space-x-3">
-                      <div className="w-2 h-2 bg-accent rounded-full"></div>
-                      <span className="text-gray-700 capitalize">{feature.replace('-', ' ')}</span>
+                    <div key={index} className="flex items-center space-x-3 p-2 rounded-lg hover:bg-gray-50 transition-colors duration-200">
+                      <div className="w-3 h-3 bg-gradient-to-r from-green-400 to-blue-500 rounded-full shadow-sm"></div>
+                      <span className="text-gray-700 capitalize font-medium">{feature.replace('-', ' ')}</span>
                     </div>
                   ))}
                 </div>
@@ -264,8 +303,11 @@ const CarDetailsPage = () => {
 
           {/* Right Column - Booking Form */}
           <div className="lg:col-span-1">
-            <div className="bg-white rounded-lg p-6 shadow-lg border sticky top-24">
-              <h2 className="text-2xl font-semibold text-gray-900 mb-6">Rezervovať toto vozidlo</h2>
+            <div className="bg-white/90 backdrop-blur-lg rounded-2xl p-8 shadow-2xl border border-white/30 sticky top-24 hover:shadow-3xl transition-all duration-300">
+              <h2 className="text-3xl font-bold text-gray-900 mb-8 flex items-center">
+                <div className="w-1 h-10 bg-gradient-to-b from-purple-500 to-pink-500 rounded-full mr-4"></div>
+                Rezervovať toto vozidlo
+              </h2>
               
               <div className="space-y-4">
                 {/* Pickup Location */}
@@ -371,8 +413,11 @@ const CarDetailsPage = () => {
                 </div>
 
                 {/* Pricing Information */}
-                <div className="bg-gray-50 rounded-lg p-4 space-y-3 border">
-                  <h4 className="font-semibold text-gray-900">Cenové detaily</h4>
+                <div className="bg-gradient-to-br from-gray-50 to-gray-100 rounded-xl p-6 space-y-4 border border-gray-200 shadow-inner">
+                  <h4 className="font-bold text-gray-900 text-lg flex items-center">
+                    <div className="w-1 h-6 bg-gradient-to-b from-yellow-400 to-orange-500 rounded-full mr-3"></div>
+                    Cenové detaily
+                  </h4>
                   <div className="flex justify-between">
                     <span className="text-gray-600">Povolené kilometre:</span>
                     <span className="font-semibold text-gray-900">{bookingData.allowedKm || 0} km</span>

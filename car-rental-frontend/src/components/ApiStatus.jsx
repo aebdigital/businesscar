@@ -8,41 +8,21 @@ const ApiStatus = () => {
   });
 
   useEffect(() => {
-    testApiConnection();
+    // Skip API connection test, use mock data
+    setStatus({
+      api: 'mock',
+      tenant: 'mock',
+      config: 'mock-data'
+    });
   }, []);
 
   const testApiConnection = async () => {
-    const API_BASE = 'https://carflow-reservation-system.onrender.com/api';
-    const TENANT_EMAIL = 'rival@test.sk';
-
-    const newStatus = {
-      api: 'error',
-      tenant: 'error',
-      config: 'development'
-    };
-
-    // Test general API health
-    try {
-      const response = await fetch(`${API_BASE}/health`);
-      if (response.ok) {
-        newStatus.api = 'connected';
-      }
-    } catch (error) {
-      console.warn('API health check failed:', error);
-    }
-
-    // Test tenant-specific endpoint
-    try {
-      const response = await fetch(`${API_BASE}/public/users/${encodeURIComponent(TENANT_EMAIL)}/cars`);
-      if (response.ok) {
-        newStatus.tenant = 'connected';
-        newStatus.config = 'production';
-      }
-    } catch (error) {
-      console.warn('Tenant API check failed:', error);
-    }
-
-    setStatus(newStatus);
+    // API connections disabled - using mock data
+    setStatus({
+      api: 'mock',
+      tenant: 'mock',
+      config: 'mock-data'
+    });
   };
 
   const getStatusColor = (statusValue) => {
@@ -52,6 +32,8 @@ const ApiStatus = () => {
       case 'error': return 'text-red-600';
       case 'production': return 'text-green-600';
       case 'development': return 'text-blue-600';
+      case 'mock': return 'text-purple-600';
+      case 'mock-data': return 'text-purple-600';
       default: return 'text-gray-600';
     }
   };
@@ -63,6 +45,8 @@ const ApiStatus = () => {
       case 'error': return '❌';
       case 'production': return '🚀';
       case 'development': return '🔧';
+      case 'mock': return '🎭';
+      case 'mock-data': return '🎭';
       default: return '❓';
     }
   };

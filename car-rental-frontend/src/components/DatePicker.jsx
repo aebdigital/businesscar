@@ -7,7 +7,7 @@ const DatePicker = ({
   minDate, 
   maxDate, 
   unavailableDates = [], 
-  placeholder = "Vyberte dátum" 
+  placeholder = "Datum" 
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [currentMonth, setCurrentMonth] = useState(new Date());
