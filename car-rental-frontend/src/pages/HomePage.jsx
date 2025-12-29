@@ -13,14 +13,22 @@ import { carsAPI, locationsAPI, bannersAPI } from '../services/api';
 import config from '../config/config';
 const HeroImg = '/hero.jpg';
 const VasenImg = '/luxury-cars-values.jpg';
-const CarClassImg = '';
-const AudiA6Img = '';
-const BMW540iImg = '';
-const AudiS4Img = '';
-const AudiS6Img = '';
-const MaseratiImg = '';
-const BMW840iImg = '';
-const BMWX7Img = '';
+
+// Car images
+import SkodaCitigoImg from '../auta/skoda-citigo.jpg';
+import ToyotaAygoImg from '../auta/toyota-aygo.jpg';
+import VWBeetleImg from '../auta/beetle.jpg';
+import HyundaiKonaImg from '../auta/hyundai-kona.jpg';
+import SkodaOctaviaImg from '../auta/skoda-octavia.jpeg';
+import VWPassatImg from '../auta/vw-passat-variant.jpg';
+import MercedesCLAImg from '../auta/mercedes-cla-220.jpg';
+import MercedesCCombiImg from '../auta/mercedes-c-combi-automat.jpg';
+import SkodaKodiaqImg from '../auta/skoda kodiaq.jpg';
+import Peugeot5008Img from '../auta/peugeot 5008.jpg';
+import MercedesGLCImg from '../auta/mercedes glc automat.jpg';
+import MercedesVClassImg from '../auta/merc-vclass-automat.jpeg';
+
+// Category icons
 import SUVImg from '../catg img/SUV.webp';
 import SUVIconImg from '../catg img/SUV.png';
 import SedanIconImg from '../catg img/sedan-removebg-preview.png';
@@ -30,9 +38,6 @@ import KombiIconImg from '../catg img/combi.png';
 import ElektroIconImg from '../catg img/elektricke.png';
 import UzitkovePng from '../catg img/uzitkove.png';
 import ViacmiestneIconImg from '../catg img/viacmiestne.png';
-const SliderImg1 = '';
-const SliderImg2 = '';
-const SliderImg3 = '';
 
 // Fade In Up Animation Component
 const FadeInUp = ({ children, delay = 0 }) => {
@@ -352,112 +357,175 @@ const HomePage = () => {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, [isDropdownOpen]);
 
-  // All cars data
+  // All cars data - 12 vehicles
   const allCars = [
     {
-      _id: 'audi-a6',
-      brand: 'AUDI',
-      model: 'A6',
-      fullName: 'AUDI A6',
-      dailyRate: 90,
-      power: '250kW',
-      transmission: '4x4',
-      bodyType: 'Sedan',
-      fuelType: 'Benzín',
-      image: AudiA6Img,
-      price: 90,
-      type: 'Sedan',
-      fuel: 'Benzín'
+      _id: 'skoda-citigo',
+      brand: 'Škoda',
+      model: 'Citigo',
+      fullName: 'Škoda Citigo',
+      dailyRate: 25,
+      power: '55',
+      transmission: 'automat',
+      bodyType: 'Malé auto',
+      fuelType: 'benzín',
+      image: SkodaCitigoImg,
+      seats: 5,
+      category: 'ekonomicke'
     },
     {
-      _id: 'bmw-540i-xdrive',
-      brand: 'BMW',
-      model: '540i xDrive',
-      fullName: 'BMW 540I XDRIVE',
-      dailyRate: 90,
-      power: '250kW',
-      transmission: '4x4',
-      bodyType: 'Sedan',
-      fuelType: 'Benzín',
-      image: BMW540iImg,
-      price: 90,
-      type: 'Sedan',
-      fuel: 'Benzín'
+      _id: 'toyota-aygox',
+      brand: 'Toyota',
+      model: 'AygoX',
+      fullName: 'Toyota AygoX',
+      dailyRate: 40,
+      power: '72',
+      transmission: 'automat',
+      bodyType: 'Malé auto',
+      fuelType: 'benzín',
+      image: ToyotaAygoImg,
+      seats: 4,
+      category: 'ekonomicke'
     },
     {
-      _id: 'audi-s4',
-      brand: 'AUDI',
-      model: 'S4',
-      fullName: 'AUDI S4',
-      dailyRate: 90,
-      power: '255kW',
-      transmission: '4x4',
-      bodyType: 'Kombi',
-      fuelType: 'Nafta',
-      image: AudiS4Img,
-      price: 90,
-      type: 'Kombi',
-      fuel: 'Nafta'
+      _id: 'vw-beetle',
+      brand: 'VW',
+      model: 'Beetle',
+      fullName: 'VW Beetle',
+      dailyRate: 50,
+      power: '105',
+      transmission: 'automat',
+      bodyType: 'Stredná trieda',
+      fuelType: 'benzín',
+      image: VWBeetleImg,
+      seats: 4,
+      category: 'sport'
     },
     {
-      _id: 'audi-s6',
-      brand: 'AUDI',
-      model: 'S6',
-      fullName: 'AUDI S6',
-      dailyRate: 100,
-      power: '255kW',
-      transmission: '4x4',
-      bodyType: 'Kombi',
-      fuelType: 'Nafta',
-      image: AudiS6Img,
-      price: 100,
-      type: 'Kombi',
-      fuel: 'Nafta'
-    },
-    {
-      _id: 'maserati-levante',
-      brand: 'MASERATI',
-      model: 'Levante',
-      fullName: 'MASERATI LEVANTE',
-      dailyRate: 130,
-      power: '316kW',
-      transmission: '4x4',
+      _id: 'hyundai-kona',
+      brand: 'Hyundai',
+      model: 'Kona',
+      fullName: 'Hyundai Kona',
+      dailyRate: 50,
+      power: '120',
+      transmission: 'automat',
       bodyType: 'SUV',
-      fuelType: 'Benzín',
-      image: MaseratiImg,
-      price: 130,
-      type: 'SUV',
-      fuel: 'Benzín'
+      fuelType: 'benzín',
+      image: HyundaiKonaImg,
+      seats: 5,
+      category: 'suv'
     },
     {
-      _id: 'bmw-840i-xdrive',
-      brand: 'BMW',
-      model: '840i xDrive',
-      fullName: 'BMW 840I XDRIVE',
-      dailyRate: 140,
-      power: '250kW',
-      transmission: '4x4',
+      _id: 'skoda-octavia',
+      brand: 'Škoda',
+      model: 'Octavia',
+      fullName: 'Škoda Octavia',
+      dailyRate: 40,
+      power: '150',
+      transmission: 'automat',
+      bodyType: 'Kombi',
+      fuelType: 'diesel',
+      image: SkodaOctaviaImg,
+      seats: 5,
+      category: 'kombi'
+    },
+    {
+      _id: 'vw-passat-variant',
+      brand: 'VW',
+      model: 'Passat Variant',
+      fullName: 'VW Passat Variant',
+      dailyRate: 50,
+      power: '150',
+      transmission: 'automat',
+      bodyType: 'Kombi',
+      fuelType: 'diesel',
+      image: VWPassatImg,
+      seats: 5,
+      category: 'kombi'
+    },
+    {
+      _id: 'mercedes-cla-220',
+      brand: 'Mercedes',
+      model: 'CLA 220 CDI',
+      fullName: 'Mercedes CLA 220 CDI',
+      dailyRate: 75,
+      power: '177',
+      transmission: 'automat',
       bodyType: 'Sedan',
-      fuelType: 'Benzín',
-      image: BMW840iImg,
-      price: 140,
-      type: 'Sedan',
-      fuel: 'Benzín'
+      fuelType: 'diesel',
+      image: MercedesCLAImg,
+      seats: 5,
+      category: 'premium'
     },
     {
-      _id: 'bmw-x7-xdrive-40d',
-      brand: 'BMW',
-      model: 'X7 xDrive 40d',
-      fullName: 'BMW X7 XDRIVE 40D',
-      dailyRate: 200,
-      power: '259kW',
-      transmission: '4x4',
+      _id: 'mercedes-c-combi',
+      brand: 'Mercedes',
+      model: 'C Combi',
+      fullName: 'Mercedes C Combi',
+      dailyRate: 75,
+      power: '170',
+      transmission: 'automat',
+      bodyType: 'Kombi',
+      fuelType: 'diesel',
+      image: MercedesCCombiImg,
+      seats: 5,
+      category: 'premium'
+    },
+    {
+      _id: 'skoda-kodiaq',
+      brand: 'Škoda',
+      model: 'Kodiaq',
+      fullName: 'Škoda Kodiaq',
+      dailyRate: 70,
+      power: '190',
+      transmission: 'automat',
       bodyType: 'SUV',
-      fuelType: 'Nafta',
-      image: BMWX7Img,
-      price: 200,
-      type: 'SUV',
-      fuel: 'Nafta'
+      fuelType: 'diesel',
+      image: SkodaKodiaqImg,
+      seats: 5,
+      category: 'suv'
+    },
+    {
+      _id: 'peugeot-5008',
+      brand: 'Peugeot',
+      model: '5008',
+      fullName: 'Peugeot 5008',
+      dailyRate: 70,
+      power: '180',
+      transmission: 'automat',
+      bodyType: '7-miestne',
+      fuelType: 'diesel',
+      image: Peugeot5008Img,
+      seats: 7,
+      category: 'viacmiestne'
+    },
+    {
+      _id: 'mercedes-glc',
+      brand: 'Mercedes',
+      model: 'GLC',
+      fullName: 'Mercedes GLC',
+      dailyRate: 110,
+      power: '204',
+      transmission: 'automat',
+      bodyType: 'SUV',
+      fuelType: 'diesel',
+      image: MercedesGLCImg,
+      seats: 5,
+      category: 'suv'
+    },
+    {
+      _id: 'mercedes-v-class',
+      brand: 'Mercedes',
+      model: 'V-Class',
+      fullName: 'Mercedes V-Class',
+      dailyRate: 120,
+      power: '190',
+      transmission: 'automat',
+      bodyType: 'VAN',
+      fuelType: 'diesel',
+      image: MercedesVClassImg,
+      seats: 8,
+      category: 'viacmiestne'
     }
   ];
 
