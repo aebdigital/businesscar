@@ -71,23 +71,23 @@ const Footer = () => {
                 className="h-16 mb-4"
               />
               <p className="text-lg font-bold mb-2" style={{color: '#ffffff', lineHeight: 1}}>
-                Follow in the tracks of 40 000+ thrilled riders!
+                Vydajte sa po stopách viac ako 40 000 nadšených jazdcov!
               </p>
               <p className="text-base font-semibold mb-2" style={{color: '#ffffff'}}>
-                Bratislava Tour at the Perfect Pace!
+                Prehliadka Bratislavy v perfektnom tempe!
               </p>
               <p className="text-sm mb-3" style={{color: '#ffffff'}}>
-                Conquer Bratislava with a local's touch. Your Segway handles the journey, you enjoy the sights.
+                Spoznajte Bratislavu s miestnym sprievodcom. Váš Segway zvládne cestu, vy si užívate pamiatky.
               </p>
               <div className="flex items-center gap-2 mb-3">
                 <span className="text-yellow-400 text-lg">★★★★★</span>
-                <span className="text-sm font-medium" style={{color: '#ffffff'}}>4.7/5 from 579 Reviews</span>
+                <span className="text-sm font-medium" style={{color: '#ffffff'}}>4.7/5 z 579 Hodnotení</span>
               </div>
               <p className="text-xs opacity-90" style={{color: '#ffffff'}}>
-                #1 Travelers' Choice in Bratislava on Tripadvisor
+                #1 Travelers' Choice v Bratislave na Tripadvisore
               </p>
               <div className="mt-3 inline-flex items-center gap-2 bg-white text-red-600 font-bold py-2 px-4 rounded-lg text-sm hover:scale-105 transition-transform duration-300">
-                Book Tour <span className="inline-block hover:translate-x-1 transition-transform duration-300">→</span>
+                Rezervovať <span className="inline-block hover:translate-x-1 transition-transform duration-300">→</span>
               </div>
             </a>
           </div>

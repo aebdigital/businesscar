@@ -222,7 +222,7 @@ const ReviewsSection = () => {
       <div className="max-w-7xl mx-auto px-4 mb-16">
         <FadeInUp>
           <h2 className="text-4xl md:text-5xl font-medium text-center" style={{fontFamily: 'Monument Extended, sans-serif', color: '#ffffff'}}>
-            SKÚSENOSTI, KTORÉ HOVORIA ZA NÁS
+            1000+ SPOKOJNÝCH ZÁKAZNÍKOV
           </h2>
           {/* Google Rating */}
           <div className="flex items-center justify-center mt-6">

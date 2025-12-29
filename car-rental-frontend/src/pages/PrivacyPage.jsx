@@ -8,7 +8,7 @@ const PrivacyPage = () => {
       <section className="relative overflow-hidden" style={{ height: '35vh', minHeight: '280px' }}>
         <div
           className="absolute inset-0 w-full h-full bg-cover bg-center bg-no-repeat"
-          style={{ backgroundImage: 'url(/hero2.jpg)' }}
+          style={{ backgroundImage: 'url(/hero3.jpeg)' }}
         >
           <div className="absolute inset-0 bg-black/40"></div>
         </div>

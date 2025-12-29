@@ -8,7 +8,7 @@ const AboutPage = () => {
       <section className="relative overflow-hidden" style={{ height: '35vh', minHeight: '280px' }}>
         <div
           className="absolute inset-0 w-full h-full bg-cover bg-center bg-no-repeat"
-          style={{ backgroundImage: 'url(/hero2.jpg)' }}
+          style={{ backgroundImage: 'url(/hero3.jpeg)' }}
         >
           <div className="absolute inset-0 bg-black/40"></div>
         </div>
@@ -58,7 +58,10 @@ const AboutPage = () => {
               transition={{ duration: 0.6, delay: 0.4 }}
               className="grid md:grid-cols-2 gap-8 mb-16"
             >
-              <div className="bg-gray-50 p-8 rounded-lg">
+              <div 
+                className="bg-gray-100 p-8 rounded-lg border border-gray-200"
+                style={{boxShadow: 'inset 0 1px 2px #ffffff30, 0 1px 2px #00000030, 0 2px 4px #00000015'}}
+              >
                 <h3 className="text-xl font-bold text-black mb-4" style={{fontFamily: 'Monument Extended, sans-serif'}}>
                   Profesionálne služby
                 </h3>
@@ -66,7 +69,10 @@ const AboutPage = () => {
                   Poskytujeme komplexné služby prenájmu vozidiel s individuálnym prístupom k každému klientovi.
                 </p>
               </div>
-              <div className="bg-gray-50 p-8 rounded-lg">
+              <div 
+                className="bg-gray-100 p-8 rounded-lg border border-gray-200"
+                style={{boxShadow: 'inset 0 1px 2px #ffffff30, 0 1px 2px #00000030, 0 2px 4px #00000015'}}
+              >
                 <h3 className="text-xl font-bold text-black mb-4" style={{fontFamily: 'Monument Extended, sans-serif'}}>
                   Flexibilita
                 </h3>
@@ -74,7 +80,10 @@ const AboutPage = () => {
                   Pristavenie vozidla, preberanie mimo otváracích hodín a ďalšie doplnkové služby podľa vašich potrieb.
                 </p>
               </div>
-              <div className="bg-gray-50 p-8 rounded-lg">
+              <div 
+                className="bg-gray-100 p-8 rounded-lg border border-gray-200"
+                style={{boxShadow: 'inset 0 1px 2px #ffffff30, 0 1px 2px #00000030, 0 2px 4px #00000015'}}
+              >
                 <h3 className="text-xl font-bold text-black mb-4" style={{fontFamily: 'Monument Extended, sans-serif'}}>
                   Kvalitné vozidlá
                 </h3>
@@ -82,7 +91,10 @@ const AboutPage = () => {
                   Ponúkame širokú škálu kvalitných vozidiel pre rôzne účely a potreby našich klientov.
                 </p>
               </div>
-              <div className="bg-gray-50 p-8 rounded-lg">
+              <div 
+                className="bg-gray-100 p-8 rounded-lg border border-gray-200"
+                style={{boxShadow: 'inset 0 1px 2px #ffffff30, 0 1px 2px #00000030, 0 2px 4px #00000015'}}
+              >
                 <h3 className="text-xl font-bold text-black mb-4" style={{fontFamily: 'Monument Extended, sans-serif'}}>
                   24/7 podpora
                 </h3>
@@ -97,18 +109,19 @@ const AboutPage = () => {
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.6 }}
-              className="text-center bg-blue-600 text-white p-8 rounded-lg"
+              className="text-center p-8 rounded-lg"
+              style={{ backgroundColor: '#2563eb' }}
             >
-              <h3 className="text-2xl font-bold mb-4" style={{fontFamily: 'Monument Extended, sans-serif'}}>
+              <h3 className="text-2xl font-bold mb-4" style={{fontFamily: 'Monument Extended, sans-serif', color: '#ffffff'}}>
                 Pripravení na cestu?
               </h3>
-              <p className="text-lg mb-6" style={{fontFamily: 'Gilroy, sans-serif'}}>
+              <p className="text-lg mb-6" style={{fontFamily: 'Gilroy, sans-serif', color: '#ffffff'}}>
                 Kontaktujte nás a nájdeme pre vás ideálne vozidlo
               </p>
               <a
                 href="/kontakt"
-                className="inline-block bg-white text-blue-600 px-8 py-3 rounded-lg font-bold hover:bg-gray-100 transition-colors"
-                style={{fontFamily: 'Gilroy, sans-serif'}}
+                className="inline-block px-8 py-3 rounded-lg font-bold hover:opacity-90 transition-colors"
+                style={{fontFamily: 'Gilroy, sans-serif', backgroundColor: '#ffffff', color: '#000000'}}
               >
                 Kontaktovať nás
               </a>

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ChevronDownIcon, FunnelIcon, ClockIcon, ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/24/outline';
+import { ChevronDownIcon, FunnelIcon, ClockIcon, ChevronLeftIcon, ChevronRightIcon, MapPinIcon } from '@heroicons/react/24/outline';
 import { motion, AnimatePresence, useInView } from 'framer-motion';
 import CarCard from '../components/CarCard';
 import ReviewsSection from '../components/ReviewsSection';
@@ -11,7 +11,7 @@ import CustomDatePicker from '../components/CustomDatePicker';
 import DatePicker from '../components/DatePicker';
 import { carsAPI, locationsAPI, bannersAPI } from '../services/api';
 import config from '../config/config';
-const HeroImg = '/hero2.jpg';
+const HeroImg = '/hero3.jpeg';
 const VasenImg = '/luxury-cars-values.jpg';
 
 // Car images
@@ -958,20 +958,30 @@ const HomePage = () => {
           <div className="flex-1"></div>
 
           {/* Center - Heading */}
-          <div className="text-white text-center flex-shrink-0">
+          <motion.div 
+            initial={{ opacity: 0, y: 50 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            className="text-white text-center flex-shrink-0"
+          >
             <h1 className="text-3xl md:text-5xl lg:text-7xl font-goldman font-bold leading-tight max-[480px]:text-3xl max-[480px]:leading-tight uppercase mb-4" style={{fontFamily: 'Monument Extended, sans-serif', textShadow: '0 4px 20px rgba(0, 0, 0, 0.5), 0 2px 8px rgba(0, 0, 0, 0.4)'}}>
               Autopožičovňa Bratislava
             </h1>
             <p className="text-xl md:text-2xl lg:text-3xl font-medium max-w-3xl mx-auto" style={{fontFamily: 'Gilroy, sans-serif', color: '#ffffff', textShadow: '0 2px 10px rgba(0, 0, 0, 0.5), 0 1px 4px rgba(0, 0, 0, 0.4)'}}>
               Prenájom prémiových vozidiel s osobným prístupom
             </p>
-          </div>
+          </motion.div>
 
           {/* Spacer to push form to bottom */}
           <div className="flex-1"></div>
 
           {/* Bottom - Form only */}
-          <div className="hidden lg:flex gap-6 mx-8 mb-8">
+          <motion.div 
+            initial={{ opacity: 0, y: 50 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            className="hidden lg:flex gap-6 mx-8 mb-8"
+          >
             {/* Form - horizontal layout with glass effect */}
             <div
               className="p-6 rounded-2xl flex items-center gap-6"
@@ -992,44 +1002,56 @@ const HomePage = () => {
 
               {/* Form inputs in horizontal columns */}
               <form onSubmit={handleSubmit} className="flex items-center gap-4 flex-1">
-                {/* Car Selection */}
-                <select
-                  name="selectedCar"
-                  value={formData.selectedCar || ''}
-                  onChange={handleInputChange}
-                  className="flex-1 px-3 py-2 text-sm rounded-md border border-gray-700 focus:border-orange-500 focus:outline-none appearance-none"
-                  style={{
-                    backgroundColor: '#191919',
-                    color: formData.selectedCar ? '#ffffff' : '#9fa3ab'
-                  }}
-                  disabled={loading}
-                >
-                  <option value="" style={{color: '#9fa3ab'}}>{loading ? 'Načítavam autá...' : 'Vyberte auto'}</option>
-                  {cars.map((car) => (
-                    <option key={car._id} value={car._id}>
-                      {car.brand} {car.model} - od {car.pricing?.dailyRate || car.dailyRate || 0}€/deň
-                    </option>
-                  ))}
-                </select>
+                {/* Car Selection with icon on right */}
+                <div className="flex-1 relative">
+                  <select
+                    name="selectedCar"
+                    value={formData.selectedCar || ''}
+                    onChange={handleInputChange}
+                    className="w-full px-3 py-2 text-sm rounded-md border border-gray-700 focus:border-orange-500 focus:outline-none appearance-none"
+                    style={{
+                      backgroundColor: '#191919',
+                      color: formData.selectedCar ? '#ffffff' : '#9fa3ab'
+                    }}
+                    disabled={loading}
+                  >
+                    <option value="" style={{color: '#9fa3ab'}}>{loading ? 'Načítavam autá...' : 'Vyberte auto'}</option>
+                    {cars.map((car) => (
+                      <option key={car._id} value={car._id}>
+                        {car.brand} {car.model} - od {car.pricing?.dailyRate || car.dailyRate || 0}€/deň
+                      </option>
+                    ))}
+                  </select>
+                  <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none">
+                    <svg className="w-5 h-5" style={{color: '#2563eb'}} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="1.5">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 18.75a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 01-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h1.125c.621 0 1.129-.504 1.09-1.124a17.902 17.902 0 00-3.213-9.193 2.056 2.056 0 00-1.58-.86H14.25M16.5 18.75h-2.25m0-11.177v-.958c0-.568-.422-1.048-.987-1.106a48.554 48.554 0 00-10.026 0 1.106 1.106 0 00-.987 1.106v7.635m12-6.677v6.677m0 4.5v-4.5m0 0h-12" />
+                    </svg>
+                  </div>
+                </div>
 
-                {/* Location Selection */}
-                <select
-                  name="location"
-                  value={formData.location || ''}
-                  onChange={handleInputChange}
-                  className="flex-1 px-3 py-2 text-sm rounded-md border border-gray-700 focus:border-orange-500 focus:outline-none appearance-none"
-                  style={{
-                    backgroundColor: '#191919',
-                    color: formData.location ? '#ffffff' : '#9fa3ab'
-                  }}
-                >
-                  <option value="" style={{color: '#9fa3ab'}}>Miesto vyzdvihnutia</option>
-                  {heroFormLocations.map((location) => (
-                    <option key={location.id} value={location.name}>
-                      {location.name}
-                    </option>
-                  ))}
-                </select>
+                {/* Location Selection with pin icon on right */}
+                <div className="flex-1 relative">
+                  <select
+                    name="location"
+                    value={formData.location || ''}
+                    onChange={handleInputChange}
+                    className="w-full px-3 py-2 text-sm rounded-md border border-gray-700 focus:border-orange-500 focus:outline-none appearance-none"
+                    style={{
+                      backgroundColor: '#191919',
+                      color: formData.location ? '#ffffff' : '#9fa3ab'
+                    }}
+                  >
+                    <option value="" style={{color: '#9fa3ab'}}>Miesto vyzdvihnutia</option>
+                    {heroFormLocations.map((location) => (
+                      <option key={location.id} value={location.name}>
+                        {location.name}
+                      </option>
+                    ))}
+                  </select>
+                  <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none">
+                    <MapPinIcon className="w-5 h-5" style={{color: '#2563eb'}} />
+                  </div>
+                </div>
 
                 {/* Date From */}
                 <div className="flex-1">
@@ -1061,20 +1083,26 @@ const HomePage = () => {
                 {/* Submit Button */}
                 <button
                   type="submit"
-                  className="hover:opacity-90 px-8 py-3 font-bold text-sm transition-colors rounded-lg whitespace-nowrap"
+                  className="hover:opacity-90 px-8 py-3 text-base transition-colors rounded-lg whitespace-nowrap"
                   style={{
                     backgroundColor: '#2563eb',
-                    color: '#ffffff'
+                    color: '#ffffff',
+                    fontWeight: 700
                   }}
                 >
                   Rezervovať
                 </button>
               </form>
             </div>
-          </div>
+          </motion.div>
 
           {/* Mobile Form - vertical layout (only under 480px) */}
-          <div className="hidden max-[480px]:flex max-[480px]:flex-col gap-4 mx-2">
+          <motion.div 
+            initial={{ opacity: 0, y: 50 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            className="hidden max-[480px]:flex max-[480px]:flex-col gap-4 mx-2"
+          >
             <div
               className="p-4 rounded-2xl flex flex-col gap-4"
               style={{
@@ -1091,44 +1119,56 @@ const HomePage = () => {
 
               {/* Form inputs in vertical rows */}
               <form onSubmit={handleSubmit} className="flex flex-col gap-3">
-                {/* Car Selection */}
-                <select
-                  name="selectedCar"
-                  value={formData.selectedCar || ''}
-                  onChange={handleInputChange}
-                  className="w-full px-3 py-2 text-sm rounded-md border border-gray-700 focus:border-orange-500 focus:outline-none appearance-none"
-                  style={{
-                    backgroundColor: '#191919',
-                    color: formData.selectedCar ? '#ffffff' : '#9fa3ab'
-                  }}
-                  disabled={loading}
-                >
-                  <option value="" style={{color: '#9fa3ab'}}>{loading ? 'Načítavam autá...' : 'Vyberte auto'}</option>
-                  {cars.map((car) => (
-                    <option key={car._id} value={car._id}>
-                      {car.brand} {car.model} - od {car.pricing?.dailyRate || car.dailyRate || 0}€/deň
-                    </option>
-                  ))}
-                </select>
+                {/* Car Selection with icon on right */}
+                <div className="relative">
+                  <select
+                    name="selectedCar"
+                    value={formData.selectedCar || ''}
+                    onChange={handleInputChange}
+                    className="w-full px-3 py-2 text-sm rounded-md border border-gray-700 focus:border-orange-500 focus:outline-none appearance-none"
+                    style={{
+                      backgroundColor: '#191919',
+                      color: formData.selectedCar ? '#ffffff' : '#9fa3ab'
+                    }}
+                    disabled={loading}
+                  >
+                    <option value="" style={{color: '#9fa3ab'}}>{loading ? 'Načítavam autá...' : 'Vyberte auto'}</option>
+                    {cars.map((car) => (
+                      <option key={car._id} value={car._id}>
+                        {car.brand} {car.model} - od {car.pricing?.dailyRate || car.dailyRate || 0}€/deň
+                      </option>
+                    ))}
+                  </select>
+                  <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none">
+                    <svg className="w-5 h-5" style={{color: '#2563eb'}} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="1.5">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 18.75a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 01-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h1.125c.621 0 1.129-.504 1.09-1.124a17.902 17.902 0 00-3.213-9.193 2.056 2.056 0 00-1.58-.86H14.25M16.5 18.75h-2.25m0-11.177v-.958c0-.568-.422-1.048-.987-1.106a48.554 48.554 0 00-10.026 0 1.106 1.106 0 00-.987 1.106v7.635m12-6.677v6.677m0 4.5v-4.5m0 0h-12" />
+                    </svg>
+                  </div>
+                </div>
 
-                {/* Location Selection */}
-                <select
-                  name="location"
-                  value={formData.location || ''}
-                  onChange={handleInputChange}
-                  className="w-full px-3 py-2 text-sm rounded-md border border-gray-700 focus:border-orange-500 focus:outline-none appearance-none"
-                  style={{
-                    backgroundColor: '#191919',
-                    color: formData.location ? '#ffffff' : '#9fa3ab'
-                  }}
-                >
-                  <option value="" style={{color: '#9fa3ab'}}>Miesto vyzdvihnutia</option>
-                  {heroFormLocations.map((location) => (
-                    <option key={location.id} value={location.name}>
-                      {location.name}
-                    </option>
-                  ))}
-                </select>
+                {/* Location Selection with pin icon on right */}
+                <div className="relative">
+                  <select
+                    name="location"
+                    value={formData.location || ''}
+                    onChange={handleInputChange}
+                    className="w-full px-3 py-2 text-sm rounded-md border border-gray-700 focus:border-orange-500 focus:outline-none appearance-none"
+                    style={{
+                      backgroundColor: '#191919',
+                      color: formData.location ? '#ffffff' : '#9fa3ab'
+                    }}
+                  >
+                    <option value="" style={{color: '#9fa3ab'}}>Miesto vyzdvihnutia</option>
+                    {heroFormLocations.map((location) => (
+                      <option key={location.id} value={location.name}>
+                        {location.name}
+                      </option>
+                    ))}
+                  </select>
+                  <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none">
+                    <MapPinIcon className="w-5 h-5" style={{color: '#2563eb'}} />
+                  </div>
+                </div>
 
                 {/* Date From */}
                 <div className="w-full">
@@ -1160,17 +1200,18 @@ const HomePage = () => {
                 {/* Submit Button */}
                 <button
                   type="submit"
-                  className="w-full hover:opacity-90 px-8 py-3 font-bold text-sm transition-colors rounded-lg"
+                  className="w-full hover:opacity-90 px-8 py-3 text-base transition-colors rounded-lg"
                   style={{
                     backgroundColor: '#2563eb',
-                    color: '#ffffff'
+                    color: '#ffffff',
+                    fontWeight: 700
                   }}
                 >
                   Rezervovať
                 </button>
               </form>
             </div>
-          </div>
+          </motion.div>
         </div>
 
       </section>

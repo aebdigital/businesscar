@@ -58,7 +58,7 @@ const FAQPage = () => {
       <section className="relative overflow-hidden" style={{ height: '35vh', minHeight: '280px' }}>
         <div
           className="absolute inset-0 w-full h-full bg-cover bg-center bg-no-repeat"
-          style={{ backgroundImage: 'url(/hero2.jpg)' }}
+          style={{ backgroundImage: 'url(/hero3.jpeg)' }}
         >
           <div className="absolute inset-0 bg-black/40"></div>
         </div>
@@ -86,25 +86,28 @@ const FAQPage = () => {
         <div className="max-w-4xl mx-auto px-4">
           <div className="space-y-4">
             {faqs.map((faq, index) => (
-              <div 
+              <motion.div
                 key={index}
-                className="border-2 border-gray-200 rounded-lg overflow-hidden bg-white"
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 0.1 * index }}
+                className="bg-gray-100 rounded-lg border border-gray-200 overflow-hidden"
                 style={{boxShadow: 'inset 0 1px 2px #ffffff30, 0 1px 2px #00000030, 0 2px 4px #00000015'}}
               >
                 <button
                   onClick={() => toggleQuestion(index)}
                   className="w-full p-6 text-left flex items-center justify-between hover:bg-gray-50 transition-colors duration-200"
                 >
-                  <h3 className="text-lg font-bold text-black pr-4">
+                  <h3 className="text-lg font-semibold text-black pr-4">
                     {faq.question}
                   </h3>
-                  <ChevronDownIcon 
+                  <ChevronDownIcon
                     className={`h-6 w-6 text-[rgb(37,99,235)] transition-transform duration-300 flex-shrink-0 ${
                       openQuestion === index ? 'rotate-180' : 'rotate-0'
                     }`}
                   />
                 </button>
-                
+
                 {openQuestion === index && (
                   <div className="px-6 pb-6">
                     <div className="border-t border-gray-200 pt-4">
@@ -114,7 +117,7 @@ const FAQPage = () => {
                     </div>
                   </div>
                 )}
-              </div>
+              </motion.div>
             ))}
           </div>
         </div>
@@ -131,7 +134,7 @@ const FAQPage = () => {
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
             <a
-              href="tel:+421905318164"
+              href="tel:+421903416410"
               className="hover:opacity-90 px-5 py-3 text-base transition-colors duration-200 border border-gray-600 rounded-lg"
               style={{
                 backgroundColor: '#2563eb',
@@ -139,10 +142,10 @@ const FAQPage = () => {
                 fontWeight: 700
               }}
             >
-              +421 905 318 164
+              +421 903 416 410
             </a>
             <a
-              href="mailto:info@lerent.sk"
+              href="mailto:info@businesscar.sk"
               className="hover:opacity-90 px-5 py-3 text-base transition-colors duration-200 border-2 rounded-lg"
               style={{
                 backgroundColor: '#ffffff',
@@ -151,7 +154,7 @@ const FAQPage = () => {
                 fontWeight: 700
               }}
             >
-              info@lerent.sk
+              info@businesscar.sk
             </a>
           </div>
         </div>

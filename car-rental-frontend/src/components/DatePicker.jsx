@@ -292,7 +292,7 @@ const DatePicker = ({
                   <ChevronLeftIcon className="h-5 w-5 text-gray-300" />
                 </button>
 
-                <h3 className="text-lg font-goldman font-semibold text-white">
+                <h3 className="text-lg font-semibold" style={{color: '#ffffff'}}>
                   {monthNames[currentMonth.getMonth()]} {currentMonth.getFullYear()}
                 </h3>
 
@@ -325,14 +325,17 @@ const DatePicker = ({
                     disabled={isDateDisabled(date)}
                     className={`w-full h-full flex items-center justify-center text-sm rounded transition-colors ${
                       selectedDate && date.toDateString() === selectedDate.toDateString()
-                        ? 'text-white font-semibold'
+                        ? 'font-semibold'
                         : isDateUnavailable(date)
-                        ? 'text-gray-300 bg-gray-800 cursor-not-allowed opacity-50'
+                        ? 'bg-gray-800 cursor-not-allowed opacity-50'
                         : isDateDisabled(date)
-                        ? 'text-gray-600 cursor-not-allowed'
-                        : 'text-white hover:bg-gray-700'
+                        ? 'cursor-not-allowed'
+                        : 'hover:bg-gray-700'
                     }`}
-                    style={selectedDate && date.toDateString() === selectedDate.toDateString() ? {backgroundColor: '#2563eb'} : {}}
+                    style={{
+                      color: isDateDisabled(date) && !isDateUnavailable(date) ? '#4b5563' : '#ffffff',
+                      backgroundColor: selectedDate && date.toDateString() === selectedDate.toDateString() ? '#2563eb' : undefined
+                    }}
                   >
                     {date.getDate()}
                   </button>
