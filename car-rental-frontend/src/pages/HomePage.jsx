@@ -72,13 +72,26 @@ const heroCars = [
   { name: "Mercedes V-Class", price: "od 120€/deň", type: "VAN" },
 ];
 
+// Scroll to section helper
+const scrollToSection = (sectionId) => {
+  const element = document.getElementById(sectionId);
+  if (element) {
+    const offsetTop = element.getBoundingClientRect().top + window.pageYOffset - 100;
+    window.scrollTo({
+      top: offsetTop,
+      behavior: 'smooth'
+    });
+  }
+};
+
+// Floating Car Bubble - clicks scroll to cars section
 const FloatingCarBubble = ({ position, cars, delay = 0 }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
 
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentIndex((prev) => (prev + 1) % cars.length);
-    }, 3500 + delay * 400); // Stagger the timing
+    }, 3500 + delay * 400);
     return () => clearInterval(interval);
   }, [cars.length, delay]);
 
@@ -91,11 +104,13 @@ const FloatingCarBubble = ({ position, cars, delay = 0 }) => {
 
   return (
     <motion.div
-      className="absolute hidden lg:block"
+      className="absolute hidden lg:block cursor-pointer"
       style={positionStyles[position]}
       initial={{ opacity: 0, scale: 0.8 }}
       animate={{ opacity: 1, scale: 1 }}
       transition={{ duration: 0.8, delay: delay * 0.3 }}
+      onClick={() => scrollToSection('cars')}
+      whileHover={{ scale: 1.05 }}
     >
       <div
         className="rounded-2xl px-5 py-3"
@@ -132,6 +147,82 @@ const FloatingCarBubble = ({ position, cars, delay = 0 }) => {
   );
 };
 
+// Hero reviews for floating bubbles
+const heroReviews = [
+  { name: "Julia Fekiacova", text: "Skvelá skúsenosť s prenájmom!", rating: 5 },
+  { name: "Justina S.", text: "Nice, responsive and honest people.", rating: 5 },
+  { name: "Assen Hinov", text: "Excellent service and responsiveness!", rating: 5 },
+  { name: "Lee Cookson", text: "Polite, helpful and efficient.", rating: 5 },
+  { name: "Helen Matsyuk", text: "Perfect attitude to each client!", rating: 5 },
+  { name: "Lukasz M.", text: "Great car, excellent service.", rating: 5 },
+];
+
+// Floating Review Bubble - clicks scroll to reviews section
+const FloatingReviewBox = ({ position, reviews, delay = 0 }) => {
+  const [currentIndex, setCurrentIndex] = useState(0);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentIndex((prev) => (prev + 1) % reviews.length);
+    }, 4000 + delay * 500);
+    return () => clearInterval(interval);
+  }, [reviews.length, delay]);
+
+  const positionStyles = {
+    topLeft: { top: '18%', left: '4%' },
+    topRight: { top: '15%', right: '4%' },
+    bottomLeft: { bottom: '28%', left: '3%' },
+    bottomRight: { bottom: '25%', right: '3%' },
+  };
+
+  return (
+    <motion.div
+      className="absolute hidden lg:block cursor-pointer"
+      style={positionStyles[position]}
+      initial={{ opacity: 0, scale: 0.8 }}
+      animate={{ opacity: 1, scale: 1 }}
+      transition={{ duration: 0.8, delay: delay * 0.3 }}
+      onClick={() => scrollToSection('reviews')}
+      whileHover={{ scale: 1.05 }}
+    >
+      <div
+        className="rounded-2xl px-5 py-3 max-w-[220px]"
+        style={{
+          background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.18) 0%, rgba(255, 255, 255, 0.08) 100%)',
+          backdropFilter: 'blur(20px)',
+          WebkitBackdropFilter: 'blur(20px)',
+          border: '1px solid rgba(255, 255, 255, 0.25)',
+          boxShadow: '0 8px 32px rgba(0, 0, 0, 0.25)'
+        }}
+      >
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={currentIndex}
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -8 }}
+            transition={{ duration: 0.35 }}
+          >
+            <div className="flex items-center gap-2 mb-1">
+              <div className="flex">
+                {[...Array(reviews[currentIndex].rating)].map((_, i) => (
+                  <span key={i} style={{ color: '#facc15', fontSize: '12px' }}>★</span>
+                ))}
+              </div>
+            </div>
+            <p className="text-xs font-medium mb-1" style={{ color: '#ffffff', textShadow: '0 1px 2px rgba(0,0,0,0.3)' }}>
+              "{reviews[currentIndex].text}"
+            </p>
+            <p className="text-xs" style={{ color: '#ffffff', opacity: 0.75 }}>
+              — {reviews[currentIndex].name}
+            </p>
+          </motion.div>
+        </AnimatePresence>
+      </div>
+    </motion.div>
+  );
+};
+
 const HomePage = () => {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('all');
@@ -149,7 +240,7 @@ const HomePage = () => {
   const [parallaxOffset, setParallaxOffset] = useState(0);
 
   // Slider images - fallback to static images if API fails
-  const sliderImages = [AudiS6Img, MaseratiImg, BMW840iImg];
+  const sliderImages = [HeroImg, VasenImg];
 
   // Car classes for filtering
   const carClasses = [
@@ -844,11 +935,11 @@ const HomePage = () => {
           <div className="absolute inset-0 bg-black/40"></div>
         </div>
 
-        {/* Floating Car Bubbles - Desktop Only */}
-        <FloatingCarBubble position="topLeft" cars={heroCars.slice(0, 3)} delay={0} />
-        <FloatingCarBubble position="topRight" cars={heroCars.slice(3, 6)} delay={1} />
-        <FloatingCarBubble position="bottomLeft" cars={heroCars.slice(6, 9)} delay={2} />
-        <FloatingCarBubble position="bottomRight" cars={heroCars.slice(9, 12)} delay={3} />
+        {/* Floating Bubbles - Desktop Only: 2 Cars (top) + 2 Reviews (bottom) */}
+        <FloatingCarBubble position="topLeft" cars={heroCars.slice(0, 4)} delay={0} />
+        <FloatingCarBubble position="topRight" cars={heroCars.slice(4, 8)} delay={1} />
+        <FloatingReviewBox position="bottomLeft" reviews={heroReviews.slice(0, 3)} delay={2} />
+        <FloatingReviewBox position="bottomRight" reviews={heroReviews.slice(3, 6)} delay={3} />
 
         <div className="relative z-10 h-full px-4 md:px-8 lg:px-16 w-full flex flex-col justify-between max-[480px]:justify-end max-[480px]:pb-4">
           {/* Spacer for top */}
