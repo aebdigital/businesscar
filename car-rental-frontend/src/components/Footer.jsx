@@ -12,7 +12,7 @@ const Footer = () => {
             <h3 className="text-2xl font-bold mb-6" style={{fontFamily: 'Monument Extended, sans-serif'}}>
               BUSINESS CAR
             </h3>
-            <div className="space-y-2 text-gray-400 text-sm">
+            <div className="space-y-2 text-sm" style={{color: '#ffffff'}}>
               <p>+421 903 416 410</p>
               <p>info@businesscar.sk</p>
               <p>Františkánske námestie 8</p>
@@ -45,13 +45,10 @@ const Footer = () => {
             <h4 className="text-lg font-semibold mb-4 text-white">Právne informácie</h4>
             <div className="space-y-2">
               <Link to="/terms" className="block hover:underline transition-all text-sm" style={{color: '#ffffff'}}>
-                Obchodné podmienky
+                Podmienky prenájmu
               </Link>
               <Link to="/privacy" className="block hover:underline transition-all text-sm" style={{color: '#ffffff'}}>
                 Ochrana osobných údajov
-              </Link>
-              <Link to="/cennik-poplatkov" className="block hover:underline transition-all text-sm" style={{color: '#ffffff'}}>
-                Cenník poplatkov
               </Link>
             </div>
           </div>
@@ -62,7 +59,7 @@ const Footer = () => {
               href="https://bratislavasegway.sk"
               target="_blank"
               rel="noopener noreferrer"
-              className="block rounded-lg p-5 hover:scale-[1.02] transition-transform duration-300"
+              className="block rounded-lg p-5 group"
               style={{
                 backgroundColor: '#dc2626',
                 boxShadow: '0 4px 6px rgba(0, 0, 0, 0.3)'
@@ -89,8 +86,8 @@ const Footer = () => {
               <p className="text-xs opacity-90" style={{color: '#ffffff'}}>
                 #1 Travelers' Choice in Bratislava on Tripadvisor
               </p>
-              <div className="mt-3 inline-block bg-white text-red-600 font-bold py-2 px-4 rounded-lg text-sm">
-                Book Tour →
+              <div className="mt-3 inline-flex items-center gap-2 bg-white text-red-600 font-bold py-2 px-4 rounded-lg text-sm hover:scale-105 transition-transform duration-300">
+                Book Tour <span className="inline-block hover:translate-x-1 transition-transform duration-300">→</span>
               </div>
             </a>
           </div>
@@ -106,7 +103,7 @@ const Footer = () => {
               href="https://aebdigital.sk"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-gray-400 hover:text-white transition-colors text-sm text-center sm:text-right"
+              className="text-gray-400 hover:underline text-sm text-center sm:text-right"
             >
               Tvorba stránky - AEB Digital
             </a>

@@ -14,9 +14,9 @@ import { CheckCircleIcon } from '@heroicons/react/24/solid';
 import DatePicker from '../components/DatePicker';
 import SEOHead from '../components/SEOHead';
 
-// Car images - using hero.jpg as placeholder
+// Car images - using hero2.jpg as placeholder
 const getCarImage = () => {
-  return '/hero.jpg';
+  return '/hero2.jpg';
 };
 
 // Static car data

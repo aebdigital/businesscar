@@ -11,7 +11,7 @@ import CustomDatePicker from '../components/CustomDatePicker';
 import DatePicker from '../components/DatePicker';
 import { carsAPI, locationsAPI, bannersAPI } from '../services/api';
 import config from '../config/config';
-const HeroImg = '/hero.jpg';
+const HeroImg = '/hero2.jpg';
 const VasenImg = '/luxury-cars-values.jpg';
 
 // Car images
@@ -102,18 +102,24 @@ const FloatingCarBubble = ({ position, cars, delay = 0 }) => {
     bottomRight: { bottom: '25%', right: '3%' },
   };
 
+  const handleClick = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    scrollToSection('cars');
+  };
+
   return (
     <motion.div
       className="absolute hidden lg:block cursor-pointer"
-      style={positionStyles[position]}
+      style={{ ...positionStyles[position], zIndex: 20 }}
       initial={{ opacity: 0, scale: 0.8 }}
       animate={{ opacity: 1, scale: 1 }}
       transition={{ duration: 0.8, delay: delay * 0.3 }}
-      onClick={() => scrollToSection('cars')}
       whileHover={{ scale: 1.05 }}
     >
       <div
-        className="rounded-2xl px-5 py-3"
+        onClick={handleClick}
+        className="rounded-2xl px-5 py-3 cursor-pointer"
         style={{
           background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.18) 0%, rgba(255, 255, 255, 0.08) 100%)',
           backdropFilter: 'blur(20px)',
@@ -175,18 +181,24 @@ const FloatingReviewBox = ({ position, reviews, delay = 0 }) => {
     bottomRight: { bottom: '25%', right: '3%' },
   };
 
+  const handleClick = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    scrollToSection('reviews');
+  };
+
   return (
     <motion.div
       className="absolute hidden lg:block cursor-pointer"
-      style={positionStyles[position]}
+      style={{ ...positionStyles[position], zIndex: 20 }}
       initial={{ opacity: 0, scale: 0.8 }}
       animate={{ opacity: 1, scale: 1 }}
       transition={{ duration: 0.8, delay: delay * 0.3 }}
-      onClick={() => scrollToSection('reviews')}
       whileHover={{ scale: 1.05 }}
     >
       <div
-        className="rounded-2xl px-5 py-3 max-w-[220px]"
+        onClick={handleClick}
+        className="rounded-2xl px-5 py-3 max-w-[220px] cursor-pointer"
         style={{
           background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.18) 0%, rgba(255, 255, 255, 0.08) 100%)',
           backdropFilter: 'blur(20px)',
@@ -1308,12 +1320,12 @@ const HomePage = () => {
           <div className="lg:hidden mb-8">
             <FadeInUp>
               <h2 className="text-3xl sm:text-4xl font-medium text-white mb-6 font-goldman text-center">
-                VÁŠEŇ PRE AUTÁ, ZÁVÄZOK VOČI ZÁKAZNÍKOM.
+                VAŠA CESTA, NAŠA STAROSTLIVOSŤ
               </h2>
             </FadeInUp>
 
             <p className="text-black mb-8 text-center px-4">
-              Individuálny, férový a ústretový prístup k našim zákazníkom. Dôraz na starostlivosť o náš vozový park. Čísla, ktoré hovoria za nás:
+              Business Car je rodinná autopožičovňa s osobným prístupom. Každé vozidlo udržiavame v perfektnom stave, aby ste si užili bezstarostnú jazdu.
             </p>
 
             {/* Mobile Image */}
@@ -1328,18 +1340,16 @@ const HomePage = () => {
             {/* Mobile Stats */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 px-4">
               <div className="text-center">
-                <div className="text-4xl sm:text-5xl font-goldman font-bold text-[#2563eb] mb-2">19</div>
-                <div className="text-white font-goldman font-bold text-sm sm:text-base">Prémiových áut v našej flotile</div>
+                <div className="text-4xl sm:text-5xl font-goldman font-bold text-[#2563eb] mb-2">12</div>
+                <div className="text-white font-goldman font-bold text-sm sm:text-base">Vozidiel v našej flotile</div>
               </div>
               <div className="text-center">
-                <div className="text-4xl sm:text-5xl font-goldman font-bold text-[#2563eb] mb-2">
-                  550<span className="text-2xl sm:text-3xl">tisíc+</span>
-                </div>
-                <div className="text-white font-goldman font-bold text-sm sm:text-base">Kilometrov najazdených šťastnými klientmi</div>
+                <div className="text-4xl sm:text-5xl font-goldman font-bold text-[#2563eb] mb-2">10+</div>
+                <div className="text-white font-goldman font-bold text-sm sm:text-base">Rokov skúseností</div>
               </div>
               <div className="text-center">
-                <div className="text-4xl sm:text-5xl font-goldman font-bold text-[#2563eb] mb-2">120+</div>
-                <div className="text-white font-goldman font-bold text-sm sm:text-base">Zákazníkov</div>
+                <div className="text-4xl sm:text-5xl font-goldman font-bold text-[#2563eb] mb-2">1000+</div>
+                <div className="text-white font-goldman font-bold text-sm sm:text-base">Spokojných zákazníkov</div>
               </div>
             </div>
           </div>
@@ -1349,31 +1359,29 @@ const HomePage = () => {
             <div className="w-2/3 pl-12">
               <FadeInUp>
                 <h2 className="text-4xl md:text-5xl font-medium text-white mb-8 font-goldman">
-                  VÁŠEŇ PRE AUTÁ, ZÁVÄZOK VOČI ZÁKAZNÍKOM.
+                  VAŠA CESTA, NAŠA STAROSTLIVOSŤ
                 </h2>
               </FadeInUp>
 
               <FadeInUp delay={0.2}>
                 <p className="text-black font-goldman mb-12 max-w-2xl">
-                  Individuálny, férový a ústretový prístup k našim zákazníkom. Dôraz na starostlivosť o náš vozový park. Čísla, ktoré hovoria za nás:
+                  Business Car je rodinná autopožičovňa s osobným prístupom. Každé vozidlo udržiavame v perfektnom stave, aby ste si užili bezstarostnú jazdu.
                 </p>
               </FadeInUp>
 
               <FadeInUp delay={0.4}>
                 <div className="grid grid-cols-3 gap-8">
                 <div className="text-left">
-                  <div className="text-5xl font-goldman font-bold text-[#2563eb] mb-2">19</div>
-                  <div className="text-white font-goldman font-bold">Prémiových áut v našej flotile</div>
+                  <div className="text-5xl font-goldman font-bold text-[#2563eb] mb-2">12</div>
+                  <div className="text-white font-goldman font-bold">Vozidiel v našej flotile</div>
                 </div>
                 <div className="text-left">
-                  <div className="text-5xl font-goldman font-bold text-[#2563eb] mb-2">
-                    550<span className="text-3xl">tisíc+</span>
-                  </div>
-                  <div className="text-white font-goldman font-bold">Kilometrov najazdených šťastnými klientmi</div>
+                  <div className="text-5xl font-goldman font-bold text-[#2563eb] mb-2">10+</div>
+                  <div className="text-white font-goldman font-bold">Rokov skúseností</div>
                 </div>
                 <div className="text-left">
-                  <div className="text-5xl font-goldman font-bold text-[#2563eb] mb-2">120+</div>
-                  <div className="text-white font-goldman font-bold">Zákazníkov</div>
+                  <div className="text-5xl font-goldman font-bold text-[#2563eb] mb-2">1000+</div>
+                  <div className="text-white font-goldman font-bold">Spokojných zákazníkov</div>
                 </div>
                 </div>
               </FadeInUp>

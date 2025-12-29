@@ -10,7 +10,7 @@ const ContactPage = () => {
       <section className="relative overflow-hidden" style={{ height: '35vh', minHeight: '280px' }}>
         <div
           className="absolute inset-0 w-full h-full bg-cover bg-center bg-no-repeat"
-          style={{ backgroundImage: 'url(/hero.jpg)' }}
+          style={{ backgroundImage: 'url(/hero2.jpg)' }}
         >
           <div className="absolute inset-0 bg-black/40"></div>
         </div>
@@ -105,65 +105,71 @@ const ContactPage = () => {
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.5 }}
-              className="bg-gray-50 p-8 rounded-lg"
+              className="p-8 rounded-lg"
+              style={{ backgroundColor: '#2563eb' }}
             >
-              <h2 className="text-3xl font-bold text-black mb-8 text-center" style={{fontFamily: 'Monument Extended, sans-serif'}}>
+              <h2 className="text-3xl font-bold text-white mb-8 text-center" style={{fontFamily: 'Monument Extended, sans-serif'}}>
                 Napíšte nám
               </h2>
               <form className="grid md:grid-cols-2 gap-6">
                 <div>
-                  <label className="block text-black font-semibold mb-2" style={{fontFamily: 'Gilroy, sans-serif'}}>
+                  <label className="block text-white font-semibold mb-2" style={{fontFamily: 'Gilroy, sans-serif'}}>
                     Meno *
                   </label>
                   <input
                     type="text"
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent"
+                    className="w-full px-4 py-3 rounded-lg focus:ring-2 focus:ring-white focus:outline-none"
+                    style={{ backgroundColor: '#ffffff', color: '#000000', border: 'none' }}
                     required
                   />
                 </div>
                 <div>
-                  <label className="block text-black font-semibold mb-2" style={{fontFamily: 'Gilroy, sans-serif'}}>
+                  <label className="block text-white font-semibold mb-2" style={{fontFamily: 'Gilroy, sans-serif'}}>
                     Email *
                   </label>
                   <input
                     type="email"
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent"
+                    className="w-full px-4 py-3 rounded-lg focus:ring-2 focus:ring-white focus:outline-none"
+                    style={{ backgroundColor: '#ffffff', color: '#000000', border: 'none' }}
                     required
                   />
                 </div>
                 <div>
-                  <label className="block text-black font-semibold mb-2" style={{fontFamily: 'Gilroy, sans-serif'}}>
+                  <label className="block text-white font-semibold mb-2" style={{fontFamily: 'Gilroy, sans-serif'}}>
                     Telefón
                   </label>
                   <input
                     type="tel"
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent"
+                    className="w-full px-4 py-3 rounded-lg focus:ring-2 focus:ring-white focus:outline-none"
+                    style={{ backgroundColor: '#ffffff', color: '#000000', border: 'none' }}
                   />
                 </div>
                 <div>
-                  <label className="block text-black font-semibold mb-2" style={{fontFamily: 'Gilroy, sans-serif'}}>
+                  <label className="block text-white font-semibold mb-2" style={{fontFamily: 'Gilroy, sans-serif'}}>
                     Predmet
                   </label>
                   <input
                     type="text"
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent"
+                    className="w-full px-4 py-3 rounded-lg focus:ring-2 focus:ring-white focus:outline-none"
+                    style={{ backgroundColor: '#ffffff', color: '#000000', border: 'none' }}
                   />
                 </div>
                 <div className="md:col-span-2">
-                  <label className="block text-black font-semibold mb-2" style={{fontFamily: 'Gilroy, sans-serif'}}>
+                  <label className="block text-white font-semibold mb-2" style={{fontFamily: 'Gilroy, sans-serif'}}>
                     Správa *
                   </label>
                   <textarea
                     rows="6"
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent"
+                    className="w-full px-4 py-3 rounded-lg focus:ring-2 focus:ring-white focus:outline-none"
+                    style={{ backgroundColor: '#ffffff', color: '#000000', border: 'none' }}
                     required
                   ></textarea>
                 </div>
                 <div className="md:col-span-2 text-center">
                   <button
                     type="submit"
-                    className="bg-blue-600 text-white px-8 py-3 rounded-lg font-bold hover:bg-blue-700 transition-colors"
-                    style={{fontFamily: 'Gilroy, sans-serif'}}
+                    className="px-8 py-3 rounded-lg font-bold hover:opacity-90 transition-opacity"
+                    style={{fontFamily: 'Gilroy, sans-serif', backgroundColor: '#ffffff', color: '#2563eb'}}
                   >
                     Odoslať správu
                   </button>

@@ -236,11 +236,11 @@ const DatePicker = ({
         onClick={() => setIsOpen(!isOpen)}
       >
         <div className="flex items-center justify-between">
-          <span className={
+          <span className={`text-sm ${
             variant === 'light'
               ? (selectedDate ? 'text-gray-900' : 'text-gray-500')
               : (selectedDate ? 'text-white' : 'text-gray-400')
-          }>
+          }`}>
             {selectedDate ? formatDate(selectedDate) : placeholder}
           </span>
           <CalendarIcon className="h-5 w-5" style={{color: '#2563eb'}} />
