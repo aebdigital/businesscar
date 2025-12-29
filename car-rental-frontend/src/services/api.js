@@ -1,8 +1,21 @@
-// Production API base URL
-const API_BASE = 'https://carflow-reservation-system.onrender.com/api';
+// API base URL from environment variables (Vite uses VITE_ prefix)
+// If VITE_API_BASE_URL is empty or undefined, use relative path for Vite proxy
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+const API_BASE = API_BASE_URL
+  ? `${API_BASE_URL}/api`  // Production: use full URL
+  : '/api';                 // Development: use relative path (Vite proxy)
 
-// Tenant email for RIVAL company
-const TENANT_EMAIL = 'rival@test.sk';
+// Tenant email from environment variables
+const TENANT_EMAIL = import.meta.env.VITE_TENANT_EMAIL || 'lerent@lerent.sk';
+
+// Placeholder for car images
+const ArkanaImg = '';
+const OctaviaImg = '';
+const ScalaImg = '';
+const MonteCarloImg = '';
+const CorollaImg = '';
+const TarracoImg = '';
+const TouranImg = '';
 
 // API Configuration
 const API_CONFIG = {
@@ -10,107 +23,45 @@ const API_CONFIG = {
   useTenantEndpoints: true,
   // Fallback to general endpoints if tenant-specific fail
   enableFallback: true,
-  // Use mock data for development (set to true to avoid backend calls)
-  useMockData: true
+  // Use mock data for development (controlled by environment variable)
+  useMockData: import.meta.env.VITE_USE_MOCK_DATA === 'true'
 };
+
+// Log configuration on load
+console.log('🚀 API Configuration:');
+console.log('  Base URL:', API_BASE);
+console.log('  Tenant:', TENANT_EMAIL);
+console.log('  Using Mock Data:', API_CONFIG.useMockData);
 
 // Mock data for development/fallback
 const mockCarsData = [
-  // Ekonomická trieda
+  // Renault Arkana AT
   {
-    _id: 'eco1',
-    brand: 'Škoda',
-    model: 'Citigo',
-    year: 2023,
-    category: 'ekonomicka',
-    fuelType: 'petrol',
-    transmission: 'automatic',
-    seats: 4,
-    doors: 4,
-    dailyRate: 32,
-    weeklyRate: 210,
-    monthlyRate: 820,
-    power: '60kW',
-    status: 'available',
-    deposit: 500,
-    description: 'Ekonomický mestský automobil s automatickou prevodovkou.',
-    features: ['air-conditioning', 'bluetooth', 'usb-ports'],
-    images: [
-      {
-        url: '/src/assets/skoda-city-gi.webp',
-        description: 'Škoda Citigo',
-        isPrimary: true
-      }
-    ],
-    location: {
-      name: 'Bratislava',
-      address: {
-        street: 'Záhradnícka 68',
-        city: 'Bratislava',
-        zipCode: '821 08',
-        country: 'Slovensko'
-      }
-    }
-  },
-  
-  // Stredná trieda
-  {
-    _id: 'mid1',
-    brand: 'Toyota',
-    model: 'AygoX',
-    year: 2023,
-    category: 'stredna',
-    fuelType: 'petrol',
-    transmission: 'manual',
-    seats: 4,
-    doors: 4,
-    dailyRate: 40,
-    weeklyRate: 250,
-    monthlyRate: 980,
-    power: '72kW',
-    status: 'available',
-    deposit: 600,
-    description: 'Moderný crossover s dynamickým dizajnom.',
-    features: ['air-conditioning', 'bluetooth', 'rear-camera'],
-    images: [
-      {
-        url: '/src/assets/toyota-aygo.jpg',
-        description: 'Toyota AygoX',
-        isPrimary: true
-      }
-    ],
-    location: {
-      name: 'Bratislava',
-      address: {
-        street: 'Záhradnícka 68',
-        city: 'Bratislava',
-        zipCode: '821 08',
-        country: 'Slovensko'
-      }
-    }
-  },
-  {
-    _id: 'mid2',
-    brand: 'Volkswagen',
-    model: 'Beetle',
-    year: 2023,
+    _id: 'ark1',
+    brand: 'Renault',
+    model: 'Arkana AT',
+    year: 2024,
     category: 'stredna',
     fuelType: 'petrol',
     transmission: 'automatic',
-    seats: 4,
-    doors: 2,
-    dailyRate: 45,
+    seats: 5,
+    doors: 4,
+    dailyRate: 37,
     weeklyRate: 280,
     monthlyRate: 1100,
     power: '110kW',
     status: 'available',
     deposit: 700,
-    description: 'Ikonické auto s retro dizajnom a modernou technikou.',
-    features: ['air-conditioning', 'bluetooth', 'heated-seats'],
+    pricing: {
+      deposit: 700,
+      dailyRate: 37
+    },
+    description: 'Elegantný crossover coupe s automatickou prevodovkou.',
+    features: ['air-conditioning', 'gps', 'bluetooth', 'rear-camera'],
     images: [
       {
-        url: '/src/assets/beetle.avif',
-        description: 'VW Beetle',
+        url: ArkanaImg,
+        description: 'Renault Arkana AT',
         isPrimary: true
       }
     ],
@@ -124,98 +75,34 @@ const mockCarsData = [
       }
     }
   },
+  
+  // Škoda Octavia 4 Combi AT
   {
-    _id: 'mid3',
-    brand: 'Hyundai',
-    model: 'Kona',
-    year: 2023,
-    category: 'stredna',
-    fuelType: 'hybrid',
-    transmission: 'automatic',
-    seats: 5,
-    doors: 4,
-    dailyRate: 48,
-    weeklyRate: 300,
-    monthlyRate: 1150,
-    power: '104kW',
-    status: 'available',
-    deposit: 800,
-    description: 'Kompaktné SUV s hybridným pohonom.',
-    features: ['air-conditioning', 'gps', 'bluetooth', 'heated-seats'],
-    images: [
-      {
-        url: '/src/assets/Hyundai-Kona.jpg',
-        description: 'Hyundai Kona',
-        isPrimary: true
-      }
-    ],
-    location: {
-      name: 'Bratislava',
-      address: {
-        street: 'Záhradnícka 68',
-        city: 'Bratislava',
-        zipCode: '821 08',
-        country: 'Slovensko'
-      }
-    }
-  },
-  {
-    _id: 'mid4',
+    _id: 'oct1',
     brand: 'Škoda',
-    model: 'Octavia',
-    year: 2023,
+    model: 'Octavia 4 Combi AT',
+    year: 2024,
     category: 'stredna',
     fuelType: 'diesel',
     transmission: 'automatic',
     seats: 5,
     doors: 4,
-    dailyRate: 50,
+    dailyRate: 37,
     weeklyRate: 320,
     monthlyRate: 1250,
     power: '110kW',
     status: 'available',
     deposit: 800,
-    description: 'Moderný a spoľahlivý sedan, ideálny pre dlhšie cesty.',
-    features: ['air-conditioning', 'gps', 'bluetooth', 'cruise-control'],
-    images: [
-      {
-        url: '/src/assets/Skoda-octavia.jpeg',
-        description: 'Škoda Octavia',
-        isPrimary: true
-      }
-    ],
-    location: {
-      name: 'Bratislava',
-      address: {
-        street: 'Záhradnícka 68',
-        city: 'Bratislava',
-        zipCode: '821 08',
-        country: 'Slovensko'
-      }
-    }
-  },
-  {
-    _id: 'mid5',
-    brand: 'Volkswagen',
-    model: 'Passat Variant',
-    year: 2023,
-    category: 'stredna',
-    fuelType: 'diesel',
-    transmission: 'automatic',
-    seats: 5,
-    doors: 4,
-    dailyRate: 55,
-    weeklyRate: 350,
-    monthlyRate: 1380,
-    power: '140kW',
-    status: 'available',
-    deposit: 900,
-    description: 'Priestranné kombi s veľkým batožinovým priestorom.',
+    pricing: {
+      deposit: 800,
+      dailyRate: 37
+    },
+    description: 'Najnovšie kombi Škoda s veľkým batožinovým priestorom a modernou technikou.',
     features: ['air-conditioning', 'gps', 'bluetooth', 'cruise-control', 'extra-luggage'],
     images: [
       {
-        url: '/src/assets/volkswagen-passat.jpg',
-        description: 'VW Passat Variant',
+        url: OctaviaImg,
+        description: 'Škoda Octavia 4 Combi AT',
         isPrimary: true
       }
     ],
@@ -230,29 +117,33 @@ const mockCarsData = [
     }
   },
   
-  // Business trieda
+  // Škoda Scala Ambition AT
   {
-    _id: 'bus1',
-    brand: 'Mercedes',
-    model: 'CLA 220 CDI',
+    _id: 'sca1',
+    brand: 'Škoda',
+    model: 'Scala Ambition AT',
     year: 2023,
-    category: 'business',
-    fuelType: 'diesel',
+    category: 'ekonomicka',
+    fuelType: 'petrol',
     transmission: 'automatic',
     seats: 5,
     doors: 4,
-    dailyRate: 85,
-    weeklyRate: 550,
-    monthlyRate: 2200,
-    power: '140kW',
+    dailyRate: 30,
+    weeklyRate: 230,
+    monthlyRate: 900,
+    power: '85kW',
     status: 'available',
-    deposit: 1200,
-    description: 'Elegantný business sedan s prémiovým vybavením.',
-    features: ['air-conditioning', 'gps', 'bluetooth', 'heated-seats', 'leather-seats', 'sunroof'],
+    deposit: 600,
+    pricing: {
+      deposit: 600,
+      dailyRate: 37
+    },
+    description: 'Moderný kompaktný liftback s automatickou prevodovkou a bohatým vybavením.',
+    features: ['air-conditioning', 'bluetooth', 'usb-ports', 'cruise-control'],
     images: [
       {
-        url: '/src/assets/Mercedes-cla-220.jpg',
-        description: 'Mercedes CLA 220 CDI',
+        url: ScalaImg,
+        description: 'Škoda Scala Ambition AT',
         isPrimary: true
       }
     ],
@@ -266,135 +157,116 @@ const mockCarsData = [
       }
     }
   },
+  
+  // Škoda Scala MonteCarlo AT
   {
-    _id: 'bus2',
-    brand: 'Mercedes',
-    model: 'C Combi',
-    year: 2023,
-    category: 'business',
-    fuelType: 'diesel',
+    _id: 'mon1',
+    brand: 'Škoda',
+    model: 'Scala MonteCarlo AT',
+    year: 2024,
+    category: 'stredna',
+    fuelType: 'petrol',
     transmission: 'automatic',
     seats: 5,
     doors: 4,
-    dailyRate: 90,
-    weeklyRate: 580,
-    monthlyRate: 2350,
+    dailyRate: 30,
+    weeklyRate: 260,
+    monthlyRate: 1020,
+    power: '110kW',
+    status: 'available',
+    deposit: 700,
+    pricing: {
+      deposit: 700,
+      dailyRate: 37
+    },
+    description: 'Športová verzia Scala s dizajnom MonteCarlo a výkonným motorom.',
+    features: ['air-conditioning', 'gps', 'bluetooth', 'heated-seats', 'sport-package'],
+    images: [
+      {
+        url: MonteCarloImg,
+        description: 'Škoda Scala MonteCarlo AT',
+        isPrimary: true
+      }
+    ],
+    location: {
+      name: 'Bratislava',
+      address: {
+        street: 'Záhradnícka 68',
+        city: 'Bratislava',
+        zipCode: '821 08',
+        country: 'Slovensko'
+      }
+    }
+  },
+  
+  // Toyota Corolla AT
+  {
+    _id: 'cor1',
+    brand: 'Toyota',
+    model: 'Corolla AT',
+    year: 2023,
+    category: 'ekonomicka',
+    fuelType: 'hybrid',
+    transmission: 'automatic',
+    seats: 5,
+    doors: 4,
+    dailyRate: 34,
+    weeklyRate: 240,
+    monthlyRate: 950,
+    power: '90kW',
+    status: 'available',
+    deposit: 600,
+    pricing: {
+      deposit: 600,
+      dailyRate: 37
+    },
+    description: 'Spoľahlivý hybridný sedan s nízkou spotrebou paliva.',
+    features: ['air-conditioning', 'bluetooth', 'rear-camera', 'hybrid'],
+    images: [
+      {
+        url: CorollaImg,
+        description: 'Toyota Corolla AT',
+        isPrimary: true
+      }
+    ],
+    location: {
+      name: 'Bratislava',
+      address: {
+        street: 'Záhradnícka 68',
+        city: 'Bratislava',
+        zipCode: '821 08',
+        country: 'Slovensko'
+      }
+    }
+  },
+  
+  // Seat Tarraco FR 4WD AT (moved to 6th position)
+  {
+    _id: 'tar1',
+    brand: 'Seat',
+    model: 'Tarraco FR 4WD AT',
+    year: 2023,
+    category: 'vyssia',
+    fuelType: 'diesel',
+    transmission: 'automatic',
+    seats: 7,
+    doors: 4,
+    dailyRate: 60,
+    weeklyRate: 450,
+    monthlyRate: 1800,
     power: '150kW',
     status: 'available',
-    deposit: 1300,
-    description: 'Luxusné kombi s najmodernejšími technológiami.',
-    features: ['air-conditioning', 'gps', 'bluetooth', 'heated-seats', 'leather-seats', 'massage-seats'],
-    images: [
-      {
-        url: '/src/assets/Mercedes-Combi.jpg',
-        description: 'Mercedes C Combi',
-        isPrimary: true
-      }
-    ],
-    location: {
-      name: 'Bratislava',
-      address: {
-        street: 'Záhradnícka 68',
-        city: 'Bratislava',
-        zipCode: '821 08',
-        country: 'Slovensko'
-      }
-    }
-  },
-  
-  // SUV
-  {
-    _id: 'suv1',
-    brand: 'Škoda',
-    model: 'Kodiaq',
-    year: 2023,
-    category: 'suv',
-    fuelType: 'diesel',
-    transmission: 'automatic',
-    seats: 7,
-    doors: 4,
-    dailyRate: 75,
-    weeklyRate: 480,
-    monthlyRate: 1900,
-    power: '140kW',
-    status: 'available',
     deposit: 1000,
-    description: 'Veľké 7-miestne SUV pre celú rodinu.',
-    features: ['air-conditioning', 'gps', 'bluetooth', 'heated-seats', 'leather-seats', '4x4'],
+    pricing: {
+      deposit: 1000,
+      dailyRate: 37
+    },
+    description: 'Výkonné 7-miestne SUV s pohonom všetkých kolies a športovým paketom FR.',
+    features: ['air-conditioning', 'gps', 'bluetooth', 'heated-seats', '4x4', 'leather-seats'],
     images: [
       {
-        url: '/src/assets/Skoda_Kodiaq_Facelift_IMG_6636.jpg',
-        description: 'Škoda Kodiaq',
-        isPrimary: true
-      }
-    ],
-    location: {
-      name: 'Bratislava',
-      address: {
-        street: 'Záhradnícka 68',
-        city: 'Bratislava',
-        zipCode: '821 08',
-        country: 'Slovensko'
-      }
-    }
-  },
-  {
-    _id: 'suv2',
-    brand: 'Peugeot',
-    model: '5008',
-    year: 2023,
-    category: 'suv',
-    fuelType: 'diesel',
-    transmission: 'automatic',
-    seats: 7,
-    doors: 4,
-    dailyRate: 80,
-    weeklyRate: 520,
-    monthlyRate: 2050,
-    power: '130kW',
-    status: 'available',
-    deposit: 1100,
-    description: 'Priestranné 7-miestne SUV s francúzskou eleganciou.',
-    features: ['air-conditioning', 'gps', 'bluetooth', 'heated-seats', 'panoramic-roof'],
-    images: [
-      {
-        url: '/src/assets/Peugeot-508.jpg',
-        description: 'Peugeot 5008',
-        isPrimary: true
-      }
-    ],
-    location: {
-      name: 'Bratislava',
-      address: {
-        street: 'Záhradnícka 68',
-        city: 'Bratislava',
-        zipCode: '821 08',
-        country: 'Slovensko'
-      }
-    }
-  },
-  {
-    _id: 'suv3',
-    brand: 'Mercedes',
-    model: 'GLC',
-    year: 2023,
-    category: 'suv',
-    fuelType: 'diesel',
-    transmission: 'automatic',
-    seats: 5,
-    doors: 4,
-    dailyRate: 95,
-    weeklyRate: 620,
-    monthlyRate: 2450,
-    power: '170kW',
-    status: 'available',
-    deposit: 1500,
-    description: 'Prémiové SUV s najvyššou kvalitou a komfortom.',
-    features: ['air-conditioning', 'gps', 'bluetooth', 'heated-seats', 'leather-seats', 'massage-seats'],
-    images: [
-      {
-        url: '/src/assets/mercedes-glc-.jpg',
-        description: 'Mercedes GLC',
+        url: TarracoImg,
+        description: 'Seat Tarraco FR 4WD AT',
         isPrimary: true
       }
     ],
@@ -409,29 +281,33 @@ const mockCarsData = [
     }
   },
   
-  // VAN
+  // VW Touran Highline AT, 7 miestne (moved to last position)
   {
-    _id: 'van1',
-    brand: 'Mercedes',
-    model: 'V Class',
-    year: 2023,
-    category: 'van',
+    _id: 'tou1',
+    brand: 'Volkswagen',
+    model: 'Touran Highline AT, 7 miestne',
+    year: 2024,
+    category: 'viacmiestne',
     fuelType: 'diesel',
     transmission: 'automatic',
-    seats: 8,
+    seats: 7,
     doors: 4,
-    dailyRate: 120,
-    weeklyRate: 780,
-    monthlyRate: 3100,
-    power: '140kW',
+    dailyRate: 42,
+    weeklyRate: 420,
+    monthlyRate: 1650,
+    power: '110kW',
     status: 'available',
-    deposit: 1800,
-    description: 'Luxusný 8-miestny van pre VIP prepravu.',
-    features: ['air-conditioning', 'gps', 'bluetooth', 'leather-seats', 'captain-chairs', 'extra-luggage'],
+    deposit: 900,
+    pricing: {
+      deposit: 900,
+      dailyRate: 37
+    },
+    description: 'Priestranný 7-miestny rodinný van s prémiovým vybavením Highline.',
+    features: ['air-conditioning', 'gps', 'bluetooth', 'heated-seats', 'extra-luggage', 'cruise-control'],
     images: [
       {
-        url: '/src/assets/Mercedes V-class.jpeg',
-        description: 'Mercedes V Class',
+        url: TouranImg,
+        description: 'VW Touran Highline AT, 7 miestne',
         isPrimary: true
       }
     ],
@@ -556,7 +432,12 @@ export const carsAPI = {
         if (response.ok) {
           const result = await handleResponse(response);
           console.log('Cars returned from tenant API:', result.data?.length || 0, 'cars');
-          return result.data || [];
+          console.log('Additional services from API:', result.filters?.additionalServices || []);
+          // Return full result object with data and filters
+          return {
+            data: result.data || [],
+            filters: result.filters || {}
+          };
         }
       } catch (error) {
         console.warn('Tenant-specific API failed, trying fallback:', error.message);
@@ -656,6 +537,56 @@ export const carsAPI = {
 
         if (response.ok) {
           const result = await handleResponse(response);
+          console.log('✅ Car availability data from API:', result.data);
+          console.log('   Unavailable dates:', result.data?.unavailableDates);
+
+          // If backend doesn't return unavailableDates, fetch calendar to build it
+          if (!result.data?.unavailableDates) {
+            console.warn('⚠️ Backend availability API does not return unavailableDates array');
+            console.warn('   Fetching calendar to build unavailableDates...');
+
+            try {
+              // Fetch calendar for this car using the correct endpoint
+              const calendarResponse = await fetch(
+                `${API_BASE}/public/users/${encodeURIComponent(TENANT_EMAIL)}/cars/${carId}/calendar?startDate=${queryParams.get('startDate')}&endDate=${queryParams.get('endDate')}`,
+                {
+                  headers: {
+                    'Content-Type': 'application/json',
+                  }
+                }
+              );
+
+              if (calendarResponse.ok) {
+                const calendarResult = await handleResponse(calendarResponse);
+                const calendar = calendarResult.data?.calendar;
+                console.log('📅 Found calendar data for car:', calendar);
+
+                // Build unavailableDates array from booked dates
+                const unavailableDates = [];
+
+                if (calendar && calendar.bookedDates && Array.isArray(calendar.bookedDates)) {
+                  calendar.bookedDates.forEach(bookedDate => {
+                    // Extract just the date part (YYYY-MM-DD) from the ISO string
+                    const dateStr = bookedDate.date.split('T')[0];
+                    if (!unavailableDates.includes(dateStr)) {
+                      unavailableDates.push(dateStr);
+                    }
+                  });
+                }
+
+                console.log('🔴 Generated unavailable dates from calendar:', unavailableDates);
+                console.log('   Total booked days:', unavailableDates.length);
+
+                return {
+                  ...result.data,
+                  unavailableDates: unavailableDates
+                };
+              }
+            } catch (calendarError) {
+              console.warn('Failed to fetch calendar for unavailable dates:', calendarError);
+            }
+          }
+
           return result.data || { isAvailable: true, status: 'available' };
         }
       } catch (error) {
@@ -705,6 +636,126 @@ export const carsAPI = {
 
     const result = await handleResponse(response);
     return result.data || [];
+  }
+};
+
+// Additional Services API
+export const servicesAPI = {
+  // Get all services for a tenant
+  getServices: async () => {
+    // Use mock data if configured
+    if (API_CONFIG.useMockData) {
+      console.log('Using mock data for services');
+      return [];
+    }
+
+    try {
+      const response = await fetch(`${API_BASE}/public/users/${encodeURIComponent(TENANT_EMAIL)}/services`, {
+        headers: {
+          'Content-Type': 'application/json',
+        }
+      });
+
+      if (response.ok) {
+        const result = await handleResponse(response);
+        console.log('📋 Services from API:', result.data || []);
+        return result.data || [];
+      }
+    } catch (error) {
+      console.warn('Failed to fetch services:', error.message);
+      return [];
+    }
+
+    return [];
+  },
+
+  // Get services for a specific vehicle
+  getServicesForVehicle: async (vehicleId) => {
+    // Use mock data if configured
+    if (API_CONFIG.useMockData) {
+      console.log('Using mock data for vehicle services');
+      return [];
+    }
+
+    try {
+      const response = await fetch(`${API_BASE}/public/users/${encodeURIComponent(TENANT_EMAIL)}/services/vehicle/${vehicleId}`, {
+        headers: {
+          'Content-Type': 'application/json',
+        }
+      });
+
+      if (response.ok) {
+        const result = await handleResponse(response);
+        console.log('📋 Vehicle services from API:', result.data || []);
+        return result.data || [];
+      }
+    } catch (error) {
+      console.warn('Failed to fetch vehicle services:', error.message);
+      return [];
+    }
+
+    return [];
+  },
+
+  // Calculate service price
+  calculateServicePrice: async (serviceData) => {
+    // Use mock data if configured
+    if (API_CONFIG.useMockData) {
+      console.log('Using mock data for service price calculation');
+      return { totalPrice: 0, breakdown: [] };
+    }
+
+    try {
+      const response = await fetch(`${API_BASE}/public/users/${encodeURIComponent(TENANT_EMAIL)}/services/calculate-price`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(serviceData)
+      });
+
+      if (response.ok) {
+        const result = await handleResponse(response);
+        console.log('💰 Service price calculation:', result.data || {});
+        return result.data || { totalPrice: 0, breakdown: [] };
+      }
+    } catch (error) {
+      console.warn('Failed to calculate service price:', error.message);
+      return { totalPrice: 0, breakdown: [] };
+    }
+
+    return { totalPrice: 0, breakdown: [] };
+  }
+};
+
+// Insurance API
+export const insuranceAPI = {
+  // Get extended insurance for a specific car
+  getExtendedInsurance: async (carId) => {
+    // Use mock data if configured
+    if (API_CONFIG.useMockData) {
+      console.log('Using mock data for insurance');
+      return [];
+    }
+
+    try {
+      const response = await fetch(`${API_BASE}/public/users/${encodeURIComponent(TENANT_EMAIL)}/cars/${carId}/extended-insurance`, {
+        headers: {
+          'Content-Type': 'application/json',
+        }
+      });
+
+      if (response.ok) {
+        const result = await handleResponse(response);
+        console.log('🛡️ Insurance options from API:', result.data || []);
+        return result.data || [];
+      }
+    } catch (error) {
+      console.warn('Failed to fetch insurance options:', error.message);
+      return [];
+    }
+
+    return [];
   }
 };
 
@@ -946,9 +997,128 @@ export const bookingAPI = {
   }
 };
 
+// Locations API
+export const locationsAPI = {
+  // Get pickup and dropoff locations for the tenant
+  getPickupLocations: async () => {
+    try {
+      console.log('📍 Fetching pickup locations from API...');
+
+      const response = await fetch(
+        `${API_BASE}/public/users/${encodeURIComponent(TENANT_EMAIL)}/pickup-locations`,
+        {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+          }
+        }
+      );
+
+      const result = await handleResponse(response);
+
+      if (result.success && result.data && result.data.pickupLocations) {
+        console.log('✅ Pickup locations loaded:', result.data.pickupLocations.length, 'locations');
+        return {
+          locations: result.data.pickupLocations,
+          defaultLocation: result.data.defaultLocation
+        };
+      }
+
+      throw new Error('Invalid response format from pickup locations API');
+    } catch (error) {
+      console.error('❌ Error fetching pickup locations:', error);
+
+      // Return empty array as fallback
+      return {
+        locations: [],
+        defaultLocation: null
+      };
+    }
+  },
+
+  // Get default location from locations array
+  getDefaultLocation: (locations) => {
+    if (!locations || locations.length === 0) return null;
+    return locations.find(loc => loc.isDefault) || locations[0];
+  },
+
+  // Find location by ID
+  findLocationById: (locations, locationId) => {
+    if (!locations || !locationId) return null;
+    return locations.find(loc => loc.id === locationId);
+  },
+
+  // Find location by name
+  findLocationByName: (locations, locationName) => {
+    if (!locations || !locationName) return null;
+    return locations.find(loc => loc.name === locationName);
+  }
+};
+
+// Banners API
+export const bannersAPI = {
+  // Get all active banners
+  getAll: async () => {
+    try {
+      console.log('🎨 Fetching banners from API...');
+
+      const response = await fetch(`${API_BASE}/public/users/${encodeURIComponent(TENANT_EMAIL)}/banners`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        }
+      });
+
+      if (!response.ok) {
+        console.warn('⚠️ Failed to fetch banners from API');
+        return { success: false, data: [] };
+      }
+
+      const data = await response.json();
+      console.log('✅ Banners loaded:', data.data?.length || 0, 'banners');
+      return data;
+
+    } catch (error) {
+      console.error('❌ Error fetching banners:', error);
+      return { success: false, data: [] };
+    }
+  },
+
+  // Get banners by position
+  getByPosition: async (position) => {
+    try {
+      console.log(`🎨 Fetching banners for position "${position}" from API...`);
+
+      const response = await fetch(`${API_BASE}/public/users/${encodeURIComponent(TENANT_EMAIL)}/banners?position=${position}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        }
+      });
+
+      if (!response.ok) {
+        console.warn(`⚠️ Failed to fetch banners for position "${position}"`);
+        return [];
+      }
+
+      const data = await response.json();
+      console.log(`✅ Banners loaded for position "${position}":`, data.data?.length || 0, 'banners');
+      return data.data || [];
+
+    } catch (error) {
+      console.error(`❌ Error filtering banners for position "${position}":`, error);
+      return [];
+    }
+  }
+};
+
 export default {
   auth: authAPI,
   cars: carsAPI,
   reservations: reservationsAPI,
-  booking: bookingAPI
+  booking: bookingAPI,
+  services: servicesAPI,
+  insurance: insuranceAPI,
+  locations: locationsAPI,
+  banners: bannersAPI
 }; 

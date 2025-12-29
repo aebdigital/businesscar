@@ -9,13 +9,14 @@ const Button = ({
   className = '',
   ...props 
 }) => {
-  const baseClasses = 'inline-flex items-center justify-center font-medium rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2';
+  const baseClasses = 'inline-flex items-center justify-center font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2';
+  const polygonClip = 'polygon(0px 0px, 89% 0px, 100% 30%, 100% 100%, 10% 100%, 0px 70%)';
   
   const variants = {
-    primary: 'bg-primary text-white hover:bg-gray-800 focus:ring-primary',
-    accent: 'bg-accent text-black hover:bg-yellow-400 focus:ring-accent',
+    primary: 'text-black hover:opacity-90 focus:ring-blue-500',
+    accent: 'text-black hover:opacity-90 focus:ring-blue-500',
     secondary: 'bg-gray-200 text-gray-900 hover:bg-gray-300 focus:ring-gray-500',
-    outline: 'border-2 border-primary text-primary hover:bg-primary hover:text-white focus:ring-primary',
+    outline: 'border-2 text-black hover:opacity-90 focus:ring-blue-500',
     ghost: 'text-gray-700 hover:bg-gray-100 focus:ring-gray-500'
   };
   
@@ -34,6 +35,11 @@ const Button = ({
     <button
       type={type}
       className={buttonClasses}
+      style={{
+        clipPath: polygonClip,
+        borderRadius: '0px',
+        backgroundColor: '#2563eb'
+      }}
       onClick={onClick}
       disabled={disabled}
       {...props}

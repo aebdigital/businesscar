@@ -1,13 +1,18 @@
 import { useState, useRef, useEffect } from 'react';
 import { ChevronLeftIcon, ChevronRightIcon, CalendarIcon } from '@heroicons/react/24/outline';
 
-const DatePicker = ({ 
-  selectedDate, 
-  onDateSelect, 
-  minDate, 
-  maxDate, 
-  unavailableDates = [], 
-  placeholder = "Datum" 
+const DatePicker = ({
+  selectedDate,
+  onDateSelect,
+  minDate,
+  maxDate,
+  unavailableDates = [],
+  placeholder = "Vyberte dátum",
+  otherSelectedDate = null, // The other date in the range (pickup or return)
+  isReturnPicker = false, // Flag to indicate if this is the return date picker
+  onOtherDateReset = null, // Callback to reset the other date picker
+  showYearMonthSelectors = false, // Flag to show year/month dropdowns for easier navigation
+  variant = 'dark' // 'dark' or 'light' - light variant has white background for use on colored panels
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [currentMonth, setCurrentMonth] = useState(new Date());
@@ -38,24 +43,69 @@ const DatePicker = ({
     return date.toLocaleDateString('sk-SK');
   };
 
+  // Format date to YYYY-MM-DD in local timezone (avoids timezone shift issues)
+  const formatDateLocal = (date) => {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  };
+
   const isDateDisabled = (date) => {
-    const dateStr = date.toISOString().split('T')[0];
-    
+    const dateStr = formatDateLocal(date);
+
     // Check if date is before minimum date
     if (minDate && date < minDate) return true;
-    
+
     // Check if date is after maximum date
     if (maxDate && date > maxDate) return true;
-    
+
     // Check if date is in unavailable dates
     if (unavailableDates.includes(dateStr)) return true;
-    
+
+    // For return picker: Check if selecting this date would create less than 2-day reservation
+    if (isReturnPicker && otherSelectedDate) {
+      const pickupDate = otherSelectedDate;
+      const daysDifference = Math.ceil((date - pickupDate) / (1000 * 60 * 60 * 24));
+      if (daysDifference < 2) return true;
+    }
+
+    // For pickup picker: Check if selecting this date would create less than 2-day reservation with current return date
+    if (!isReturnPicker && otherSelectedDate) {
+      const returnDate = otherSelectedDate;
+      const daysDifference = Math.ceil((returnDate - date) / (1000 * 60 * 60 * 24));
+      if (daysDifference < 2) return true;
+    }
+
     return false;
   };
 
   const isDateUnavailable = (date) => {
-    const dateStr = date.toISOString().split('T')[0];
+    const dateStr = formatDateLocal(date);
     return unavailableDates.includes(dateStr);
+  };
+
+  // Check if there are any unavailable dates between two dates
+  const hasUnavailableDatesBetween = (startDate, endDate) => {
+    if (!startDate || !endDate) return false;
+
+    const start = new Date(startDate);
+    const end = new Date(endDate);
+
+    // Ensure start is before end
+    if (start > end) return false;
+
+    // Check each date in the range
+    const currentDate = new Date(start);
+    while (currentDate <= end) {
+      const dateStr = formatDateLocal(currentDate);
+      if (unavailableDates.includes(dateStr)) {
+        return true;
+      }
+      currentDate.setDate(currentDate.getDate() + 1);
+    }
+
+    return false;
   };
 
   const getDaysInMonth = (date) => {
@@ -91,11 +141,84 @@ const DatePicker = ({
     });
   };
 
-  const handleDateClick = (date) => {
-    if (!isDateDisabled(date)) {
-      onDateSelect(date);
-      setIsOpen(false);
+  const handleYearChange = (year) => {
+    setCurrentMonth(prev => {
+      const newMonth = new Date(prev);
+      newMonth.setFullYear(parseInt(year));
+      return newMonth;
+    });
+  };
+
+  const handleMonthChange = (month) => {
+    setCurrentMonth(prev => {
+      const newMonth = new Date(prev);
+      newMonth.setMonth(parseInt(month));
+      return newMonth;
+    });
+  };
+
+  // Generate year options (100 years range centered on current year or based on min/max dates)
+  const getYearOptions = () => {
+    const currentYear = new Date().getFullYear();
+    const minYear = minDate ? minDate.getFullYear() : currentYear - 100;
+    const maxYear = maxDate ? maxDate.getFullYear() : currentYear + 10;
+    const years = [];
+    for (let year = maxYear; year >= minYear; year--) {
+      years.push(year);
     }
+    return years;
+  };
+
+  const handleDateClick = (date) => {
+    if (isDateDisabled(date)) {
+      return;
+    }
+
+    // If this is the return picker and we have a pickup date, validate the range
+    if (isReturnPicker && otherSelectedDate) {
+      const pickupDate = otherSelectedDate;
+      const returnDate = date;
+
+      // Check for minimum 2-day reservation
+      const daysDifference = Math.ceil((returnDate - pickupDate) / (1000 * 60 * 60 * 24));
+      if (daysDifference < 2) {
+        alert('Minimálna dĺžka rezervácie sú 2 dni. Prosím vyberte dátum vrátenia minimálne 2 dni po dátume prevzatia.');
+        return;
+      }
+
+      if (hasUnavailableDatesBetween(pickupDate, returnDate)) {
+        alert('Nemôžete vybrať tento dátum, pretože v rozsahu sú nedostupné dni. Prosím vyberte iný dátum.');
+        return;
+      }
+    }
+
+    // If this is the pickup picker and we have a return date, check if we need to reset return date
+    if (!isReturnPicker && otherSelectedDate) {
+      const pickupDate = date;
+      const returnDate = otherSelectedDate;
+
+      // If pickup date is on or after return date, reset the return date
+      if (pickupDate >= returnDate) {
+        if (onOtherDateReset) {
+          onOtherDateReset(); // Reset the return date
+        }
+      } else {
+        // Check for minimum 2-day reservation
+        const daysDifference = Math.ceil((returnDate - pickupDate) / (1000 * 60 * 60 * 24));
+        if (daysDifference < 2) {
+          alert('Minimálna dĺžka rezervácie sú 2 dni. Prosím vyberte dátum prevzatia minimálne 2 dni pred dátumom vrátenia.');
+          return;
+        }
+
+        if (hasUnavailableDatesBetween(pickupDate, returnDate)) {
+          alert('Nemôžete vybrať tento dátum, pretože v rozsahu sú nedostupné dni. Prosím vyberte iný dátum.');
+          return;
+        }
+      }
+    }
+
+    onDateSelect(date);
+    setIsOpen(false);
   };
 
   const days = getDaysInMonth(currentMonth);
@@ -104,45 +227,89 @@ const DatePicker = ({
     <div className="relative" ref={containerRef}>
       {/* Input Field */}
       <div
-        className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm cursor-pointer hover:border-gray-400 focus-within:ring-2 focus-within:ring-accent focus-within:border-accent"
+        className={`w-full px-3 py-2 rounded-md border cursor-pointer focus-within:ring-2 ${
+          variant === 'light'
+            ? 'border-blue-300 bg-white'
+            : 'border-gray-700'
+        }`}
+        style={variant === 'dark' ? {backgroundColor: '#191919'} : {}}
         onClick={() => setIsOpen(!isOpen)}
       >
         <div className="flex items-center justify-between">
-          <span className={selectedDate ? 'text-gray-900' : 'text-gray-500'}>
+          <span className={
+            variant === 'light'
+              ? (selectedDate ? 'text-gray-900' : 'text-gray-500')
+              : (selectedDate ? 'text-white' : 'text-gray-400')
+          }>
             {selectedDate ? formatDate(selectedDate) : placeholder}
           </span>
-          <CalendarIcon className="h-5 w-5 text-gray-400" />
+          <CalendarIcon className="h-5 w-5" style={{color: '#2563eb'}} />
         </div>
       </div>
 
       {/* Calendar Dropdown */}
       {isOpen && (
-        <div className="absolute top-full left-0 mt-1 w-80 bg-white border border-gray-200 rounded-lg shadow-lg z-50">
+        <div
+          className={`absolute bottom-full mb-1 w-80 rounded-lg shadow-lg z-50 border border-gray-700`}
+          style={{
+            backgroundColor: 'rgb(25, 25, 25)',
+            ...(isReturnPicker ? { right: 0, transform: 'translateX(0)' } : { left: 0 })
+          }}
+        >
           {/* Header */}
-          <div className="flex items-center justify-between px-4 py-3 border-b border-gray-200">
-            <button
-              onClick={() => navigateMonth(-1)}
-              className="p-1 hover:bg-gray-100 rounded"
-            >
-              <ChevronLeftIcon className="h-5 w-5 text-gray-600" />
-            </button>
-            
-            <h3 className="text-lg font-semibold text-gray-900">
-              {monthNames[currentMonth.getMonth()]} {currentMonth.getFullYear()}
-            </h3>
-            
-            <button
-              onClick={() => navigateMonth(1)}
-              className="p-1 hover:bg-gray-100 rounded"
-            >
-              <ChevronRightIcon className="h-5 w-5 text-gray-600" />
-            </button>
+          <div className="flex items-center justify-between px-4 py-3 border-b border-gray-700">
+            {showYearMonthSelectors ? (
+              // Year and Month Dropdowns
+              <div className="flex items-center justify-center gap-2 w-full">
+                <select
+                  value={currentMonth.getMonth()}
+                  onChange={(e) => handleMonthChange(e.target.value)}
+                  className="px-2 py-1 rounded text-sm text-white border border-gray-600 focus:outline-none focus:ring-2 focus:ring-[rgb(250,146,8)]"
+                  style={{backgroundColor: '#2a2a2a'}}
+                >
+                  {monthNames.map((month, index) => (
+                    <option key={index} value={index}>{month}</option>
+                  ))}
+                </select>
+                <select
+                  value={currentMonth.getFullYear()}
+                  onChange={(e) => handleYearChange(e.target.value)}
+                  className="px-2 py-1 rounded text-sm text-white border border-gray-600 focus:outline-none focus:ring-2 focus:ring-[rgb(250,146,8)]"
+                  style={{backgroundColor: '#2a2a2a'}}
+                >
+                  {getYearOptions().map(year => (
+                    <option key={year} value={year}>{year}</option>
+                  ))}
+                </select>
+              </div>
+            ) : (
+              // Navigation Arrows with Month/Year Display
+              <>
+                <button
+                  onClick={() => navigateMonth(-1)}
+                  className="p-1 hover:bg-gray-700 rounded"
+                >
+                  <ChevronLeftIcon className="h-5 w-5 text-gray-300" />
+                </button>
+
+                <h3 className="text-lg font-goldman font-semibold text-white">
+                  {monthNames[currentMonth.getMonth()]} {currentMonth.getFullYear()}
+                </h3>
+
+                <button
+                  onClick={() => navigateMonth(1)}
+                  className="p-1 hover:bg-gray-700 rounded"
+                >
+                  <ChevronRightIcon className="h-5 w-5 text-gray-300" />
+                </button>
+              </>
+            )}
           </div>
 
           {/* Days of Week Header */}
-          <div className="grid grid-cols-7 gap-0 px-4 py-2 border-b border-gray-100">
+          <div className="grid grid-cols-7 gap-0 px-4 py-2 border-b border-gray-700">
             {dayNames.map(day => (
-              <div key={day} className="text-center text-sm font-medium text-gray-600 py-1">
+              <div key={day} className="text-center text-sm font-medium text-gray-300 py-1">
                 {day}
               </div>
             ))}
@@ -158,13 +325,14 @@ const DatePicker = ({
                     disabled={isDateDisabled(date)}
                     className={`w-full h-full flex items-center justify-center text-sm rounded transition-colors ${
                       selectedDate && date.toDateString() === selectedDate.toDateString()
-                        ? 'bg-accent text-black font-semibold'
+                        ? 'text-white font-semibold'
                         : isDateUnavailable(date)
-                        ? 'text-red-500 bg-red-50 cursor-not-allowed'
+                        ? 'text-gray-300 bg-gray-800 cursor-not-allowed opacity-50'
                         : isDateDisabled(date)
-                        ? 'text-gray-300 cursor-not-allowed'
-                        : 'text-gray-700 hover:bg-gray-100'
+                        ? 'text-gray-600 cursor-not-allowed'
+                        : 'text-white hover:bg-gray-700'
                     }`}
+                    style={selectedDate && date.toDateString() === selectedDate.toDateString() ? {backgroundColor: '#2563eb'} : {}}
                   >
                     {date.getDate()}
                   </button>
@@ -173,23 +341,6 @@ const DatePicker = ({
             ))}
           </div>
 
-          {/* Legend */}
-          <div className="px-4 pb-4 border-t border-gray-100">
-            <div className="text-xs text-gray-600 space-y-1">
-              <div className="flex items-center space-x-2">
-                <div className="w-3 h-3 bg-accent rounded"></div>
-                <span>Vybraný dátum</span>
-              </div>
-              <div className="flex items-center space-x-2">
-                <div className="w-3 h-3 bg-red-50 border border-red-200 rounded"></div>
-                <span>Nedostupné</span>
-              </div>
-              <div className="flex items-center space-x-2">
-                <div className="w-3 h-3 bg-gray-100 rounded"></div>
-                <span>Dostupné</span>
-              </div>
-            </div>
-          </div>
         </div>
       )}
     </div>

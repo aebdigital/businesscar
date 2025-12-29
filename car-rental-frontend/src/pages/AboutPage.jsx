@@ -1,104 +1,123 @@
-import { CheckIcon, ShieldCheckIcon, ClockIcon, StarIcon } from '@heroicons/react/24/outline';
-import Image2 from '../assets/2.jpg';
+import React from 'react';
+import { motion } from 'framer-motion';
 
 const AboutPage = () => {
-  const stats = [
-    { label: 'Rokov skúseností', value: '15+' },
-    { label: 'Spokojných zákazníkov', value: '10,000+' },
-    { label: 'Vozidiel vo flotile', value: '200+' },
-    { label: 'Obsluhovaných miest', value: '25+' },
-  ];
-
-  const values = [
-    {
-      icon: ShieldCheckIcon,
-      title: 'Spoľahlivosť',
-      description: 'Naše vozidlá udržujeme v najvyššom štandarde a poskytujeme 24/7 pomoc na ceste.'
-    },
-    {
-      icon: StarIcon,
-      title: 'Kvalitné služby',
-      description: 'Náš tím sa venuje poskytovaniu výnimočných služieb zákazníkom a personalizovanej pozornosti.'
-    },
-    {
-      icon: ClockIcon,
-      title: 'Pohodlie',
-      description: 'Jednoduché rezervácie, flexibilné miesta prevzatia a bezproblémový proces prenájmu.'
-    }
-  ];
-
   return (
-    <div className="min-h-screen">
-      {/* Mini Hero Section */}
-      <div 
-        className="relative h-[20vh] bg-cover bg-center flex items-center"
-        style={{
-          backgroundImage: `linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url(${Image2})`
-        }}
-      >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
-          <h1 className="text-3xl font-bold text-white">
-            O nás
-          </h1>
+    <div className="min-h-screen bg-white">
+      {/* Hero Section */}
+      <section className="relative overflow-hidden" style={{ height: '35vh', minHeight: '280px' }}>
+        <div
+          className="absolute inset-0 w-full h-full bg-cover bg-center bg-no-repeat"
+          style={{ backgroundImage: 'url(/hero.jpg)' }}
+        >
+          <div className="absolute inset-0 bg-black/40"></div>
         </div>
-      </div>
+        <div className="relative z-10 h-full flex items-center justify-center pt-20">
+          <div className="max-w-7xl mx-auto px-4">
+            <motion.div
+              initial={{ opacity: 0, y: 50 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6 }}
+              className="text-center"
+            >
+              <h1 className="text-4xl md:text-5xl font-bold mb-4" style={{fontFamily: 'Monument Extended, sans-serif', color: '#ffffff'}}>
+                O NÁS
+              </h1>
+              <p className="text-lg max-w-3xl mx-auto" style={{fontFamily: 'Gilroy, sans-serif', color: '#ffffff'}}>
+                Váš partner pre kvalitný prenájom vozidiel
+              </p>
+            </motion.div>
+          </div>
+        </div>
+      </section>
 
-      {/* Company Story */}
+      {/* Main Content */}
       <section className="py-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-            <div>
-              <h2 className="text-3xl font-bold text-gray-900 mb-6">Náš príbeh</h2>
-              <p className="text-gray-600 mb-6">
-                AutoPožičovňa bola založená v roku 2009 a vyrastla z malého miestneho podniku 
-                na jednu z najdôveryhodnejších spoločností na prenájom vozidiel na Slovensku. 
-                Naša cesta začala s jednoduchou misiou: poskytovať spoľahlivé, cenovo dostupné 
-                a pohodlné dopravné riešenia pre miestnych obyvateľov aj návštevníkov.
+        <div className="max-w-7xl mx-auto px-4">
+          <div className="max-w-4xl mx-auto">
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+            >
+              <h2 className="text-3xl font-bold text-black mb-8" style={{fontFamily: 'Monument Extended, sans-serif'}}>
+                BUSINESS CAR
+              </h2>
+              <p className="text-lg text-gray-700 leading-relaxed mb-8" style={{fontFamily: 'Gilroy, sans-serif'}}>
+                Sme autopožičovňa zameraná na individuálne potreby klienta. K zákazníkom pristupujeme s cieľom vyhovieť každej ich požiadavke, aby bol zážitok z prenájmu výnimočný. Pre našich klientov zabezpečujeme profesionálne služby, či už ide o krátkodobý alebo dlhodobý prenájom automobilov, pristavenie vozidla na požadované miesto, preberanie a odovzdanie auta mimo otváracích hodín alebo doplnkové služby, ktoré si naši klienti vedia nastaviť podľa svojich požiadaviek.
               </p>
-              <p className="text-gray-600 mb-6">
-                Počas rokov sme rozšírili našu flotilu o širokú škálu vozidiel, 
-                od ekonomických áut až po luxusné sedany a SUV. Využili sme aj technológie 
-                na to, aby sme proces prenájmu urobili čo najjednoduchší, pričom sme si 
-                zachovali osobný prístup, ktorý nás odlišuje.
+              <p className="text-lg text-gray-700 leading-relaxed mb-12" style={{fontFamily: 'Gilroy, sans-serif'}}>
+                Kladieme dôraz na individualitu, pretože veríme, že naši klienti si zaslúžia len výnimočné služby šité na mieru.
               </p>
-              <p className="text-gray-600">
-                Dnes sme hrdí na to, že ročne obslúžime tisíce zákazníkov, pomáhame im 
-                objavovať Slovensko a okolie s dôverou a pohodlím.
-              </p>
-            </div>
-            <div>
-              <img
-                src="https://images.unsplash.com/photo-1560472354-b33ff0c44a43?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2026&q=80"
-                alt="Kancelária autopožičovne"
-                className="rounded-lg shadow-lg"
-              />
-            </div>
-          </div>
-        </div>
-      </section>
+            </motion.div>
 
-      {/* Statistics */}
-      <section className="py-16 bg-blue-600">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-            {stats.map((stat, index) => (
-              <div key={index} className="text-center">
-                <div className="text-3xl md:text-4xl font-bold text-white mb-2">
-                  {stat.value}
-                </div>
-                <div className="text-sm md:text-base text-white">
-                  {stat.label}
-                </div>
+            {/* Features Grid */}
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.4 }}
+              className="grid md:grid-cols-2 gap-8 mb-16"
+            >
+              <div className="bg-gray-50 p-8 rounded-lg">
+                <h3 className="text-xl font-bold text-black mb-4" style={{fontFamily: 'Monument Extended, sans-serif'}}>
+                  Profesionálne služby
+                </h3>
+                <p className="text-gray-700" style={{fontFamily: 'Gilroy, sans-serif'}}>
+                  Poskytujeme komplexné služby prenájmu vozidiel s individuálnym prístupom k každému klientovi.
+                </p>
               </div>
-            ))}
+              <div className="bg-gray-50 p-8 rounded-lg">
+                <h3 className="text-xl font-bold text-black mb-4" style={{fontFamily: 'Monument Extended, sans-serif'}}>
+                  Flexibilita
+                </h3>
+                <p className="text-gray-700" style={{fontFamily: 'Gilroy, sans-serif'}}>
+                  Pristavenie vozidla, preberanie mimo otváracích hodín a ďalšie doplnkové služby podľa vašich potrieb.
+                </p>
+              </div>
+              <div className="bg-gray-50 p-8 rounded-lg">
+                <h3 className="text-xl font-bold text-black mb-4" style={{fontFamily: 'Monument Extended, sans-serif'}}>
+                  Kvalitné vozidlá
+                </h3>
+                <p className="text-gray-700" style={{fontFamily: 'Gilroy, sans-serif'}}>
+                  Ponúkame širokú škálu kvalitných vozidiel pre rôzne účely a potreby našich klientov.
+                </p>
+              </div>
+              <div className="bg-gray-50 p-8 rounded-lg">
+                <h3 className="text-xl font-bold text-black mb-4" style={{fontFamily: 'Monument Extended, sans-serif'}}>
+                  24/7 podpora
+                </h3>
+                <p className="text-gray-700" style={{fontFamily: 'Gilroy, sans-serif'}}>
+                  Sme tu pre vás kedykoliek potrebujete pomoc alebo máte otázky týkajúce sa prenájmu.
+                </p>
+              </div>
+            </motion.div>
+
+            {/* CTA Section */}
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.6 }}
+              className="text-center bg-blue-600 text-white p-8 rounded-lg"
+            >
+              <h3 className="text-2xl font-bold mb-4" style={{fontFamily: 'Monument Extended, sans-serif'}}>
+                Pripravení na cestu?
+              </h3>
+              <p className="text-lg mb-6" style={{fontFamily: 'Gilroy, sans-serif'}}>
+                Kontaktujte nás a nájdeme pre vás ideálne vozidlo
+              </p>
+              <a
+                href="/kontakt"
+                className="inline-block bg-white text-blue-600 px-8 py-3 rounded-lg font-bold hover:bg-gray-100 transition-colors"
+                style={{fontFamily: 'Gilroy, sans-serif'}}
+              >
+                Kontaktovať nás
+              </a>
+            </motion.div>
           </div>
         </div>
       </section>
-
-    
-  
     </div>
   );
 };
 
-export default AboutPage; 
+export default AboutPage;

@@ -1,4 +1,51 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+/* Local Font Imports */
+@font-face {
+  font-family: 'Monument Extended';
+  src: url('./MonumentExtended-FreeForPersonalUse/MonumentExtended-Regular.otf') format('opentype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Monument Extended';
+  src: url('./MonumentExtended-FreeForPersonalUse/MonumentExtended-Ultrabold.otf') format('opentype');
+  font-weight: 800;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Gilroy';
+  src: url('./gilroy/Gilroy-Regular.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Gilroy';
+  src: url('./gilroy/Gilroy-Medium.ttf') format('truetype');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Gilroy';
+  src: url('./gilroy/Gilroy-SemiBold.ttf') format('truetype');
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Gilroy';
+  src: url('./gilroy/Gilroy-Bold.ttf') format('truetype');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
 
 @tailwind base;
 @tailwind components;
@@ -8,16 +55,69 @@
   * {
     box-sizing: border-box;
   }
-  
+
   html {
-    scroll-behavior: smooth;
+    /* Disable native smooth scrolling - Lenis handles this */
+    scroll-behavior: auto;
+    background-color: #ffffff !important;
   }
-  
+
   body {
-    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    font-family: 'Gilroy', system-ui, -apple-system, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     overflow-x: hidden;
+    background-color: #ffffff !important;
+    color: #000000 !important;
+    position: relative;
+  }
+  
+  /* Headings use Monument Extended */
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Monument Extended', system-ui, -apple-system, sans-serif;
+    font-weight: 400;
+    color: #000000;
+  }
+  
+  /* Hero section text should remain white */
+  .text-white, 
+  .text-white h1, 
+  .text-white h2, 
+  .text-white h3, 
+  .text-white h4, 
+  .text-white h5, 
+  .text-white h6 {
+    color: #ffffff !important;
+  }
+
+  /* Fix iOS Safari overscroll background */
+  body::before {
+    content: '';
+    position: fixed;
+    top: -100vh;
+    left: 0;
+    right: 0;
+    height: 100vh;
+    background-color: #ffffff;
+    z-index: -9999;
+    pointer-events: none;
+  }
+
+  body::after {
+    content: '';
+    position: fixed;
+    bottom: -100vh;
+    left: 0;
+    right: 0;
+    height: 100vh;
+    background-color: #ffffff;
+    z-index: -9999;
+    pointer-events: none;
+  }
+
+  #root {
+    background-color: #ffffff !important;
+    min-height: 100vh;
   }
   
   /* Custom smooth transitions for page changes */
@@ -28,6 +128,11 @@
   .page-enter {
     opacity: 0;
     transform: translateY(20px);
+  }
+  
+  /* Mobile menu smooth transitions */
+  .mobile-menu-transition {
+    transition: max-height 0.5s ease-out, opacity 0.3s ease-out;
   }
   
   .page-enter-active {
@@ -46,10 +151,75 @@
   }
   
   .card {
-    @apply bg-white rounded-xl shadow-md hover:shadow-xl transition-shadow duration-300;
+    @apply bg-white text-black rounded-xl shadow-md hover:shadow-xl transition-shadow duration-300 border border-gray-200;
+  }
+
+  /* Continuous scroll animation for reviews */
+  .animate-scroll {
+    animation: scroll 40s linear infinite;
+  }
+
+  @keyframes scroll {
+    0% {
+      transform: translateX(0);
+    }
+    100% {
+      transform: translateX(-50%);
+    }
+  }
+
+  /* Lightbox animations */
+  .animate-fadeIn {
+    animation: fadeIn 0.3s ease-out;
+  }
+
+  .animate-slideIn {
+    animation: slideIn 0.3s ease-out;
+  }
+
+  @keyframes fadeIn {
+    0% {
+      opacity: 0;
+    }
+    100% {
+      opacity: 1;
+    }
+  }
+
+  @keyframes slideIn {
+    0% {
+      opacity: 0;
+      transform: scale(0.95);
+    }
+    100% {
+      opacity: 1;
+      transform: scale(1);
+    }
   }
   
   .input-field {
-    @apply w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent transition-all duration-200;
+    @apply w-full px-4 py-3 border border-gray-300 bg-white text-black rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200;
+  }
+
+  /* Global overrides for light theme */
+  .bg-black {
+    background-color: #ffffff !important;
+    color: #000000 !important;
+  }
+  
+  .bg-gray-800,
+  .bg-gray-900 {
+    background-color: #f3f4f6 !important;
+    color: #000000 !important;
+  }
+  
+  .text-white:not(.text-white h1):not(.text-white h2):not(.text-white h3):not(.text-white h4):not(.text-white h5):not(.text-white h6) {
+    color: #000000 !important;
+  }
+
+  /* Keep original blue color available as bg-blue class */
+  .bg-blue {
+    background-color: #2563eb !important;
+    color: white !important;
   }
 }

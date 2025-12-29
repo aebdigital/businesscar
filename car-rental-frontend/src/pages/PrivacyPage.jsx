@@ -1,174 +1,181 @@
-import Image4 from '../assets/4.webp';
+const HeroImg = '';
 
 const PrivacyPage = () => {
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-white">
       {/* Mini Hero Section */}
       <div 
-        className="relative h-[20vh] bg-cover bg-center flex items-center"
+        className="relative h-[30vh] bg-cover bg-center flex items-center"
         style={{
-          backgroundImage: `linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url(${Image4})`
+          backgroundImage: `linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url(${HeroImg})`
         }}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
-          <h1 className="text-3xl font-bold text-white">
-            Ochrana osobných údajov
+          <h1 className="text-4xl md:text-6xl font-bold text-white">
+            Ochrana osobných údajov (GDPR)
           </h1>
         </div>
       </div>
 
       <div className="py-12">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="bg-white rounded-lg shadow-lg p-8">
-          
-          <div className="prose prose-gray max-w-none space-y-8">
-            {/* Header */}
-            <div className="text-center mb-8">
-              <h1 className="text-3xl font-bold text-gray-900 mb-4 flex items-center justify-center">
-                🛡️ Ochrana osobných údajov (GDPR)
-              </h1>
-              <p className="text-lg text-gray-700">
-                Vaše súkromie je pre nás dôležité. Preto spracúvame osobné údaje v súlade s platnou legislatívou vrátane Nariadenia GDPR (EU) 2016/679 a zákona č. 18/2018 Z.z. o ochrane osobných údajov.
-              </p>
-            </div>
+          <div className="rounded-lg shadow-lg p-8" style={{backgroundColor: 'rgb(18, 18, 18)'}}>
+            <div className="text-white space-y-8">
+              <h1 className="text-3xl font-bold text-center mb-8">Ochrana osobných údajov (GDPR)</h1>
+              
+              <section>
+                <h2 className="text-xl font-semibold mb-4">1. Základné informácie</h2>
+                <p className="mb-4">Táto politika ochrany osobných údajov upravuje spôsob, akým spracúvame osobné údaje v súlade s nariadením Európskeho parlamentu a Rady (EÚ) 2016/679 (GDPR).</p>
+                <p><strong>Správca údajov:</strong> [Názov spoločnosti], IČO: [IČO], sídlo: [Adresa]</p>
+              </section>
 
-            {/* Prevádzkovateľ údajov */}
-            <div className="bg-red-50 p-6 rounded-lg">
-              <h2 className="text-2xl font-bold text-gray-900 mb-4 flex items-center">
-                📍 Prevádzkovateľ údajov
-              </h2>
-              <div className="text-gray-700 space-y-1">
-                <p><strong>Rival Slovakia s.r.o.</strong></p>
-                <p>Doležalova 15C, 821 04 Bratislava - Ružinov</p>
-                <p>IČO: 54281067</p>
-                <p>DIČ: 2121618972</p>
-                <p>IČ DPH: SK2121618972</p>
-                <p>Zastúpená: Peter Ridzon, konateľ</p>
-                <p>✉️ info@pozicauto.sk</p>
-                <p>📞 +421 907 633 517</p>
-              </div>
-            </div>
+              <section>
+                <h2 className="text-xl font-semibold mb-4">2. Rozsah spracovávaných údajov</h2>
+                
+                <h3 className="text-lg font-semibold mb-3">2.1 Formuláre na webovej stránke</h3>
+                <div className="mb-4">
+                  <p className="font-semibold mb-2">Kontaktný formulár:</p>
+                  <ul className="list-disc list-inside space-y-1 ml-4">
+                    <li>Povinné údaje: Meno, e-mail, správa</li>
+                    <li>Voliteľné údaje: Telefónne číslo</li>
+                    <li>Účel spracovania: odpoveď na dotaz</li>
+                    <li>Doba uchovávania: 24 mesiacov od poslednej komunikácie</li>
+                  </ul>
+                </div>
+                
+                <div className="mb-4">
+                  <p className="font-semibold mb-2">Newsletter:</p>
+                  <ul className="list-disc list-inside space-y-1 ml-4">
+                    <li>Povinné údaje: E-mail</li>
+                    <li>Súhlas: Explicitný (opt-in)</li>
+                    <li>Možnosť odhlásiť sa: V každom e-maile</li>
+                    <li>Doba uchovávania: Do odvolania súhlasu</li>
+                  </ul>
+                </div>
 
-            {/* Aké údaje spracúvame */}
-            <div className="bg-blue-50 p-6 rounded-lg">
-              <h2 className="text-2xl font-bold text-gray-900 mb-4 flex items-center">
-                📋 Aké údaje spracúvame?
-              </h2>
-              <ul className="space-y-2 text-gray-700">
-                <li>Meno a priezvisko</li>
-                <li>Trvalá adresa</li>
-                <li>Telefónne číslo</li>
-                <li>Emailová adresa</li>
-                <li>Číslo OP a vodičského preukazu</li>
-                <li>Údaje o prenájme vozidla</li>
-                <li>IP adresa a cookies</li>
-              </ul>
-            </div>
+                <h3 className="text-lg font-semibold mb-3">2.2 Automaticky zbierané údaje</h3>
+                <ul className="list-disc list-inside space-y-1">
+                  <li>Technické údaje (IP adresa, typ prehliadača, verzia OS)</li>
+                  <li>Údaje o návštevnosti (čas prístupu, prezerané stránky)</li>
+                  <li>Cookies (viac v sekcii Cookies)</li>
+                </ul>
+              </section>
 
-            {/* Účel spracovania údajov */}
-            <div className="bg-red-100 p-6 rounded-lg">
-              <h2 className="text-2xl font-bold text-gray-900 mb-4 flex items-center">
-                🎯 Účel spracovania údajov
-              </h2>
-              <ul className="space-y-2 text-gray-700">
-                <li>Uzatvorenie a plnenie zmluvy o prenájme vozidla</li>
-                <li>Vedenie účtovníctva</li>
-                <li>Komunikácia so zákazníkom</li>
-                <li>Riešenie poistných udalostí a priestupkov</li>
-                <li>Marketing (len s výslovným súhlasom)</li>
-              </ul>
-            </div>
+              <section>
+                <h2 className="text-xl font-semibold mb-4">3. Právny základ a účel spracovania</h2>
+                <div className="overflow-x-auto">
+                  <table className="w-full border-collapse border border-gray-600">
+                    <thead>
+                      <tr className="bg-gray-700">
+                        <th className="border border-gray-600 p-3 text-left">Účel spracovania</th>
+                        <th className="border border-gray-600 p-3 text-left">Právny základ</th>
+                        <th className="border border-gray-600 p-3 text-left">Doba uchovávania</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td className="border border-gray-600 p-3">Plnenie zmluvy</td>
+                        <td className="border border-gray-600 p-3">Čl. 6 ods. 1 b) GDPR</td>
+                        <td className="border border-gray-600 p-3">Počas trvania zmluvy + 10 rokov</td>
+                      </tr>
+                      <tr>
+                        <td className="border border-gray-600 p-3">Marketing</td>
+                        <td className="border border-gray-600 p-3">Čl. 6 ods. 1 a) GDPR (súhlas)</td>
+                        <td className="border border-gray-600 p-3">Do odvolania súhlasu</td>
+                      </tr>
+                      <tr>
+                        <td className="border border-gray-600 p-3">Odpovede na dotazy</td>
+                        <td className="border border-gray-600 p-3">Čl. 6 ods. 1 f) GDPR (oprávnený záujem)</td>
+                        <td className="border border-gray-600 p-3">24 mesiacov</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </section>
 
-            {/* Doba uchovávania údajov */}
-            <div className="bg-purple-50 p-6 rounded-lg">
-              <h2 className="text-2xl font-bold text-gray-900 mb-4 flex items-center">
-                ⏰ Doba uchovávania údajov
-              </h2>
-              <ul className="space-y-2 text-gray-700">
-                <li>Účtovné doklady: 10 rokov</li>
-                <li>Zmluvné dokumenty: 2 roky po ukončení nájmu</li>
-                <li>Marketingové údaje: do odvolania súhlasu</li>
-              </ul>
-            </div>
+              <section>
+                <h2 className="text-xl font-semibold mb-4">4. Preposkytovanie údajov</h2>
+                <p className="mb-2">Údaje môžu byť prevedené:</p>
+                <ul className="list-disc list-inside space-y-2 mb-4">
+                  <li>Spracovateľom služieb (IT poskytovatelia, hostingové spoločnosti)</li>
+                  <li>Štatistickým službám (Google Analytics v anonymizovanej podobe)</li>
+                  <li>Marketingovým platformám (len pri explicitnom súhlase)</li>
+                  <li>Štátnym orgánom v prípade zákonnej povinnosti</li>
+                </ul>
+                <p>Všetci spracovatelia sú viazaní zmluvami o spracovaní údajov a zabezpečujú dostatočnú ochranu údajov.</p>
+              </section>
 
-            {/* Vaše práva podľa GDPR */}
-            <div className="bg-green-50 p-6 rounded-lg">
-              <h2 className="text-2xl font-bold text-gray-900 mb-4 flex items-center">
-                👤 Vaše práva podľa GDPR
-              </h2>
-              <p className="text-gray-700 mb-3">Máte právo:</p>
-              <ul className="space-y-2 text-gray-700">
-                <li>Na prístup k svojim údajom</li>
-                <li>Na opravu nepresných údajov</li>
-                <li>Na vymazanie údajov (právo na zabudnutie)</li>
-                <li>Na obmedzenie spracovania</li>
-                <li>Namietať voči spracovaniu</li>
-                <li>Na prenos údajov k inému prevádzkovateľovi</li>
-              </ul>
-              <div className="mt-4 bg-blue-100 p-3 rounded flex items-start">
-                <span className="text-blue-600 mr-2">✉️</span>
-                <p className="text-gray-700">
-                  Svoje práva si môžete uplatniť na info@pozicauto.sk alebo písomne na adresu sídla.
-                </p>
-              </div>
-            </div>
+              <section>
+                <h2 className="text-xl font-semibold mb-4">5. Zabezpečenie údajov</h2>
+                <p className="mb-2">Implementovali sme technické a organizačné opatrenia na ochranu údajov:</p>
+                <ul className="list-disc list-inside space-y-2">
+                  <li>Šifrovanie komunikácie (SSL/TLS)</li>
+                  <li>Pravidelné aktualizácie a bezpečnostné audity</li>
+                  <li>Obmedzený prístup k údajom</li>
+                  <li>Pravidelné zálohovanie</li>
+                  <li>Školenia zamestnancov</li>
+                </ul>
+              </section>
 
-            {/* Ochrana vašich údajov */}
-            <div className="bg-yellow-50 p-6 rounded-lg">
-              <h2 className="text-2xl font-bold text-gray-900 mb-4 flex items-center">
-                🔒 Ochrana vašich údajov
-              </h2>
-              <ul className="space-y-2 text-gray-700">
-                <li>Prístup majú len poverené osoby</li>
-                <li>Používame zabezpečený rezervačný systém</li>
-                <li>Údaje neposkytujeme tretím stranám bez právneho dôvodu</li>
-              </ul>
-            </div>
+              <section>
+                <h2 className="text-xl font-semibold mb-4">6. Vaše práva</h2>
+                <div className="space-y-4">
+                  <div>
+                    <h3 className="font-semibold">Právo na prístup</h3>
+                    <p>Môžete žiadať kópiu svojich osobných údajov.</p>
+                  </div>
+                  <div>
+                    <h3 className="font-semibold">Právo na opravu</h3>
+                    <p>Môžete žiadať opravu nesprávnych údajov.</p>
+                  </div>
+                  <div>
+                    <h3 className="font-semibold">Právo na vymazanie</h3>
+                    <p>Môžete žiadať vymazanie údajov ("právo byť zabudnutý").</p>
+                  </div>
+                  <div>
+                    <h3 className="font-semibold">Právo na obmedzenie</h3>
+                    <p>Môžete obmedziť spracovanie svojich údajov.</p>
+                  </div>
+                  <div>
+                    <h3 className="font-semibold">Právo na prenosnosť</h3>
+                    <p>Môžete získať údaje v strojovo čitateľnom formáte.</p>
+                  </div>
+                  <div>
+                    <h3 className="font-semibold">Právo na námietku</h3>
+                    <p>Môžete namietať proti spracovaniu údajov.</p>
+                  </div>
+                </div>
+                <p className="mt-4">Na uplatnenie práv nás kontaktujte na gdpr@vasa-stranka.sk. Odpovedáme do 30 dní.</p>
+              </section>
 
-            {/* Komu môžeme údaje sprístupniť */}
-            <div className="bg-orange-50 p-6 rounded-lg">
-              <h2 className="text-2xl font-bold text-gray-900 mb-4 flex items-center">
-                👥 Komu môžeme údaje sprístupniť?
-              </h2>
-              <ul className="space-y-2 text-gray-700">
-                <li>Účtovníkovi a daňovým poradcom</li>
-                <li>Poisťovniam pri škodách</li>
-                <li>Právnym zástupcom pri priestupkoch</li>
-                <li>Orgánom verejnej správy podľa zákona</li>
-              </ul>
-            </div>
+              <section>
+                <h2 className="text-xl font-semibold mb-4">7. Kontaktné údaje</h2>
+                <div className="space-y-4">
+                  <div>
+                    <h3 className="font-semibold">Správca údajov:</h3>
+                    <p>[Názov spoločnosti]</p>
+                    <p>IČO: [IČO]</p>
+                    <p>Adresa: [Adresa]</p>
+                  </div>
+                  <div>
+                    <h3 className="font-semibold">Kontakt na DPO:</h3>
+                    <p>E-mail: dpo@vasa-stranka.sk</p>
+                    <p>Telefón: +421 XXX XXX XXX</p>
+                  </div>
+                </div>
+                <p className="mt-4">Prípadné sťažnosti môžete podať aj Úradu na ochranu osobných údajov SR.</p>
+              </section>
 
-            {/* Cookies a sledovanie */}
-            <div className="bg-indigo-50 p-6 rounded-lg">
-              <h2 className="text-2xl font-bold text-gray-900 mb-4 flex items-center">
-                🍪 Cookies a sledovanie
-              </h2>
-              <p className="text-gray-700 mb-3">Používame cookies pre:</p>
-              <ul className="space-y-2 text-gray-700">
-                <li>Funkčnosť webu a rezervačného systému</li>
-                <li>Analýzu návštevnosti (napr. Google Analytics)</li>
-                <li>Marketing len na základe súhlasu</li>
-              </ul>
-              <p className="text-gray-700 mt-3">
-                Cookies si môžete spravovať vo svojom prehliadači.
-              </p>
-            </div>
-
-            {/* Kontakt pre ochranu údajov */}
-            <div className="bg-cyan-50 p-6 rounded-lg">
-              <h2 className="text-2xl font-bold text-gray-900 mb-4 flex items-center">
-                📧 Kontakt pre ochranu údajov
-              </h2>
-              <p className="text-gray-700 mb-3">V prípade otázok alebo požiadaviek nás kontaktujte:</p>
-              <div className="text-gray-700 space-y-1">
-                <p>✉️ info@pozicauto.sk</p>
-                <p>📞 +421 907 633 517</p>
-              </div>
-            </div>
+              <section>
+                <h2 className="text-xl font-semibold mb-4">8. Platnosť a zmeny</h2>
+                <p>Táto politika nadobúda účinnosť dňom 1.1.2024. Všetky zmeny budú zverejnené na tejto stránke.</p>
+              </section>
             </div>
           </div>
         </div>
       </div>
+
+      {/* Shared Sections */}
     </div>
   );
 };

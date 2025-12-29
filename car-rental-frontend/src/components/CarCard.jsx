@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
-import { 
-  UsersIcon, 
-  CogIcon, 
+import {
+  UsersIcon,
+  CogIcon,
   GlobeAltIcon,
   CalendarIcon,
   ExclamationTriangleIcon
@@ -16,6 +16,7 @@ const CarCard = ({ car, selectedDates, unavailableDates = [], isPromo = false })
     model,
     year,
     dailyRate,
+    pricing,
     deposit,
     category,
     features,
@@ -30,12 +31,12 @@ const CarCard = ({ car, selectedDates, unavailableDates = [], isPromo = false })
 
   // Combine brand and model for display name
   const carName = `${brand} ${model}`;
-  
+
   // Show only available cars or all cars in fleet view
   const isAvailable = status === 'available';
 
   // Check if car is available for selected dates
-  const isAvailableForDates = selectedDates?.pickupDate && selectedDates?.returnDate ? 
+  const isAvailableForDates = selectedDates?.pickupDate && selectedDates?.returnDate ?
     (() => {
       const currentDate = new Date(selectedDates.pickupDate);
       while (currentDate <= selectedDates.returnDate) {
@@ -66,30 +67,31 @@ const CarCard = ({ car, selectedDates, unavailableDates = [], isPromo = false })
     const params = new URLSearchParams({
       car: id
     });
-    
+
     if (selectedDates?.pickupDate) {
       params.append('pickupDate', selectedDates.pickupDate.toISOString().split('T')[0]);
     }
-    
+
     if (selectedDates?.returnDate) {
       params.append('returnDate', selectedDates.returnDate.toISOString().split('T')[0]);
     }
-    
+
     if (selectedDates?.pickupTime) {
       params.append('pickupTime', selectedDates.pickupTime);
     }
-    
+
     if (selectedDates?.returnTime) {
       params.append('returnTime', selectedDates.returnTime);
     }
-    
+
     return `/booking?${params.toString()}`;
   };
 
   // Get fuel type display
   const getFuelDisplay = () => {
     switch(fuelType) {
-      case 'petrol': return 'benzín';
+      case 'petrol':
+      case 'gasoline': return 'benzín';
       case 'diesel': return 'diesel';
       case 'electric': return 'elektrické';
       case 'hybrid': return 'hybrid';
@@ -102,19 +104,30 @@ const CarCard = ({ car, selectedDates, unavailableDates = [], isPromo = false })
     switch(transmission) {
       case 'manual': return 'manuál';
       case 'automatic': return 'auto.';
+      case 'cvt': return 'CVT';
       default: return transmission?.toLowerCase() || 'auto.';
     }
   };
 
-  // Get fuel consumption display
+  // Get fuel consumption display - uses API data if available
   const getFuelConsumption = () => {
-    // Mock data for fuel consumption - in real app this would come from API
-    return '5.1 l / 100 km';
+    if (car.fuelConsumption) {
+      return `${car.fuelConsumption} l/100km`;
+    }
+    // Fallback estimate based on fuel type
+    switch(fuelType) {
+      case 'electric': return '0 l/100km';
+      case 'hybrid': return '4.5 l/100km';
+      case 'diesel': return '5.8 l/100km';
+      case 'gasoline':
+      case 'petrol': return '6.2 l/100km';
+      default: return '5.5 l/100km';
+    }
   };
 
   return (
-    <Link to={buildCarUrl()} className="block">
-      <div className="bg-white rounded-lg border border-gray-200 overflow-hidden hover:shadow-lg transition-shadow duration-200 relative mb-6">
+    <Link to={buildCarUrl()} className="group block transition-all duration-200 mb-6">
+      <div className="rounded-lg hover:shadow-lg relative">
         {/* AKCIA Banner */}
         {isPromo && (
           <div className="absolute top-0 left-0 z-10">
@@ -124,13 +137,15 @@ const CarCard = ({ car, selectedDates, unavailableDates = [], isPromo = false })
           </div>
         )}
 
-        {/* Horizontal Layout */}
-        <div className="flex">
-          {/* Car Image - Left Side */}
-          <div className="w-2/5 min-h-[280px] bg-gray-50 relative">
+        {/* Car Layout */}
+        <div className="flex flex-col bg-white rounded-lg overflow-hidden border border-gray-200 shadow-lg" style={{
+          boxShadow: 'inset 0 1px 2px #ffffff30, 0 1px 2px #00000030, 0 2px 4px #00000015'
+        }}>
+          {/* TOP - Car Image */}
+          <div className="w-full h-48 bg-gray-50 relative overflow-hidden">
             {images && images.length > 0 ? (
-              <img 
-                src={images[0].url || images[0]} 
+              <img
+                src={images[0].url || images[0]}
                 alt={carName}
                 className="w-full h-full object-cover"
               />
@@ -143,21 +158,42 @@ const CarCard = ({ car, selectedDates, unavailableDates = [], isPromo = false })
             )}
           </div>
 
-          {/* Car Details - Right Side */}
-          <div className="w-3/5 p-6">
-            <div className="flex justify-between items-start mb-4">
-              {/* Brand and Model */}
-              <div>
-                <h2 className="text-2xl font-bold text-gray-800 mb-2">
-                  {brand} {model}
-                </h2>
-              </div>
-            </div>
+          {/* BOTTOM - Content Area with White Background */}
+          <div className="w-full p-6 flex" style={{backgroundColor: '#ffffff'}}>
+            {/* LEFT - Car Name and Specs */}
+            <div className="w-3/5 pr-6">
+              {/* Car Name ON TOP */}
+              <h2 className="text-2xl font-bold text-black mb-2">
+                {brand} {model}
+              </h2>
+              {/* Category Badge */}
+              {category && (
+                <div className="mb-4">
+                  <span className="inline-block px-3 py-1 text-xs font-semibold rounded-full" style={{
+                    backgroundColor: 'rgba(37, 99, 235, 0.1)',
+                    color: '#2563eb',
+                    border: '1px solid rgba(37, 99, 235, 0.2)'
+                  }}>
+                    {category === 'economy' ? 'Ekonomická' :
+                     category === 'ekonomicka' ? 'Ekonomická' :
+                     category === 'stredna' ? 'Stredná' :
+                     category === 'compact' ? 'Kompaktná' :
+                     category === 'midsize' ? 'Stredná' :
+                     category === 'fullsize' ? 'Veľká' :
+                     category === 'luxury' ? 'Luxusná' :
+                     category === 'vyssia' ? 'Vyššia' :
+                     category === 'suv' ? 'SUV' :
+                     category === 'minivan' ? 'Minivan' :
+                     category === 'viacmiestne' ? 'Viacmiestne' :
+                     category === 'convertible' ? 'Kabriolet' :
+                     category === 'sports' ? 'Športové' :
+                     category}
+                  </span>
+                </div>
+              )}
 
-            {/* Car Specifications and Pricing Section */}
-            <div className="flex justify-between items-start mb-6">
-              {/* Car Specifications - 2x3 Grid with Internal Lines */}
-              <div className="grid grid-cols-2 grid-rows-3 border-collapse">
+              {/* Car Specifications BELOW NAME */}
+              <div className="grid grid-cols-2 grid-rows-3 rounded-lg overflow-hidden" style={{backgroundColor: 'rgba(255,255,255,0.9)'}}>
                 {/* Seats */}
                 <div className="flex items-center space-x-2 p-3 border-r border-b border-gray-200">
                   <div className="w-6 h-6 rounded-full bg-blue-100 flex items-center justify-center">
@@ -176,20 +212,20 @@ const CarCard = ({ car, selectedDates, unavailableDates = [], isPromo = false })
                   <span className="text-gray-700 font-medium text-sm">{getFuelConsumption()}</span>
                 </div>
 
-                {/* Transmission */}
-                <div className="flex items-center space-x-2 p-3 border-r border-b border-gray-200">
-                  <div className="w-6 h-6 rounded-full bg-blue-100 flex items-center justify-center">
-                    <CogIcon className="h-4 w-4 text-blue-600" />
-                  </div>
-                  <span className="text-gray-700 font-medium text-sm">{getTransmissionDisplay()}</span>
-                </div>
-
                 {/* Fuel Type */}
-                <div className="flex items-center space-x-2 p-3 border-b border-gray-200">
+                <div className="flex items-center space-x-2 p-3 border-r border-b border-gray-200">
                   <div className="w-6 h-6 rounded-full bg-blue-100 flex items-center justify-center">
                     <GlobeAltIcon className="h-4 w-4 text-blue-600" />
                   </div>
                   <span className="text-gray-700 font-medium text-sm">{getFuelDisplay()}</span>
+                </div>
+
+                {/* Transmission */}
+                <div className="flex items-center space-x-2 p-3 border-b border-gray-200">
+                  <div className="w-6 h-6 rounded-full bg-blue-100 flex items-center justify-center">
+                    <CogIcon className="h-4 w-4 text-blue-600" />
+                  </div>
+                  <span className="text-gray-700 font-medium text-sm">{getTransmissionDisplay()}</span>
                 </div>
 
                 {/* Number of Doors */}
@@ -199,7 +235,7 @@ const CarCard = ({ car, selectedDates, unavailableDates = [], isPromo = false })
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                     </svg>
                   </div>
-                  <span className="text-gray-700 font-medium text-sm">4</span>
+                  <span className="text-gray-700 font-medium text-sm">{car.doors || 4}</span>
                 </div>
 
                 {/* Power */}
@@ -209,60 +245,26 @@ const CarCard = ({ car, selectedDates, unavailableDates = [], isPromo = false })
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
                     </svg>
                   </div>
-                  <span className="text-gray-700 font-medium text-sm">{power || '140kW'}</span>
-                </div>
-              </div>
-
-              {/* Pricing Tiers - Right Side */}
-              <div className="ml-8 flex items-start space-x-6">
-                {/* Daily Pricing - Vertical */}
-                <div className="space-y-1">
-                  <div className="flex justify-between items-center">
-                    <span className="text-xs text-gray-600">1 - 3 dni</span>
-                    <span className="text-sm font-bold text-gray-800 ml-4">{dailyRate || 40} €</span>
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-xs text-gray-600">4 - 10 dni</span>
-                    <span className="text-sm font-bold text-gray-800 ml-4">{Math.round((dailyRate || 40) * 0.875)} €</span>
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-xs text-gray-600">11 - 20 dni</span>
-                    <span className="text-sm font-bold text-gray-800 ml-4">{Math.round((dailyRate || 40) * 0.75)} €</span>
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-xs text-gray-600">21 - 30 dni</span>
-                    <span className="text-sm font-bold text-gray-800 ml-4">{Math.round((dailyRate || 40) * 0.625)} €</span>
-                  </div>
-                </div>
-
-                {/* Weekly Price in Box */}
-                <div className="bg-blue-100 rounded px-3 py-2 text-center">
-                  <div className="text-xs font-medium text-blue-800 mb-1">
-                    týždeň
-                  </div>
-                  <div className="text-lg font-bold text-gray-800">{deposit || 250} €</div>
+                  <span className="text-gray-700 font-medium text-sm">{car.engine?.power || power || '140'} kW</span>
                 </div>
               </div>
             </div>
 
-            {/* Bottom section with features and order button */}
-            <div className="flex justify-between items-end">
-              {/* Features */}
-              <div className="flex-1">
-                <div className="text-sm text-gray-600">
-                  <span className="font-medium">výbava:</span> {features ? features.join(', ') : '6x airbag, ABS, alarm, cúvacia kamera, diaľkové ovládanie zamykania, elektrické okná, elektrické sedadlá, GPS navigačný systém, handsfree, klimatizácia, kožené sedadlá, laktová opierka, LCD display, multifunkčný volant, rádio CD, tempomat, USB, vyhrievanie sedadiel, Xenonové svetlomety'}
-                </div>
-              </div>
+            {/* RIGHT - Button and Price Section */}
+            <div className="w-2/5 text-center flex flex-col justify-center">
+              {/* Rezervovat Button */}
+              <Link
+                to={buildBookingUrl()}
+                onClick={(e) => e.stopPropagation()}
+                className="text-white px-8 py-3 rounded font-semibold hover:opacity-90 transition-colors duration-200 block mb-4"
+                style={{backgroundColor: '#2563eb', color: '#ffffff'}}
+              >
+                rezervovat
+              </Link>
 
-              {/* Order Button */}
-              <div className="ml-6">
-                <Link
-                  to={buildBookingUrl()}
-                  onClick={(e) => e.stopPropagation()}
-                  className="bg-blue-600 text-white px-8 py-3 rounded font-semibold hover:bg-blue-700 transition-colors duration-200 whitespace-nowrap"
-                >
-                  objednat
-                </Link>
+              {/* Price */}
+              <div className="text-2xl font-bold text-black">
+                od {pricing?.dailyRate || dailyRate || 40} eur
               </div>
             </div>
           </div>
@@ -271,5 +273,5 @@ const CarCard = ({ car, selectedDates, unavailableDates = [], isPromo = false })
     </Link>
   );
 };
-  
-export default CarCard; 
+
+export default CarCard;

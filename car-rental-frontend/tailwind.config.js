@@ -7,8 +7,9 @@ export default {
   theme: {
     extend: {
       colors: {
-        primary: '#000000',
-        accent: '#059669',
+        primary: '#2563eb', // Blue primary color
+        accent: '#3b82f6', // Blue accent color
+        blue: '#2563eb', // Keep original orange as separate color
         gray: {
           50: '#F9FAFB',
           100: '#F3F4F6',
@@ -23,7 +24,10 @@ export default {
         }
       },
       fontFamily: {
-        sans: ['Inter', 'system-ui', 'sans-serif'],
+        'heading': ['Monument Extended', 'system-ui', 'sans-serif'],
+        'sans': ['Gilroy', 'system-ui', 'sans-serif'],
+        'monument': ['Monument Extended', 'system-ui', 'sans-serif'],
+        'gilroy': ['Gilroy', 'system-ui', 'sans-serif'],
       },
       animation: {
         'fade-in': 'fadeIn 0.5s ease-in-out',
